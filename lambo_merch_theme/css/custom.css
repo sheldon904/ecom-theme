@@ -672,6 +672,8 @@ a:hover {
     color: #fff;
     padding: 50px 0 0;
     position: relative;
+    overflow: visible;
+    height: auto;
 }
 
 .footer-logo {
@@ -691,14 +693,18 @@ a:hover {
     border-bottom: 1px solid #333;
 }
 
+/* Fixed Footer Nav - Horizontal Layout */
 .footer-nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex; /* Make links horizontal */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .footer-nav li {
-    margin-bottom: 10px;
+    margin-right: 20px; /* Space between horizontal items */
+    margin-bottom: 10px; /* Small space for potential wrapping */
 }
 
 .footer-nav a {
@@ -712,7 +718,6 @@ a:hover {
 .footer-nav a:hover {
     color: #ff0000;
 }
-
 
 .footer-widget ul {
     list-style: none;
@@ -765,20 +770,25 @@ a:hover {
     background-color: var(--color-primary-dark);
 }
 
+/* Footer bottom with gray bar - FIXED VERSION */
 .footer-bottom {
     margin-top: 40px;
-    position: relative;
+    position: static; /* Changed from relative */
     padding: 20px 0;
+    background-color: transparent; /* Remove any background */
+    background-image: url('images/backgrounds/gray_bar_footer.png'); /* Use image as CSS background */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: visible; /* Allow scrolling */
+    min-height: 60px; /* Minimum height for content */
 }
+
+/* Hide the problematic image element */
 .footer-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 1;
+    display: none !important;
 }
+
 .copyright {
     position: relative;
     z-index: 2;
@@ -802,6 +812,32 @@ a:hover {
 .media-made {
     color: #ff0000;
 }
+
+/* Fixed Social Icon Styling */
+.social-icon,
+.facebook-instagram,
+.youtube {
+    background-color: transparent !important; /* Override any background */
+    border-radius: 0 !important; /* Remove any border radius */
+    width: auto !important; /* Let image control the width */
+    height: auto !important; /* Let image control the height */
+    display: inline-block; /* Keep as inline block */
+    margin-right: 15px; /* Space between icons */
+    box-shadow: none !important; /* Remove any shadow */
+}
+
+.social-icon img,
+.facebook-instagram img,
+.youtube img {
+    border-radius: 0 !important; /* Ensure no rounding on images */
+    background-color: transparent !important; /* Ensure transparent background on images */
+    display: block; /* Proper display */
+    width: auto; /* Use natural width */
+    height: auto; /* Use natural height */
+    max-width: 45px; /* Control maximum size */
+    max-height: 45px; /* Control maximum size */
+}
+
 /* Subscription Form Styles */
 .subscription-form {
     background-color: var(--color-background-light);
@@ -910,45 +946,6 @@ a:hover {
     height: auto;
 }
 
-
-.social-icons {
-    display: flex;
-    align-items: center;
-    margin-top: 15px;
-}
-
-.social-icon {
-    display: inline-block;
-    margin-right: 15px;
-}
-
-.social-icon img {
-    display: block;
-    width: auto;
-    height: auto;
-    max-width: 45px; /* You can adjust this based on your image size */
-}
-
-.social-icon {
-    display: inline-block;
-    margin-right: 15px;
-}
-
-.social-icon img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-}
-
-.youtube img {
-    width: 45px;
-    height: 45px;
-}
-
-
-
-
-
 /* Responsive Styles */
 @media (max-width: 991px) {
     .hero-title {
@@ -1028,6 +1025,15 @@ a:hover {
     .footer-widget {
         margin-bottom: 30px;
     }
+    
+    /* Stack footer nav on mobile */
+    .footer-nav ul {
+        flex-direction: column;
+    }
+    
+    .footer-nav li {
+        margin-right: 0;
+    }
 }
 
 @media (max-width: 575px) {
@@ -1057,4 +1063,12 @@ a:hover {
     .subscription-form {
         padding: 15px;
     }
+}
+
+/* HTML/Body Fix for Scroll Issues */
+html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto !important; /* Force scrolling to work */
+    scroll-behavior: smooth; /* Smooth scrolling */
 }
