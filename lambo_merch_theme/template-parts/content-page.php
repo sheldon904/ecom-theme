@@ -37,7 +37,7 @@
 	<footer class="entry-footer">
 		<?php
 		edit_post_link(
-			spprintf(
+			sprintf(
 				/* translators: %s: Name of current post. Only visible to screen readers */
 				esc_html__( 'Edit %s', 'lambo-merch' ),
 				'<span class="screen-reader-text">' . get_the_title() . '</span>'

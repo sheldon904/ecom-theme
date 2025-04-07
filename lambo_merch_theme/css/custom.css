@@ -383,11 +383,6 @@ a:hover {
     padding: 50px 0;
 }
 
-.social-icons {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
 
 .social-icons a {
     display: flex;
@@ -673,12 +668,19 @@ a:hover {
 
 /* Footer Styles */
 .site-footer {
-    padding: 80px 0 20px;
-    background-color: var(--color-background-light);
+    background-color: #000;
+    color: #fff;
+    padding: 50px 0 0;
+    position: relative;
 }
 
 .footer-logo {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.footer-logo img {
+    max-width: 200px;
+    height: auto;
 }
 
 .footer-widget-title {
@@ -688,6 +690,29 @@ a:hover {
     padding-bottom: 10px;
     border-bottom: 1px solid #333;
 }
+
+.footer-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-nav li {
+    margin-bottom: 10px;
+}
+
+.footer-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.footer-nav a:hover {
+    color: #ff0000;
+}
+
 
 .footer-widget ul {
     list-style: none;
@@ -741,25 +766,42 @@ a:hover {
 }
 
 .footer-bottom {
-    padding-top: 20px;
-    border-top: 1px solid #333;
-    margin-top: 50px;
+    margin-top: 40px;
+    position: relative;
+    padding: 20px 0;
 }
-
+.footer-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
 .copyright {
+    position: relative;
+    z-index: 2;
     text-align: center;
-    color: var(--color-text-light);
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
     font-size: 14px;
 }
-
+.copyright p {
+    margin: 0;
+    color: #fff;
+}
 .copyright a {
-    color: var(--color-text-light);
+    color: #fff;
+    text-decoration: none;
 }
 
 .copyright a:hover {
     color: var(--color-primary);
 }
-
+.media-made {
+    color: #ff0000;
+}
 /* Subscription Form Styles */
 .subscription-form {
     background-color: var(--color-background-light);
@@ -810,6 +852,102 @@ a:hover {
     top: 50%;
     transform: translateY(-50%);
 }
+
+.subscribe-title,
+.follow-title {
+    color: #ff0000;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+/* Email Input Styling */
+.email-input-wrap {
+    position: relative;
+    height: 45px;
+    margin-bottom: 30px;
+}
+
+.email-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.email-input-wrap input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 50px);
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 0 10px;
+    z-index: 2;
+}
+
+.arrow-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: transparent;
+    border: none;
+    width: 45px;
+    height: 45px;
+    padding: 0;
+    z-index: 3;
+    cursor: pointer;
+}
+
+.arrow-btn img {
+    width: 20px;
+    height: auto;
+}
+
+
+.social-icons {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.social-icon {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.social-icon img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 45px; /* You can adjust this based on your image size */
+}
+
+.social-icon {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.social-icon img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.youtube img {
+    width: 45px;
+    height: 45px;
+}
+
+
+
+
 
 /* Responsive Styles */
 @media (max-width: 991px) {

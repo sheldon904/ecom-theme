@@ -37,7 +37,7 @@
 							else :
 							?>
 								<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="custom-logo-link" rel="home">
-									<img src="<?php echo esc_url( get_template_directory_uri() . '/images/logo.png' ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" class="custom-logo">
+									<img src="<?php echo esc_url( get_template_directory_uri() . '/images/logo/Big_LM_logo.png' ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" class="custom-logo">
 								</a>
 							<?php endif; ?>
 						</div><!-- .site-branding -->
@@ -66,18 +66,18 @@
 
 							<div class="header-icons">
 								<a href="<?php echo esc_url( home_url( '/search' ) ); ?>" class="search-icon">
-									<i class="fa fa-search"></i>
+									<i class="fas fa-search"></i>
 									<span class="screen-reader-text"><?php esc_html_e( 'SEARCH', 'lambo-merch' ); ?></span>
 								</a>
 								
 								<?php if ( class_exists( 'WooCommerce' ) ) : ?>
 								<a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="account-icon">
-									<i class="fa fa-user"></i>
+									<i class="fas fa-user"></i>
 									<span class="screen-reader-text"><?php esc_html_e( 'MY ACCOUNT', 'lambo-merch' ); ?></span>
 								</a>
 								
 								<a href="<?php echo esc_url( wc_get_page_permalink( 'cart' ) ); ?>" class="cart-icon">
-									<i class="fa fa-shopping-cart"></i>
+									<i class="fas fa-shopping-cart"></i>
 									<span class="screen-reader-text"><?php esc_html_e( 'CART', 'lambo-merch' ); ?></span>
 									<span class="cart-count"><?php echo esc_html( WC()->cart->get_cart_contents_count() ); ?></span>
 								</a>

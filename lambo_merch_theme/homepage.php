@@ -24,27 +24,14 @@ $detect = new Mobile_Detect();
                     <h1 class="hero-title">Luxury Merch for Lambo Enthusiasts</h1>
                     
                     <div class="hero-slider">
-                        <div class="hero-slider-container">
-                            <?php 
-                            // Display hero slider if a field exists, otherwise display default content
-                            if (function_exists('get_field') && get_field('hero_slider')) {
-                                echo get_field('hero_slider');
-                            } else {
-                                // Default slider content
-                                ?>
-                                <div class="hero-slide">
-                                    <div class="product-showcase">
-                                        <img src="<?php echo get_template_directory_uri(); ?>/images/product-showcase.jpg" alt="Product Showcase" class="img-fluid">
-                                        <div class="cta-button">
-                                            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="btn btn-red">SHOP NOW</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <?php
-                            }
-                            ?>
+                    <!-- Update with your product image paths -->
+                    <div class="product-showcase">
+                        <img src="<?php echo get_template_directory_uri(); ?>/images/products/Shop_Box.png" alt="Product Showcase" class="img-fluid">
+                        <div class="cta-button">
+                            <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="btn btn-red">SHOP NOW</a>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -52,29 +39,19 @@ $detect = new Mobile_Detect();
 
     <!-- Video Section -->
     <section class="video-section">
-        <div class="container-fluid p-0">
-            <div class="row no-gutters">
-                <div class="col-md-12">
-                    <div class="video-container">
-                        <?php 
-                        if (function_exists('get_field') && get_field('featured_video')) {
-                            // Display video from ACF field
-                            echo get_field('featured_video');
-                        } else {
-                            // Default video thumbnail with play button
-                            ?>
-                            <img src="<?php echo get_template_directory_uri(); ?>/images/video-placeholder.jpg" alt="Lamborghini Video" class="img-fluid">
-                            <a href="#" class="play-button" data-video-id="your-video-id">
-                                <i class="fa fa-play"></i>
-                            </a>
-                            <?php
-                        }
-                        ?>
-                    </div>
+    <div class="container-fluid p-0">
+        <div class="row no-gutters">
+            <div class="col-md-12">
+                <div class="video-container">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/backgrounds/Video.png" alt="Lamborghini Video" class="img-fluid">
+                    <a href="#" class="play-button" data-video-id="your-video-id">
+                        <i class="fa fa-play"></i>
+                    </a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Featured Products Section -->
     <section class="featured-products">
