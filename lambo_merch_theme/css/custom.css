@@ -676,8 +676,13 @@ a:hover {
     height: auto;
 }
 
+.footer-content-wrapper {
+    display: flex;
+    align-items: flex-start;
+}
+
 .footer-logo {
-    margin-bottom: 30px;
+    margin-right: 20px; /* Space between logo and nav */
 }
 
 .footer-logo img {
@@ -693,18 +698,17 @@ a:hover {
     border-bottom: 1px solid #333;
 }
 
-/* Fixed Footer Nav - Horizontal Layout */
+/* Vertical Footer Nav Layout */
 .footer-nav ul {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex; /* Make links horizontal */
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    display: flex;
+    flex-direction: column; /* Stack links vertically */
 }
 
 .footer-nav li {
-    margin-right: 20px; /* Space between horizontal items */
-    margin-bottom: 10px; /* Small space for potential wrapping */
+    margin-bottom: 10px; /* Space between vertical items */
 }
 
 .footer-nav a {
@@ -773,18 +777,18 @@ a:hover {
 /* Footer bottom with gray bar - FIXED VERSION */
 .footer-bottom {
     margin-top: 40px;
-    position: static; /* Changed from relative */
+    position: relative; /* Use relative positioning */
+    bottom: 0; /* Anchor to bottom */
+    left: 0;
+    width: 100%;
     padding: 20px 0;
-    background-color: transparent; /* Remove any background */
-    background-image: url('images/backgrounds/gray_bar_footer.png'); /* Use image as CSS background */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-color: #333; /* Fallback color */
     overflow: visible; /* Allow scrolling */
     min-height: 60px; /* Minimum height for content */
+    z-index: 10; /* Ensure it stays on top */
 }
 
-/* Hide the problematic image element */
+/* Hide the image and use a background color instead */
 .footer-bg {
     display: none !important;
 }
@@ -820,22 +824,28 @@ a:hover {
     background-color: transparent !important; /* Override any background */
     border-radius: 0 !important; /* Remove any border radius */
     width: auto !important; /* Let image control the width */
-    height: auto !important; /* Let image control the height */
     display: inline-block; /* Keep as inline block */
     margin-right: 15px; /* Space between icons */
     box-shadow: none !important; /* Remove any shadow */
 }
 
 .social-icon img,
-.facebook-instagram img,
-.youtube img {
+.facebook-instagram img {
     border-radius: 0 !important; /* Ensure no rounding on images */
     background-color: transparent !important; /* Ensure transparent background on images */
     display: block; /* Proper display */
     width: auto; /* Use natural width */
-    height: auto; /* Use natural height */
-    max-width: 45px; /* Control maximum size */
+    height: 45px; /* Fixed height */
     max-height: 45px; /* Control maximum size */
+}
+
+.youtube img {
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    display: block;
+    width: auto; /* Use natural width */
+    height: 45px; /* Match height with other social icons */
+    max-height: 45px;
 }
 
 /* Subscription Form Styles */
@@ -1026,13 +1036,25 @@ a:hover {
         margin-bottom: 30px;
     }
     
-    /* Stack footer nav on mobile */
+    /* Footer mobile adjustments */
+    .footer-content-wrapper {
+        flex-direction: column; /* Stack items on mobile */
+    }
+    
+    .footer-logo {
+        margin-right: 0;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
     .footer-nav ul {
         flex-direction: column;
+        align-items: center; /* Center the links */
     }
     
     .footer-nav li {
         margin-right: 0;
+        text-align: center;
     }
 }
 
@@ -1067,8 +1089,24 @@ a:hover {
 
 /* HTML/Body Fix for Scroll Issues */
 html, body {
-    height: auto;
+    height: 100%;
     min-height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
     overflow-y: auto !important; /* Force scrolling to work */
     scroll-behavior: smooth; /* Smooth scrolling */
+    position: relative; /* Create positioning context */
+}
+
+#page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full viewport height */
+}
+
+#content {
+    flex: 1 0 auto; /* Grow to fill available space */
+}
+
+.site-footer {
+    flex-shrink: 0; /* Prevent footer from shrinking */
 }

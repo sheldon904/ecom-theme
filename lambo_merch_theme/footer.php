@@ -13,20 +13,22 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="footer-logo">
-                            <a href="<?php echo esc_url(home_url('/')); ?>" class="custom-logo-link" rel="home">
-                                <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/logo/LM_logo_footer.png" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" class="custom-logo">
-                            </a>
-                        </div>
-                        
-                        <div class="footer-nav">
-                            <ul>
-                                <li><a href="<?php echo esc_url(home_url('/shop')); ?>"><?php esc_html_e('Shop', 'lambo-merch'); ?></a></li>
-                                <li><a href="<?php echo esc_url(home_url('/about')); ?>"><?php esc_html_e('About', 'lambo-merch'); ?></a></li>
-                                <li><a href="<?php echo esc_url(home_url('/contact')); ?>"><?php esc_html_e('Contact', 'lambo-merch'); ?></a></li>
-                                <li><a href="<?php echo esc_url(home_url('/my-account')); ?>"><?php esc_html_e('My Account', 'lambo-merch'); ?></a></li>
-                                <li><a href="<?php echo esc_url(home_url('/wishlist')); ?>"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li>
-                            </ul>
+                        <div class="footer-content-wrapper">
+                            <div class="footer-logo">
+                                <a href="<?php echo esc_url(home_url('/')); ?>" class="custom-logo-link" rel="home">
+                                    <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/logo/LM_logo_footer.png" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" class="custom-logo">
+                                </a>
+                            </div>
+                            
+                            <div class="footer-nav">
+                                <ul>
+                                    <li><a href="<?php echo esc_url(home_url('/shop')); ?>"><?php esc_html_e('Shop', 'lambo-merch'); ?></a></li>
+                                    <li><a href="<?php echo esc_url(home_url('/about')); ?>"><?php esc_html_e('About', 'lambo-merch'); ?></a></li>
+                                    <li><a href="<?php echo esc_url(home_url('/contact')); ?>"><?php esc_html_e('Contact', 'lambo-merch'); ?></a></li>
+                                    <li><a href="<?php echo esc_url(home_url('/my-account')); ?>"><?php esc_html_e('My Account', 'lambo-merch'); ?></a></li>
+                                    <li><a href="<?php echo esc_url(home_url('/wishlist')); ?>"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     
@@ -65,7 +67,7 @@
         </div><!-- .footer-widgets -->
         
         <div class="footer-bottom">
-            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/backgrounds/gray_bar_footer.png" alt="" class="footer-bg">
+            <!-- Image removed - replaced with CSS background color -->
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
