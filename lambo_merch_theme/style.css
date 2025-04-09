@@ -1,0 +1,888 @@
+/*
+Theme Name: Lambo Merch
+Theme URI: https://lambomerch.com/
+Author: Sheldon White
+Author URI: https://yourcompanywebsite.com/
+Description: A custom WordPress theme for Lambo Merch, a premium merchandise store for Lamborghini enthusiasts. The theme features a sleek, modern design with black and red accents to showcase luxury automotive-inspired products.
+Version: 1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: e-commerce, black, red, one-column, two-columns, responsive-layout, custom-background, custom-colors, custom-header, custom-menu, featured-images, flexible-header, full-width-template, theme-options, translation-ready, woocommerce
+Text Domain: lambo-merch
+*/
+
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+1. Normalize
+2. Typography
+3. Elements
+4. Forms
+5. Navigation
+    5.1 Links
+    5.2 Menus
+6. Accessibility
+7. Alignments
+8. Clearings
+9. Widgets
+10. Content
+    10.1 Posts and pages
+    10.2 Comments
+11. Media
+    11.1 Captions
+    11.2 Galleries
+12. WooCommerce
+13. Custom Styles
+--------------------------------------------------------------*/
+
+/*--------------------------------------------------------------
+1. Normalize
+--------------------------------------------------------------*/
+html {
+    font-family: sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Box sizing */
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+/*--------------------------------------------------------------
+2. Typography
+--------------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    margin: 0 0 1rem;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+p {
+    margin: 0 0 1.5rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-red {
+    color: #ff0000;
+}
+
+.text-white {
+    color: #fff;
+}
+
+/*--------------------------------------------------------------
+3. Elements
+--------------------------------------------------------------*/
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.container-fluid {
+    width: 100%;
+    padding: 0 15px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+[class*="col-"] {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+@media (min-width: 768px) {
+    .col-md-4 {
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+    
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    
+    .col-md-8 {
+        flex: 0 0 66.666667%;
+        max-width: 66.666667%;
+    }
+    
+    .col-md-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/*--------------------------------------------------------------
+4. Forms
+--------------------------------------------------------------*/
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+    font-size: 100%;
+    margin: 0;
+}
+
+button,
+input {
+    line-height: normal;
+}
+
+button,
+.button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+    background: #ff0000;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+}
+
+button:hover,
+.button:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover {
+    background: #cc0000;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+textarea {
+    background: #222;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 10px;
+    width: 100%;
+}
+
+/*--------------------------------------------------------------
+5. Navigation
+--------------------------------------------------------------*/
+/* 5.1 Links */
+a {
+    color: #ff0000;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover,
+a:focus,
+a:active {
+    color: #cc0000;
+}
+
+/* 5.2 Menus */
+.main-header {
+    background-color: #000;
+    padding: 15px 0;
+    position: relative;
+}
+
+.site-logo {
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+.main-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.main-navigation li {
+    position: relative;
+    margin: 0 15px;
+}
+
+.main-navigation a {
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+.main-navigation a:hover {
+    color: #ff0000;
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.header-icons a {
+    color: #fff;
+    margin-left: 15px;
+}
+
+.header-icons a:hover {
+    color: #ff0000;
+}
+
+.menu-toggle {
+    display: none;
+}
+
+@media (max-width: 767px) {
+    .menu-toggle {
+        display: block;
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 24px;
+        padding: 10px;
+    }
+    
+    .main-navigation ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #000;
+        border-top: 1px solid #333;
+        z-index: 1000;
+    }
+    
+    .main-navigation.toggled ul {
+        display: flex;
+    }
+    
+    .main-navigation li {
+        margin: 0;
+        border-bottom: 1px solid #333;
+    }
+    
+    .main-navigation a {
+        padding: 15px;
+    }
+}
+
+/*--------------------------------------------------------------
+6. Accessibility
+--------------------------------------------------------------*/
+.screen-reader-text {
+    border: 0;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+/*--------------------------------------------------------------
+7. Alignments
+--------------------------------------------------------------*/
+.alignleft {
+    display: inline;
+    float: left;
+    margin-right: 1.5em;
+}
+
+.alignright {
+    display: inline;
+    float: right;
+    margin-left: 1.5em;
+}
+
+.aligncenter {
+    clear: both;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*--------------------------------------------------------------
+8. Clearings
+--------------------------------------------------------------*/
+.clear:before,
+.clear:after,
+.row:before,
+.row:after {
+    content: "";
+    display: table;
+    table-layout: fixed;
+}
+
+.clear:after,
+.row:after {
+    clear: both;
+}
+
+/*--------------------------------------------------------------
+9. Widgets
+--------------------------------------------------------------*/
+.widget {
+    margin: 0 0 1.5em;
+}
+
+.widget select {
+    max-width: 100%;
+}
+
+/*--------------------------------------------------------------
+10. Content
+--------------------------------------------------------------*/
+/* 10.1 Posts and pages */
+.site-content {
+    padding: 50px 0;
+}
+
+.hero-section {
+    background-color: #333;
+    background-position: center;
+    background-size: cover;
+    color: #fff;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.featured-products {
+    padding: 50px 0;
+}
+
+.product-card {
+    background-color: #111;
+    margin-bottom: 30px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+}
+
+.product-card img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.product-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+}
+
+.product-card .price {
+    color: #ff0000;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.cta-section {
+    background-color: #111;
+    padding: 80px 0;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.newsletter-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.newsletter-form input[type="email"] {
+    margin-bottom: 15px;
+}
+
+/* 10.2 Comments */
+.comment-content a {
+    word-wrap: break-word;
+}
+
+.bypostauthor {
+    display: block;
+}
+
+/*--------------------------------------------------------------
+11. Media
+--------------------------------------------------------------*/
+.page-content .wp-smiley,
+.entry-content .wp-smiley,
+.comment-content .wp-smiley {
+    border: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 0;
+}
+
+/* Make sure embeds and iframes fit their containers. */
+embed,
+iframe,
+object {
+    max-width: 100%;
+}
+
+/* 11.1 Captions */
+.wp-caption {
+    margin-bottom: 1.5em;
+    max-width: 100%;
+}
+
+.wp-caption img[class*="wp-image-"] {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wp-caption .wp-caption-text {
+    margin: 0.8075em 0;
+}
+
+.wp-caption-text {
+    text-align: center;
+}
+
+/* 11.2 Galleries */
+.gallery {
+    margin-bottom: 1.5em;
+}
+
+.gallery-item {
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+    width: 100%;
+}
+
+.gallery-columns-2 .gallery-item {
+    max-width: 50%;
+}
+
+.gallery-columns-3 .gallery-item {
+    max-width: 33.33%;
+}
+
+.gallery-columns-4 .gallery-item {
+    max-width: 25%;
+}
+
+.gallery-columns-5 .gallery-item {
+    max-width: 20%;
+}
+
+.gallery-columns-6 .gallery-item {
+    max-width: 16.66%;
+}
+
+.gallery-columns-7 .gallery-item {
+    max-width: 14.28%;
+}
+
+.gallery-columns-8 .gallery-item {
+    max-width: 12.5%;
+}
+
+.gallery-columns-9 .gallery-item {
+    max-width: 11.11%;
+}
+
+.gallery-caption {
+    display: block;
+}
+
+/*--------------------------------------------------------------
+12. WooCommerce
+--------------------------------------------------------------*/
+.woocommerce ul.products li.product,
+.woocommerce-page ul.products li.product {
+    background-color: #111;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.woocommerce ul.products li.product:hover,
+.woocommerce-page ul.products li.product:hover {
+    transform: translateY(-10px);
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.woocommerce-page ul.products li.product .woocommerce-loop-product__title {
+    color: #fff;
+    font-size: 1.25rem;
+}
+
+.woocommerce ul.products li.product .price,
+.woocommerce-page ul.products li.product .price {
+    color: #ff0000;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.woocommerce #respond input#submit, 
+.woocommerce a.button, 
+.woocommerce button.button, 
+.woocommerce input.button {
+    background-color: #ff0000;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.woocommerce #respond input#submit:hover, 
+.woocommerce a.button:hover, 
+.woocommerce button.button:hover, 
+.woocommerce input.button:hover {
+    background-color: #cc0000;
+    color: #fff;
+}
+
+.woocommerce div.product p.price, 
+.woocommerce div.product span.price {
+    color: #ff0000;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li {
+    background-color: #111;
+    border-color: #333;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active {
+    background-color: #000;
+    border-bottom-color: #000;
+}
+
+.woocommerce div.product .woocommerce-tabs ul.tabs li a {
+    color: #fff;
+}
+
+.woocommerce-cart table.cart td.actions .coupon .input-text {
+    width: 120px;
+}
+
+/*--------------------------------------------------------------
+13. Custom Styles
+--------------------------------------------------------------*/
+.site-footer {
+    background-color: #111;
+    color: #fff;
+    padding: 50px 0 20px;
+}
+
+.footer-widgets {
+    margin-bottom: 30px;
+}
+
+.footer-widget-title {
+    color: #fff;
+    font-size: 1.25rem;
+    margin-bottom: 20px;
+}
+
+.footer-widget ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-widget ul li {
+    margin-bottom: 10px;
+}
+
+.footer-widget ul li a {
+    color: #ccc;
+}
+
+.footer-widget ul li a:hover {
+    color: #ff0000;
+}
+
+.footer-bottom {
+    border-top: 1px solid #333;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.social-icons a {
+    background-color: #333;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+}
+
+.social-icons a:hover {
+    background-color: #ff0000;
+    color: #fff;
+}
+
+.shop-filters {
+    background-color: #111;
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+.shop-filters h4 {
+    border-bottom: 1px solid #333;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+}
+
+.filter-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.filter-list li {
+    margin-bottom: 10px;
+}
+
+.filter-list li a {
+    color: #ccc;
+}
+
+.filter-list li a:hover,
+.filter-list li.active a {
+    color: #ff0000;
+}
+
+.page-banner {
+    background-color: #111;
+    padding: 50px 0;
+    text-align: center;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    margin-bottom: 0;
+}
+
+/* Custom button styles */
+.btn-red {
+    background-color: #ff0000;
+    color: #fff;
+}
+
+.btn-red:hover {
+    background-color: #cc0000;
+    color: #fff;
+}
+
+/* Video section with play button */
+.video-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container iframe,
+.video-container object,
+.video-container embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 0, 0, 0.8);
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background-color 0.3s ease;
+}
+
+.play-button:hover {
+    background-color: #ff0000;
+}
+
+.play-button i {
+    color: #fff;
+    font-size: 30px;
+}
+
+/* Product grid with hover effects */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.subscription-form {
+    background-color: #111;
+    padding: 30px;
+    margin-bottom: 50px;
+}
+
+.subscription-form h3 {
+    margin-bottom: 20px;
+}
+
+.subscription-form form {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.subscription-form input[type="text"],
+.subscription-form input[type="email"] {
+    flex: 1 1 auto;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.subscription-form button {
+    flex: 0 0 auto;
+}
+
+/* Responsive styles */
+@media (max-width: 991px) {
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 767px) {
+    .hero-section {
+        padding: 50px 0;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem;
+    }
+    
+    .cta-section {
+        padding: 50px 0;
+    }
+    
+    .cta-title {
+        font-size: 1.75rem;
+    }
+    
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    h3 {
+        font-size: 1.5rem;
+    }
+    
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+}
