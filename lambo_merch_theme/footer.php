@@ -38,20 +38,23 @@
                     
                     <div class="col-md-4">
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></h3>
+                            <h3 class="subscribe-title"><center><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></center></h3>
                             <div class="email-signup">
                                 <form action="#" method="post" class="newsletter-form">
                                     <div class="email-input-wrap">
-                                        <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/Rectangle_3.png" alt="" class="email-bg">
-                                        <input type="email" name="email" placeholder="<?php esc_attr_e('Enter your email', 'lambo-merch'); ?>" required>
-                                        <button type="submit" class="arrow-btn">
+                                        <div class="email-placeholder">
+                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
+                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit" width="20">
+                                        </div>
+                                        <input type="email" name="email" placeholder="" required>
+                                        <button type="submit" class="arrow-btn" style="display:none;">
                                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
                                         </button>
                                     </div>
                                 </form>
                             </div>
                             
-                            <h3 class="follow-title"><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></h3>
+                            <h3 class="follow-title"><center><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></center></h3>
                             <div class="social-icons">
                                 <a href="#" target="_blank" class="social-icon facebook-instagram">
                                     <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/facebook_instagram.png" alt="Facebook/Instagram">

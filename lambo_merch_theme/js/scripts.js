@@ -15,6 +15,18 @@
             }
         });
         
+        // Email input placeholder behavior
+        $('.email-input-wrap').on('click', function() {
+            $(this).find('.email-placeholder').css('opacity', '0');
+            $(this).find('input').focus();
+        });
+
+        $('.email-input-wrap input').on('blur', function() {
+            if ($(this).val() === '') {
+                $(this).closest('.email-input-wrap').find('.email-placeholder').css('opacity', '1');
+            }
+        });
+        
         // Smooth scroll for anchor links
         $('a[href*="#"]:not([href="#"])').click(function() {
             if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '') && location.hostname === this.hostname) {

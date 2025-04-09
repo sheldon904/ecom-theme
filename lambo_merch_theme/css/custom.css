@@ -358,14 +358,14 @@ a:hover {
 }
 
 .newsletter-form input[type="email"] {
-    background-color: #222;
-    border: 1px solid #333;
+    background-color: #0b0c10;
+    border: none;
     color: var(--color-text);
     height: 50px;
 }
 
 .newsletter-form input[type="email"]:focus {
-    background-color: #333;
+    background-color: #0b0c10;
     color: var(--color-text);
 }
 
@@ -465,14 +465,14 @@ a:hover {
 .contact-form input,
 .contact-form textarea {
     background-color: #222;
-    border: 1px solid #333;
+    border: 1px solid #0b0c0f;
     color: var(--color-text);
     margin-bottom: 20px;
 }
 
 .contact-form input:focus,
 .contact-form textarea:focus {
-    background-color: #333;
+    background-color: #0b0c0f;
     color: var(--color-text);
 }
 
@@ -491,7 +491,7 @@ a:hover {
 .shop-filters h4 {
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #0b0c0f;
 }
 
 .filter-list {
@@ -581,7 +581,7 @@ a:hover {
 }
 
 .woocommerce div.product .woocommerce-tabs ul.tabs li {
-    background-color: #333;
+    background-color: #0b0c0f;
     border-color: #444;
 }
 
@@ -639,7 +639,7 @@ a:hover {
     transform: translateY(-50%);
     width: 30px;
     height: 30px;
-    background-color: #333;
+    background-color: #0b0c0f;
     border: none;
     color: var(--color-text);
     font-size: 16px;
@@ -672,13 +672,12 @@ a:hover {
     color: #fff;
     padding: 50px 0 0;
     position: relative;
-    overflow: visible;
-    height: auto;
 }
 
 .footer-content-wrapper {
     display: flex;
-    align-items: flex-start;
+    position: relative;
+    top: 45px;
 }
 
 .footer-logo {
@@ -695,7 +694,7 @@ a:hover {
     font-size: 18px;
     margin-bottom: 20px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #0b0c0f;
 }
 
 /* Vertical Footer Nav Layout */
@@ -751,7 +750,7 @@ a:hover {
 
 .footer-newsletter input[type="email"] {
     background-color: #222;
-    border: 1px solid #333;
+    border: 1px solid #0b0c0f;
     color: var(--color-text);
     padding: 10px;
     width: 100%;
@@ -777,15 +776,12 @@ a:hover {
 /* Footer bottom with gray bar - FIXED VERSION */
 .footer-bottom {
     margin-top: 40px;
-    position: relative; /* Use relative positioning */
-    bottom: 0; /* Anchor to bottom */
-    left: 0;
+    position: relative;
     width: 100%;
     padding: 20px 0;
-    background-color: #333; /* Fallback color */
-    overflow: visible; /* Allow scrolling */
+    background-color: #0b0c0f; /* Fallback color */
     min-height: 60px; /* Minimum height for content */
-    z-index: 10; /* Ensure it stays on top */
+    z-index: 10;
 }
 
 /* Hide the image and use a background color instead */
@@ -825,7 +821,7 @@ a:hover {
     border-radius: 0 !important; /* Remove any border radius */
     width: auto !important; /* Let image control the width */
     display: inline-block; /* Keep as inline block */
-    margin-right: 15px; /* Space between icons */
+    margin-right: -10px; /* Space between icons */
     box-shadow: none !important; /* Remove any shadow */
 }
 
@@ -857,7 +853,7 @@ a:hover {
 
 .subscription-form input {
     background-color: #222;
-    border: 1px solid #333;
+    border: 1px solid #0b0c0f;
     color: var(--color-text);
     padding: 10px;
     width: 100%;
@@ -904,7 +900,7 @@ a:hover {
     color: #ff0000;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 32px;
     margin-bottom: 20px;
     text-transform: uppercase;
 }
@@ -914,46 +910,72 @@ a:hover {
     position: relative;
     height: 45px;
     margin-bottom: 30px;
+    background: #0b0c10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
 }
 
-.email-bg {
+.email-placeholder {
     position: absolute;
-    top: 0;
-    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    z-index: 1;
+    color: #fff;
+    font-size: 1.1em;
+    pointer-events: none;
+    z-index: 2;
+    background: #0b0c10;
 }
 
-.email-input-wrap input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(100% - 50px);
-    height: 100%;
-    background: transparent;
-    border: none;
-    color: #fff;
-    padding: 0 10px;
-    z-index: 2;
+.email-placeholder span {
+    margin-right: 10px;
 }
 
 .arrow-btn {
     position: absolute;
-    top: 0;
-    right: 0;
+    right: 15px;
     background: transparent;
     border: none;
-    width: 45px;
-    height: 45px;
     padding: 0;
-    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
+    z-index: 3;
 }
 
 .arrow-btn img {
     width: 20px;
     height: auto;
+}
+
+.email-input-wrap input {
+    width: 100%;
+    height: 100%;
+    background: #0b0c10;
+    border: none;
+    color: #fff;
+    font-size: 1.1em;
+    text-align: center;
+    padding: 0 10px;
+    z-index: 1;
+}
+
+.email-input-wrap input::placeholder {
+    color: #fff;
+    opacity: 1;
+}
+
+.email-input-wrap input:-ms-input-placeholder {
+    color: #fff;
+}
+
+.email-input-wrap input::-ms-input-placeholder {
+    color: #fff;
 }
 
 /* Responsive Styles */
@@ -1089,18 +1111,18 @@ a:hover {
 
 /* HTML/Body Fix for Scroll Issues */
 html, body {
-    height: 100%;
+    height: auto;
     min-height: 100%;
     overflow-x: hidden; /* Prevent horizontal scrolling */
-    overflow-y: auto !important; /* Force scrolling to work */
+    overflow-y: auto; /* Don't force additional scrolling */
     scroll-behavior: smooth; /* Smooth scrolling */
-    position: relative; /* Create positioning context */
 }
 
 #page {
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* Full viewport height */
+    overflow: hidden; /* Prevent extra scrollbar */
 }
 
 #content {
@@ -1109,4 +1131,6 @@ html, body {
 
 .site-footer {
     flex-shrink: 0; /* Prevent footer from shrinking */
+    position: relative; /* Not fixed/absolute positioning */
+    overflow: visible; /* Don't create another scrollable area */
 }
