@@ -1260,6 +1260,72 @@ a:hover {
     }
 }
 
+/* Homepage Template Specific Styles */
+.shop-box-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.shop-box-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.shop-now-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-primary);
+    color: white;
+    padding: 10px 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    z-index: 2;
+}
+
+.shop-now-button:hover {
+    background-color: var(--color-primary-dark);
+    color: white;
+    text-decoration: none;
+}
+
+.video-container {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0;
+    margin-top: 100px; /* Add 100px space between shop box and video image */
+    padding-bottom: 0; /* Reduce padding below video */
+}
+
+.video-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: -20px; /* Reduce space between video image and footer */
+}
+
+/* Ensure no extra space between video and footer */
+.site-main {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
 /* HTML/Body Fix for Scroll Issues */
 html, body {
     height: auto;
@@ -1294,4 +1360,6 @@ body.has-sticky-header {
     flex-shrink: 0; /* Prevent footer from shrinking */
     position: relative; /* Not fixed/absolute positioning */
     overflow: visible; /* Don't create another scrollable area */
+    margin-top: 0; /* Ensure no gap between content and footer */
+    padding-top: 0; /* Further reduce space between content and footer */
 }
