@@ -733,7 +733,7 @@ a:hover {
 .site-footer {
     background-color: #000;
     color: #fff;
-    padding: 50px 0 0;
+    padding: 0 0 0;
     position: relative;
 }
 
@@ -1304,26 +1304,25 @@ a:hover {
 .video-container {
     width: 100%;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 0;
     margin-top: 100px; /* Add 100px space between shop box and video image */
-    padding-bottom: 0; /* Reduce padding below video */
 }
 
 .video-container img {
     max-width: 100%;
     height: auto;
     display: block;
-    margin-bottom: -20px; /* Reduce space between video image and footer */
 }
 
 /* Ensure no extra space between video and footer */
 .site-main {
-    margin-bottom: 0;
+    margin-bottom: -1px; /* Negative margin to pull footer up */
     padding-bottom: 0;
+    overflow: visible;
 }
 
 /* HTML/Body Fix for Scroll Issues */

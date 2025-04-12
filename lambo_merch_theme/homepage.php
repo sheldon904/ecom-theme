@@ -16,7 +16,7 @@ get_header();
     <div class="container-fluid p-0">
         <div class="row no-gutters">
             <div class="col-12 text-center">
-                <img src="http://ecom-test.local/wp-content/uploads/2025/04/Big_LM_logo.png" alt="Lamborghini Merch Logo" class="img-fluid" style="width: 75%;" />
+                <img src="http://ecom-test.local/wp-content/uploads/2025/04/Big_LM_logo.png" alt="Lamborghini Merch Logo" class="img-fluid" />
                 <h1 style="font-family: 'Georgia', serif; font-style: italic;">Luxury Merch for Lambo Enthusiasts</h1>
             </div>
             
