@@ -56,10 +56,10 @@ $products = new WP_Query($args);
         </div>
 
         <!-- Filter and Products -->
-        <div class="row mt-5">
+        <div class="shop-container mt-5">
             <!-- Left sidebar with filters -->
-            <div class="col-md-3">
-                <div class="shop-filters">
+            <div class="shop-sidebar">
+                <div class="shop-filters" style="background-color: #000000;">
                     <h3>Filter by</h3>
                     <ul class="filter-list">
                         <li class="<?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'active' : ''; ?>">
@@ -76,15 +76,15 @@ $products = new WP_Query($args);
             </div>
 
             <!-- Product Grid -->
-            <div class="col-md-9">
+            <div class="shop-main">
                 <?php if ($products->have_posts()) : ?>
                     <div class="row">
                         <?php while ($products->have_posts()) : $products->the_post(); ?>
                             <?php global $product; ?>
                             <div class="col-md-6 mb-4">
-                                <div class="product-card" style="background-color: #35495e; padding: 20px; text-align: center; position: relative;">
-                                    <!-- Product Image -->
-                                    <a href="<?php the_permalink(); ?>">
+                                <a href="<?php the_permalink(); ?>" class="product-link">
+                                    <div class="product-card" style="position: relative; padding: 0; background: none;">
+                                        <!-- Product Image -->
                                         <?php 
                                         if (has_post_thumbnail()) {
                                             the_post_thumbnail('woocommerce_thumbnail', array('class' => 'img-fluid'));
@@ -92,19 +92,13 @@ $products = new WP_Query($args);
                                             echo '<img src="' . wc_placeholder_img_src() . '" alt="Placeholder" class="img-fluid">';
                                         }
                                         ?>
-                                    </a>
-                                    
-                                    <!-- Price display in corner -->
-                                    <div style="position: absolute; bottom: 20px; right: 20px; color: white; font-size: 1.2rem; font-style: italic;">
-                                        <?php echo '$' . $product->get_price(); ?>
+                                        
+                                        <!-- Price display in corner -->
+                                        <div style="position: absolute; bottom: 20px; right: 20px; color: white; font-size: 1.2rem; font-style: italic;">
+                                            <?php echo '$' . $product->get_price(); ?>
+                                        </div>
                                     </div>
-                                    
-                                    <!-- Add to cart form -->
-                                    <?php
-                                    // Add to cart functionality
-                                    woocommerce_template_loop_add_to_cart();
-                                    ?>
-                                </div>
+                                </a>
                             </div>
                         <?php endwhile; ?>
                     </div>
@@ -115,6 +109,10 @@ $products = new WP_Query($args);
                             <?php if ($paged > 1) : ?>
                                 <li class="list-inline-item">
                                     <a href="<?php echo get_pagenum_link($paged - 1); ?>" class="pagination-arrow">&laquo;</a>
+                                </li>
+                            <?php else: ?>
+                                <li class="list-inline-item">
+                                    <span class="pagination-arrow disabled">&laquo;</span>
                                 </li>
                             <?php endif; ?>
                             
@@ -136,6 +134,10 @@ $products = new WP_Query($args);
                                 <li class="list-inline-item">
                                     <a href="<?php echo get_pagenum_link($paged + 1); ?>" class="pagination-arrow">&raquo;</a>
                                 </li>
+                            <?php else: ?>
+                                <li class="list-inline-item">
+                                    <span class="pagination-arrow disabled">&raquo;</span>
+                                </li>
                             <?php endif; ?>
                         </ul>
                     </div>
@@ -146,35 +148,29 @@ $products = new WP_Query($args);
             </div>
         </div>
     </div>
-
-    <!-- Subscribe Section -->
-    <div id="subscribe" class="subscribe-section mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <h2 class="subscribe-title text-red">SUBSCRIBE FOR DISCOUNTS & DROPS</h2>
-                    <div class="email-signup">
-                        <form action="#" method="post" class="newsletter-form">
-                            <div class="row">
-                                <div class="col-md-6 offset-md-3">
-                                    <div class="input-group">
-                                        <input type="email" class="form-control" placeholder="Enter your email" required>
-                                        <button type="submit" class="btn btn-red">SUBSCRIBE</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </main>
 
 <!-- Add custom CSS for this page -->
 <style>
+/* Shop Layout */
+.shop-container {
+    display: flex;
+    width: 100%;
+    gap: 30px;
+}
+
+.shop-sidebar {
+    width: 25%;
+    flex-shrink: 0;
+}
+
+.shop-main {
+    width: 75%;
+    flex-grow: 1;
+}
+
+/* Product Styling */
 .product-card {
-    background-color: #35495e;
     transition: transform 0.3s ease;
     margin-bottom: 30px;
     position: relative;
@@ -184,6 +180,12 @@ $products = new WP_Query($args);
     transform: translateY(-5px);
 }
 
+.product-link {
+    display: block;
+    text-decoration: none;
+}
+
+/* Pagination */
 .pagination {
     margin-top: 40px;
 }
@@ -217,6 +219,13 @@ $products = new WP_Query($args);
     font-weight: bold;
 }
 
+.pagination .disabled {
+    background-color: #333;
+    color: #555;
+    cursor: not-allowed;
+}
+
+/* Filter Styling */
 .text-red {
     color: #ff0000;
 }
@@ -240,50 +249,20 @@ $products = new WP_Query($args);
     font-weight: bold;
 }
 
-.woocommerce a.add_to_cart_button {
-    background-color: #ff0000;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: bold;
-    padding: 8px 15px;
-    border: none;
-    margin-top: 15px;
-    display: inline-block;
-    transition: background-color 0.3s ease;
+.shop-filters {
+    padding: 20px;
 }
 
-.woocommerce a.add_to_cart_button:hover {
-    background-color: #cc0000;
-}
-
-#subscribe {
-    padding: 60px 0;
-    background-color: #111;
-}
-
-.subscribe-title {
-    margin-bottom: 30px;
-}
-
-.input-group {
-    display: flex;
-}
-
-.input-group input {
-    flex: 1;
-    background-color: #222;
-    border: none;
-    color: #fff;
-    padding: 10px 15px;
-}
-
-.btn-red {
-    background-color: #ff0000;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    text-transform: uppercase;
-    font-weight: bold;
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .shop-container {
+        flex-direction: column;
+    }
+    
+    .shop-sidebar,
+    .shop-main {
+        width: 100%;
+    }
 }
 </style>
 
