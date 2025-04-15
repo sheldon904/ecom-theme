@@ -154,6 +154,20 @@
             $(this).removeClass('error');
             $(this).next('.error-message').remove();
         });
+        
+        // Product detail page tabs
+        $('.tab-link').on('click', function(e) {
+            e.preventDefault();
+            var tab = $(this).data('tab');
+            
+            // Remove active class from all tabs
+            $('.tab-link').parent().removeClass('active');
+            $('.tab-content').removeClass('active');
+            
+            // Add active class to selected tab
+            $(this).parent().addClass('active');
+            $('#' + tab).addClass('active');
+        });
     });
     
 })(jQuery);
