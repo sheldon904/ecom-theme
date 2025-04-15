@@ -24,11 +24,6 @@ get_header(); ?>
                     <p>Returning Customer? <a href="<?php echo esc_url(get_permalink(get_option('woocommerce_myaccount_page_id'))); ?>" class="login-link">Click here to login</a></p>
                 </div>
                 
-                <!-- Coupon Notice -->
-                <div class="checkout-notice have-coupon">
-                    <p>Have a coupon? <a href="#" class="showcoupon">Click here to enter your code</a></p>
-                </div>
-                
                 <!-- Coupon Form -->
                 <div class="checkout-coupon-form" style="display:none;">
                     <form class="checkout_coupon" method="post">
@@ -63,32 +58,40 @@ get_header(); ?>
                             
                             <form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url(wc_get_checkout_url()); ?>" enctype="multipart/form-data">
                                 <div class="checkout-columns">
-                                    <div class="billing-shipping-column">
-                                        <h3 class="billing-details-title">Billing Details</h3>
-                                        
-                                        <?php if (WC()->cart->needs_shipping() && WC()->cart->show_shipping()) : ?>
-                                            <div class="ship-to-different-address-checkbox">
-                                                <input id="ship-to-different-address" type="checkbox" name="ship_to_different_address" value="1" class="input-checkbox">
-                                                <label for="ship-to-different-address">Ship to a different address?</label>
-                                            </div>
-                                        <?php endif; ?>
-                                        
-                                        <div class="billing-fields-wrapper">
-                                            <?php do_action('woocommerce_checkout_billing'); ?>
-                                        </div>
-                                        
-                                        <div class="shipping-fields-wrapper" style="display: none;">
-                                            <?php do_action('woocommerce_checkout_shipping'); ?>
-                                        </div>
-                                        
-                                        <div class="create-account-checkbox">
-                                            <?php if (get_option('woocommerce_enable_signup_and_login_from_checkout') === 'yes' && !is_user_logged_in()) : ?>
-                                                <input id="createaccount" type="checkbox" name="createaccount" value="1" class="input-checkbox">
-                                                <label for="createaccount">Create an account?</label>
+                                    <div class="billing-addresses-container">
+                                        <div class="billing-shipping-column">
+                                            <h3 class="billing-details-title">Billing Details</h3>
+                                            
+                                            <?php if (WC()->cart->needs_shipping() && WC()->cart->show_shipping()) : ?>
+                                                <div class="ship-to-different-address-checkbox">
+                                                    <input id="ship-to-different-address" type="checkbox" name="ship_to_different_address" value="1" class="input-checkbox">
+                                                    <label for="ship-to-different-address">Ship to a different address?</label>
+                                                </div>
                                             <?php endif; ?>
+                                            
+                                            <div class="billing-fields-wrapper">
+                                                <?php do_action('woocommerce_checkout_billing'); ?>
+                                            </div>
+                                            
+                                            <div class="create-account-checkbox">
+                                                <?php if (get_option('woocommerce_enable_signup_and_login_from_checkout') === 'yes' && !is_user_logged_in()) : ?>
+                                                    <input id="createaccount" type="checkbox" name="createaccount" value="1" class="input-checkbox">
+                                                    <label for="createaccount">Create an account?</label>
+                                                <?php endif; ?>
+                                            </div>
+                                            
+                                            <div class="order-notes">
+                                                <label for="order_comments">Notes about your order</label>
+                                                <textarea id="order_comments" name="order_comments" rows="4" placeholder="Special notes for delivery or product"></textarea>
+                                            </div>
                                         </div>
                                         
-                                        <?php do_action('woocommerce_checkout_after_customer_details'); ?>
+                                        <div class="shipping-address-column">
+                                            <h3 class="shipping-details-title">Shipping Details</h3>
+                                            <div class="shipping-fields-wrapper">
+                                                <?php do_action('woocommerce_checkout_shipping'); ?>
+                                            </div>
+                                        </div>
                                     </div>
                                     
                                     <div class="order-review-column">
@@ -98,6 +101,24 @@ get_header(); ?>
                                                 <?php do_action('woocommerce_checkout_before_order_review'); ?>
                                                 <?php do_action('woocommerce_checkout_order_review'); ?>
                                                 <?php do_action('woocommerce_checkout_after_order_review'); ?>
+                                            </div>
+                                            
+                                            <div class="payment-methods-custom">
+                                                <h4>Payment Method</h4>
+                                                <div class="payment-method-options">
+                                                    <div class="payment-method">
+                                                        <input type="radio" id="payment_credit_card" name="payment_method" value="credit_card" checked>
+                                                        <label for="payment_credit_card">Credit Card</label>
+                                                    </div>
+                                                    <div class="payment-method">
+                                                        <input type="radio" id="payment_paypal" name="payment_method" value="paypal">
+                                                        <label for="payment_paypal">PayPal</label>
+                                                    </div>
+                                                    <div class="payment-method">
+                                                        <input type="radio" id="payment_apple_pay" name="payment_method" value="apple_pay">
+                                                        <label for="payment_apple_pay">Apple Pay</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -121,6 +142,8 @@ get_header(); ?>
     .checkout-title {
         margin-bottom: 20px;
         font-size: 32px;
+        font-family: Georgia, serif;
+        font-style: italic;
     }
     
     .checkout-notice {
@@ -154,8 +177,8 @@ get_header(); ?>
     
     .coupon-input-wrap input {
         flex: 1;
-        background-color: #222;
-        border: none;
+        background-color: #282828;
+        border: 1px solid #444;
         padding: 10px 15px;
         color: #fff;
         border-radius: 3px 0 0 3px;
@@ -178,30 +201,43 @@ get_header(); ?>
     
     .checkout-columns {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         margin: 0 -15px;
     }
     
-    .billing-shipping-column,
-    .order-review-column {
-        padding: 0 15px;
+    .billing-addresses-container {
+        display: flex;
+        gap: 30px;
         margin-bottom: 30px;
     }
     
-    .billing-shipping-column {
-        flex: 0 0 60%;
-        max-width: 60%;
+    .billing-shipping-column,
+    .shipping-address-column {
+        flex: 1;
+        padding: 0 15px;
+    }
+    
+    .shipping-address-column {
+        opacity: 0.5;
+        pointer-events: none;
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
     }
     
     .order-review-column {
-        flex: 0 0 40%;
-        max-width: 40%;
+        padding: 0 15px;
+        margin-bottom: 30px;
+        width: 100%;
     }
     
     .billing-details-title,
+    .shipping-details-title,
     .order-details-title {
         margin-bottom: 20px;
         font-size: 24px;
+        font-family: Georgia, serif;
+        font-style: italic;
     }
     
     .order-details-wrapper {
@@ -240,12 +276,22 @@ get_header(); ?>
     
     .woocommerce-input-wrapper input,
     .woocommerce-input-wrapper select,
-    .woocommerce-input-wrapper textarea {
+    .woocommerce-input-wrapper textarea,
+    .order-notes textarea {
         width: 100%;
         padding: 10px 15px;
-        background-color: #f7f7f7;
-        border: 1px solid #ddd;
+        background-color: #282828;
+        border: 1px solid #444;
         border-radius: 3px;
+        color: #fff;
+    }
+    
+    .order-notes {
+        margin-top: 20px;
+    }
+    
+    .order-notes textarea {
+        height: 100px;
     }
     
     /* Custom Order Review Table */
@@ -266,23 +312,27 @@ get_header(); ?>
     .product-name {
         padding-left: 15px;
         font-weight: 500;
+        color: #fff;
     }
     
-    .product-name .product-quantity {
+    .product-name .product-quantity,
+    .product-name .product-unit-price {
         display: block;
-        color: #777;
+        color: #aaa;
         font-size: 14px;
     }
     
     .product-total {
         text-align: right;
         font-weight: 600;
+        color: #fff;
     }
     
     .cart-subtotal,
     .order-total,
     .shipping {
         text-align: right;
+        color: #fff;
     }
     
     .cart-subtotal th,
@@ -304,31 +354,31 @@ get_header(); ?>
     }
     
     /* Payment Methods */
-    .woocommerce-checkout-payment {
-        margin-top: 20px;
+    .payment-methods-custom {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #444;
     }
     
-    .wc_payment_methods {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 20px;
+    .payment-methods-custom h4 {
+        color: #fff;
+        margin-bottom: 15px;
+        font-size: 18px;
     }
     
-    .wc_payment_method {
-        padding: 10px 0;
-        border-bottom: 1px solid #ddd;
+    .payment-method {
+        padding: 12px 0;
+        border-bottom: 1px solid #444;
     }
     
-    .wc_payment_method label {
-        font-weight: 600;
-        margin-left: 5px;
+    .payment-method label {
+        color: #fff;
+        font-weight: 500;
+        margin-left: 10px;
     }
     
-    .payment_box {
-        background-color: #f7f7f7;
-        padding: 15px;
-        margin-top: 10px;
-        border-radius: 3px;
+    .payment-method input[type="radio"] {
+        margin-right: 5px;
     }
     
     #place_order {
@@ -342,6 +392,7 @@ get_header(); ?>
         font-size: 16px;
         border-radius: 3px;
         cursor: pointer;
+        margin-top: 20px;
     }
     
     #place_order:hover {
@@ -363,7 +414,7 @@ get_header(); ?>
         align-items: center;
         margin-bottom: 15px;
         padding-bottom: 15px;
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid #444;
     }
     
     .product-info {
@@ -379,17 +430,29 @@ get_header(); ?>
         align-items: center;
         padding-bottom: 15px;
         margin-bottom: 15px;
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid #444;
+    }
+    
+    /* Hide the save payment information checkbox and privacy policy text */
+    .woocommerce-SavedPaymentMethods-saveNew,
+    .woocommerce-privacy-policy-text {
+        display: none !important;
     }
     
     /* Responsive Styles */
-    @media (max-width: 768px) {
-        .billing-shipping-column,
-        .order-review-column {
-            flex: 0 0 100%;
-            max-width: 100%;
+    @media (max-width: 991px) {
+        .billing-addresses-container {
+            flex-direction: column;
         }
         
+        .billing-shipping-column,
+        .shipping-address-column {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+    }
+    
+    @media (max-width: 768px) {
         .form-row-first,
         .form-row-last {
             width: 100%;
@@ -408,9 +471,15 @@ jQuery(document).ready(function($) {
     // Toggle shipping address
     $('#ship-to-different-address').on('change', function() {
         if ($(this).is(':checked')) {
-            $('.shipping-fields-wrapper').slideDown();
+            $('.shipping-address-column').css({
+                'opacity': '1',
+                'pointer-events': 'auto'
+            });
         } else {
-            $('.shipping-fields-wrapper').slideUp();
+            $('.shipping-address-column').css({
+                'opacity': '0.5',
+                'pointer-events': 'none'
+            });
         }
     });
     
@@ -424,7 +493,15 @@ jQuery(document).ready(function($) {
             var productName = $(this).find('.product-name').text().trim();
             var productTotal = $(this).find('.product-total').html();
             var qty = productName.match(/× (\d+)/);
+            var quantity = qty ? qty[1] : 1;
             var cleanProductName = productName.replace(/× \d+/, '').trim();
+            
+            // Calculate unit price
+            var totalPrice = productTotal.replace(/[^0-9.,]/g, '');
+            var unitPrice = parseFloat(totalPrice.replace(',', '.')) / quantity;
+            
+            // Format unit price
+            var unitPriceFormatted = '$' + unitPrice.toFixed(2);
             
             // Limit product name length
             if (cleanProductName.length > 25) {
@@ -433,8 +510,11 @@ jQuery(document).ready(function($) {
             
             // Rebuild the cart item with custom layout
             $(this).html('');
-            $(this).append('<div class="product-image">' + (productImg.length ? productImg.prop('outerHTML') : '<img src="<?php echo get_template_directory_uri(); ?>/images/placeholder.png" alt="Product">') + '</div>');
-            $(this).append('<div class="product-name">' + cleanProductName + (qty ? '<span class="product-quantity">Quantity: ' + qty[1] + '</span>' : '') + '</div>');
+            $(this).append('<div class="product-image">' + (productImg.length ? productImg.prop('outerHTML') : '<img src="<?php echo get_template_directory_uri(); ?>/images/products/placeholder.png" alt="Product">') + '</div>');
+            $(this).append('<div class="product-name">' + cleanProductName + 
+                '<span class="product-quantity">Quantity: ' + quantity + '</span>' +
+                '<span class="product-unit-price">Unit Price: ' + unitPriceFormatted + '</span>' +
+                '</div>');
             $(this).append('<div class="product-total">' + productTotal + '</div>');
             
             // Mark as customized
@@ -448,6 +528,10 @@ jQuery(document).ready(function($) {
     // Run when checkout is updated
     $(document.body).on('updated_checkout', function() {
         customizeOrderReview();
+        
+        // Hide save payment info checkbox and privacy policy text
+        $('.woocommerce-SavedPaymentMethods-saveNew').hide();
+        $('.woocommerce-privacy-policy-text').hide();
     });
 });
 </script>
