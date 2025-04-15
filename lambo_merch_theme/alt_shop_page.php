@@ -94,7 +94,7 @@ $products = new WP_Query($args);
                                         ?>
                                         
                                         <!-- Price display in corner -->
-                                        <div style="position: absolute; bottom: 20px; right: 20px; color: white; font-size: 1.2rem; font-style: italic;">
+                                        <div style="position: absolute; bottom: 30px; right: 50px; color: white; font-size: 1.2rem; font-style: italic;">
                                             <?php echo '$' . $product->get_price(); ?>
                                         </div>
                                     </div>
