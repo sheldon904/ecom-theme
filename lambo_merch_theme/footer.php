@@ -56,10 +56,10 @@
                             
                             <h3 class="follow-title"><center><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></center></h3>
                             <div class="social-icons">
-                                <a href="#" target="_blank" class="social-icon facebook-instagram">
+                                <a href="https://www.instagram.com/bavarianrennsport/" target="_blank" class="social-icon facebook-instagram">
                                     <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/facebook_instagram.png" alt="Facebook/Instagram">
                                 </a>
-                                <a href="#" target="_blank" class="social-icon youtube">
+                                <a href="https://www.youtube.com/channel/UC7z8YdJu3WhzR7jli6qTIqQ" target="_blank" class="social-icon youtube">
                                     <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/youtube.png" alt="YouTube">
                                 </a>
                             </div>
