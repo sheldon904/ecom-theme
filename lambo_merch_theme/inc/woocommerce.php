@@ -138,7 +138,7 @@ add_filter( 'loop_shop_per_page', 'lambo_merch_woocommerce_products_per_page' );
 /**
  * Add custom classes to products.
  */
-function lambo_merch_woocommerce_product_class( $classes, $class, $product_id ) {
+function lambo_merch_woocommerce_product_class( $classes, $class, $product_id = null ) {
     $classes[] = 'product-card';
     return $classes;
 }
