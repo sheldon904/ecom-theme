@@ -1,6 +1,6 @@
 <?php
 /**
- * The Template for displaying all single products with updated layout and features.
+ * The Template for displaying all single products
  *
  * @package Lambo_Merch
  */
@@ -9,23 +9,18 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
-// Enable error reporting for debugging (remove in production)
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 get_header('shop'); 
 ?>
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <?php
             /**
              * Hook: woocommerce_before_main_content.
-             * This hook displays breadcrumbs and other notices.
              */
             do_action( 'woocommerce_before_main_content' );
             
-            // Begin the Loop.
             while ( have_posts() ) : the_post();
                 global $product;
             ?>
@@ -37,8 +32,6 @@ get_header('shop');
                         <?php
                         /**
                          * Hook: woocommerce_before_single_product_summary.
-                         * @hooked woocommerce_show_product_sale_flash - 10
-                         * @hooked woocommerce_show_product_images - 20
                          */
                         do_action( 'woocommerce_before_single_product_summary' );
                         ?>
@@ -65,133 +58,36 @@ get_header('shop');
                                 <?php echo apply_filters( 'woocommerce_short_description', $product->get_short_description() ); ?>
                             </div>
                             
-                            <?php if ( $product->is_type( 'variable' ) ) : ?>
-                            <div class="product-variations">
-                                <div class="size-selector">
-                                    <?php 
-                                    /**
-                                     * Hook: woocommerce_before_add_to_cart_form.
-                                     */
-                                    do_action( 'woocommerce_before_add_to_cart_form' );
-                                    ?>
-
-                                    <form class="variations_form cart"
-                                          action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>"
-                                          method="post"
-                                          enctype="multipart/form-data"
-                                          data-product_id="<?php echo absint( $product->get_id() ); ?>"
-                                          data-product_variations="<?php echo htmlspecialchars( wp_json_encode( $product->get_available_variations() ) ); ?>">
-                                        <?php do_action( 'woocommerce_before_variations_form' ); ?>
-
-                                        <?php if ( empty( $product->get_available_variations() ) && false === $product->get_variation_attributes() ) : ?>
-                                            <p class="stock out-of-stock">
-                                                <?php echo esc_html( apply_filters( 'woocommerce_out_of_stock_message', __( 'This product is currently out of stock and unavailable.', 'woocommerce' ) ) ); ?>
-                                            </p>
-                                        <?php else : ?>
-                                            <div class="variations">
-                                                <?php foreach ( $product->get_variation_attributes() as $attribute_name => $options ) : ?>
-                                                    <div class="variation-row">
-                                                        <div class="label">
-                                                            <label for="<?php echo esc_attr( sanitize_title( $attribute_name ) ); ?>">
-                                                                <?php echo wc_attribute_label( $attribute_name ); ?>
-                                                            </label>
-                                                        </div>
-                                                        <div class="value">
-                                                            <?php
-                                                            wc_dropdown_variation_attribute_options(
-                                                                array(
-                                                                    'options'   => $options,
-                                                                    'attribute' => $attribute_name,
-                                                                    'product'   => $product,
-                                                                )
-                                                            );
-                                                            ?>
-                                                            <img src="<?php echo get_template_directory_uri(); ?>/images/icons/size down arrow.png" class="size-selector-icon" alt="Size Selector">
-                                                        </div>
-                                                    </div>
-                                                <?php endforeach; ?>
-                                            </div>
-
-                                            <div class="single_variation_wrap">
-                                                <?php
-                                                /**
-                                                 * Hook: woocommerce_before_single_variation.
-                                                 */
-                                                do_action( 'woocommerce_before_single_variation' );
-
-                                                /**
-                                                 * Hook: woocommerce_single_variation.
-                                                 *
-                                                 * This hook outputs the variation data – such as the price, stock status,
-                                                 * and includes the add-to-cart button via the function hooked to it.
-                                                 * The add-to-cart button will remain disabled until a valid variation is selected.
-                                                 */
-                                                do_action( 'woocommerce_single_variation' );
-
-                                                /**
-                                                 * Hook: woocommerce_after_single_variation.
-                                                 */
-                                                do_action( 'woocommerce_after_single_variation' );
-                                                ?>
-                                                <!-- Optional: If the hidden input for variation_id is not output by the above hook, uncomment the line below -->
-                                                <!-- <input type="hidden" name="variation_id" class="variation_id" value="" /> -->
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <?php do_action( 'woocommerce_after_variations_form' ); ?>
-                                    </form>
-
-                                    <?php
-                                    /**
-                                     * Hook: woocommerce_after_add_to_cart_form.
-                                     */
-                                    do_action( 'woocommerce_after_add_to_cart_form' );
-                                    ?>
-                                </div>
+                            <div class="exclusive-product-notice">
+                                <p><?php echo esc_html__( 'Limited edition - Don\'t miss out!', 'lambo-merch' ); ?></p>
                             </div>
-                            <?php endif; ?>
                             
-                            <div class="cart-actions">
-                                <div class="quantity-and-cart">
-                                    <?php if ( $product->is_type( 'simple' ) ) : ?>
-                                        <form class="cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype="multipart/form-data">
-                                            <?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
-
-                                            <?php
-                                            /**
-                                             * @hooked woocommerce_quantity_input - 10
-                                             */
-                                            do_action( 'woocommerce_before_add_to_cart_quantity' );
-
-                                            woocommerce_quantity_input(
-                                                array(
-                                                    'min_value'   => apply_filters( 'woocommerce_quantity_input_min', $product->get_min_purchase_quantity(), $product ),
-                                                    'max_value'   => apply_filters( 'woocommerce_quantity_input_max', $product->get_max_purchase_quantity(), $product ),
-                                                    'input_value' => isset( $_POST['quantity'] ) ? wc_stock_amount( wp_unslash( $_POST['quantity'] ) ) : $product->get_min_purchase_quantity(),
-                                                )
-                                            );
-
-                                            do_action( 'woocommerce_after_add_to_cart_quantity' );
-                                            ?>
-
-                                            <button type="submit" name="add-to-cart" value="<?php echo esc_attr( $product->get_id() ); ?>" class="single_add_to_cart_button button alt">
-                                                <?php echo esc_html( $product->single_add_to_cart_text() ); ?>
-                                            </button>
-
-                                            <?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
-                                        </form>
-                                    <?php endif; ?>
-                                </div>
+                            <div class="product-add-to-cart">
+                                <?php
+                                /**
+                                 * Hook: woocommerce_single_product_summary
+                                 * 
+                                 * @hooked woocommerce_template_single_add_to_cart - 30
+                                 */
+                                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_title', 5);
+                                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10);
+                                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
+                                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20);
+                                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40);
+                                remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_sharing', 50);
                                 
-                                <div class="wishlist-button">
-                                    <?php
-                                    // Check if YITH WooCommerce Wishlist is active
-                                    if ( function_exists( 'YITH_WCWL' ) ) : ?>
-                                        <?php echo do_shortcode( '[yith_wcwl_add_to_wishlist]' ); ?>
-                                    <?php else : ?>
-                                        <button class="add-to-wishlist">Add to Wishlist</button>
-                                    <?php endif; ?>
-                                </div>
+                                do_action('woocommerce_single_product_summary');
+                                ?>
+                            </div>
+                            
+                            <div class="wishlist-button">
+                                <?php
+                                // Check if YITH WooCommerce Wishlist is active
+                                if ( function_exists( 'YITH_WCWL' ) ) : ?>
+                                    <?php echo do_shortcode( '[yith_wcwl_add_to_wishlist]' ); ?>
+                                <?php else : ?>
+                                    <button class="add-to-wishlist">Add to Wishlist</button>
+                                <?php endif; ?>
                             </div>
                             
                             <hr class="details-divider">
@@ -280,7 +176,6 @@ get_header('shop');
 
 <?php get_footer('shop'); ?>
 
-<!-- Initialize Variation Form to Ensure Proper Update of Variation Data -->
 <script>
 jQuery(document).ready(function($) {
     // Tab functionality
@@ -296,12 +191,90 @@ jQuery(document).ready(function($) {
         $(this).parent().addClass('active');
         $('#' + tab).addClass('active');
     });
-
-    // Initialize WooCommerce variations form
-    $('.variations_form').each( function() {
-        $(this).wc_variation_form();
-        // Trigger change to update variation_id and variations data on load
-        $(this).find('.variations select').change();
+    
+    // Make sure variation selects are required
+    $('.variations select').attr('required', 'required');
+    
+    // Basic validation for variable products
+    $('.variations_form').on('submit', function(e) {
+        var $form = $(this);
+        var $variationId = $form.find('input[name="variation_id"]');
+        var $selects = $form.find('.variations select');
+        var allSelected = true;
+        
+        // Check all variation dropdowns
+        $selects.each(function() {
+            if (!$(this).val()) {
+                allSelected = false;
+                $(this).addClass('error-field');
+            }
+        });
+        
+        // Check variation ID
+        if (!allSelected || !$variationId.val() || $variationId.val() === '0') {
+            e.preventDefault();
+            alert('Please select a size before adding to cart.');
+            return false;
+        }
+    });
+    
+    // Remove error class when selection is made
+    $('.variations select').on('change', function() {
+        $(this).removeClass('error-field');
     });
 });
 </script>
+
+<style>
+/* Add error styling */
+.error-field {
+    border: 2px solid red !important;
+}
+
+/* Size selector styling */
+.variations select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Make variation rows display better */
+.variations {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.variation-row {
+    margin-bottom: 15px;
+}
+.variations .label label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Add to cart button styling */
+.single_add_to_cart_button {
+    background-color: #000;
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.single_add_to_cart_button:hover {
+    background-color: #333;
+}
+
+/* Make quantity input nicer */
+.quantity input {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+</style>

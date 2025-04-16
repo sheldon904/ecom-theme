@@ -761,6 +761,12 @@ a:hover {
     padding: 0;
 }
 
+.variation-row .label .required {
+    color: #e2401c;
+    font-weight: bold;
+    margin-left: 3px;
+}
+
 .variation-row .value {
     flex: 1;
     position: relative;
@@ -774,6 +780,25 @@ a:hover {
     width: 15px;
     height: auto;
     pointer-events: none;
+}
+
+/* Add error styles for variation fields */
+.variations select.error-field {
+    border: 2px solid #e2401c !important;
+}
+
+.variation-error-message {
+    background-color: #e2401c;
+    color: #fff;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 3px;
+    font-weight: bold;
+}
+
+/* Style adjustments for variation select */
+.single_variation_wrap {
+    margin-top: 15px;
 }
 
 .cart-actions {

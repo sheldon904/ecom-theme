@@ -78,7 +78,7 @@ if (post_password_required()) {
                                 <div class="variations">
                                     <?php foreach ($product->get_variation_attributes() as $attribute_name => $options) : ?>
                                         <div class="variation-row">
-                                            <div class="label"><label for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"><?php echo wc_attribute_label($attribute_name); ?></label></div>
+                                            <div class="label"><label for="<?php echo esc_attr(sanitize_title($attribute_name)); ?>"><?php echo wc_attribute_label($attribute_name); ?> <span class="required">*</span></label></div>
                                             <div class="value">
                                                 <?php
                                                 wc_dropdown_variation_attribute_options(
@@ -86,6 +86,7 @@ if (post_password_required()) {
                                                         'options'   => $options,
                                                         'attribute' => $attribute_name,
                                                         'product'   => $product,
+                                                        'required'  => true
                                                     )
                                                 );
                                                 ?>
@@ -93,6 +94,27 @@ if (post_password_required()) {
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
+                                </div>
+                                
+                                <div class="single_variation_wrap">
+                                    <?php
+                                    /**
+                                     * Hook: woocommerce_before_single_variation.
+                                     */
+                                    do_action('woocommerce_before_single_variation');
+                                    
+                                    /**
+                                     * Hook: woocommerce_single_variation.
+                                     * This outputs the variation price, variation availability status and add to cart button.
+                                     */
+                                    do_action('woocommerce_single_variation');
+                                    
+                                    /**
+                                     * Hook: woocommerce_after_single_variation.
+                                     */
+                                    do_action('woocommerce_after_single_variation');
+                                    ?>
+                                    <input type="hidden" name="variation_id" class="variation_id" value="" />
                                 </div>
                             <?php endif; ?>
 
