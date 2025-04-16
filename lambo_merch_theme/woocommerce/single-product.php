@@ -75,11 +75,18 @@ get_header('shop');
                                     do_action( 'woocommerce_before_add_to_cart_form' );
                                     ?>
 
-                                    <form class="variations_form cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype="multipart/form-data" data-product_id="<?php echo absint( $product->get_id() ); ?>">
+                                    <form class="variations_form cart"
+                                          action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>"
+                                          method="post"
+                                          enctype="multipart/form-data"
+                                          data-product_id="<?php echo absint( $product->get_id() ); ?>"
+                                          data-product_variations="<?php echo htmlspecialchars( wp_json_encode( $product->get_available_variations() ) ); ?>">
                                         <?php do_action( 'woocommerce_before_variations_form' ); ?>
 
                                         <?php if ( empty( $product->get_available_variations() ) && false === $product->get_variation_attributes() ) : ?>
-                                            <p class="stock out-of-stock"><?php echo esc_html( apply_filters( 'woocommerce_out_of_stock_message', __( 'This product is currently out of stock and unavailable.', 'woocommerce' ) ) ); ?></p>
+                                            <p class="stock out-of-stock">
+                                                <?php echo esc_html( apply_filters( 'woocommerce_out_of_stock_message', __( 'This product is currently out of stock and unavailable.', 'woocommerce' ) ) ); ?>
+                                            </p>
                                         <?php else : ?>
                                             <div class="variations">
                                                 <?php foreach ( $product->get_variation_attributes() as $attribute_name => $options ) : ?>
@@ -103,6 +110,31 @@ get_header('shop');
                                                         </div>
                                                     </div>
                                                 <?php endforeach; ?>
+                                            </div>
+
+                                            <div class="single_variation_wrap">
+                                                <?php
+                                                /**
+                                                 * Hook: woocommerce_before_single_variation.
+                                                 */
+                                                do_action( 'woocommerce_before_single_variation' );
+
+                                                /**
+                                                 * Hook: woocommerce_single_variation.
+                                                 *
+                                                 * This hook outputs the variation data – such as the price, stock status,
+                                                 * and includes the add-to-cart button via the function hooked to it.
+                                                 * The add-to-cart button will remain disabled until a valid variation is selected.
+                                                 */
+                                                do_action( 'woocommerce_single_variation' );
+
+                                                /**
+                                                 * Hook: woocommerce_after_single_variation.
+                                                 */
+                                                do_action( 'woocommerce_after_single_variation' );
+                                                ?>
+                                                <!-- Optional: If the hidden input for variation_id is not output by the above hook, uncomment the line below -->
+                                                <!-- <input type="hidden" name="variation_id" class="variation_id" value="" /> -->
                                             </div>
                                         <?php endif; ?>
 
@@ -248,6 +280,7 @@ get_header('shop');
 
 <?php get_footer('shop'); ?>
 
+<!-- Initialize Variation Form to Ensure Proper Update of Variation Data -->
 <script>
 jQuery(document).ready(function($) {
     // Tab functionality
@@ -262,6 +295,13 @@ jQuery(document).ready(function($) {
         // Add active class to the selected tab
         $(this).parent().addClass('active');
         $('#' + tab).addClass('active');
+    });
+
+    // Initialize WooCommerce variations form
+    $('.variations_form').each( function() {
+        $(this).wc_variation_form();
+        // Trigger change to update variation_id and variations data on load
+        $(this).find('.variations select').change();
     });
 });
 </script>
