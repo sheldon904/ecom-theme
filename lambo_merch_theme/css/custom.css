@@ -11,7 +11,12 @@
     --color-text-light: #ccc;
     --color-background: #000;
     --color-background-light: #111;
-    --font-primary: 'Montserrat', sans-serif;
+    --font-primary: 'Impact', sans-serif;
+}
+
+/* Paragraph text size - 50% larger */
+p {
+    font-size: 1.5em;
 }
 
 body {
@@ -22,6 +27,8 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+    font-family: 'Georgia', serif;
+    font-style: italic;
     font-weight: 700;
     margin-bottom: 1rem;
 }
@@ -53,6 +60,10 @@ a:hover {
 
 .text-red {
     color: var(--color-primary);
+}
+
+.red-text {
+    color: #fc0301;
 }
 
 .section-title {
@@ -1643,6 +1654,15 @@ a:hover {
     margin-bottom: -1px; /* Negative margin to pull footer up */
     padding-bottom: 0;
     overflow: visible;
+}
+
+/* Padding classes for rows */
+.padding-left {
+    margin-left: 50px;
+}
+
+.padding-right {
+    margin-right: 50px;
 }
 
 /* HTML/Body Fix for Scroll Issues */
