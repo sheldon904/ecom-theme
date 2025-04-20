@@ -242,3 +242,67 @@ function lambo_merch_woocommerce_product_message() {
     echo '</div>';
 }
 add_action( 'woocommerce_single_product_summary', 'lambo_merch_woocommerce_product_message', 25 );
+
+/**
+ * Set a flag when a variable product page is being displayed
+ */
+function lambo_merch_is_variable_product() {
+    global $product;
+    
+    if (is_product() && is_object($product) && $product->is_type('variable')) {
+        // Set a flag that we're on a variable product page
+        set_query_var('is_variable_product', true);
+    }
+}
+add_action('wp', 'lambo_merch_is_variable_product');
+
+/**
+ * Handle custom template for variable products
+ */
+function lambo_merch_variable_product_template_include($template) {
+    // Only run on single product pages
+    if (!is_product()) {
+        return $template;
+    }
+    
+    // Check if we have a variable product
+    global $product;
+    if (!is_object($product)) {
+        global $post;
+        $product = wc_get_product($post->ID);
+    }
+    
+    // Redirect to our custom template
+    if (is_object($product) && $product->is_type('variable')) {
+        $variable_template = get_template_directory() . '/woocommerce/variable-product.php';
+        
+        if (file_exists($variable_template)) {
+            return $variable_template;
+        }
+    }
+    
+    return $template;
+}
+add_filter('template_include', 'lambo_merch_variable_product_template_include', 99);
+
+/**
+ * Ensure all output hooks are loaded for our custom variable products
+ */
+function lambo_merch_ensure_variation_hooks() {
+    // These hooks are already included in standard WooCommerce templates
+    // but we need to make sure they're available in our custom variable-product.php
+    
+    if (!has_action('woocommerce_single_variation')) {
+        add_action('woocommerce_single_variation', 'woocommerce_single_variation', 10);
+        add_action('woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20);
+    }
+    
+    if (!has_action('woocommerce_before_add_to_cart_button')) {
+        add_action('woocommerce_before_add_to_cart_button', 'woocommerce_template_single_price', 10);
+    }
+    
+    if (!has_action('woocommerce_before_variations_form')) {
+        add_action('woocommerce_before_variations_form', 'woocommerce_template_single_add_to_cart', 10);
+    }
+}
+add_action('template_redirect', 'lambo_merch_ensure_variation_hooks');

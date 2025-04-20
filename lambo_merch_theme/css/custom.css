@@ -1702,3 +1702,120 @@ body.has-sticky-header {
     margin-top: 0; /* Ensure no gap between content and footer */
     padding-top: 0; /* Further reduce space between content and footer */
 }
+/* Variable Product Styles */
+.variable-product-wrapper {
+    margin-bottom: 40px;
+}
+
+/* Size selectors for variable products */
+.variations select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #0f0f0f;
+    color: #fff;
+    font-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.variations select:hover {
+    background-color: #1a1a1a;
+}
+
+.variations select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.variations .value {
+    position: relative;
+}
+
+.size-selector-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Error field styling */
+.error-field {
+    border: 2px solid #e2401c \!important;
+    background-color: rgba(226, 64, 28, 0.1) \!important;
+}
+
+/* Selected variation display */
+.variation-price-display {
+    margin: 15px 0;
+}
+
+.selected-variation {
+    padding: 10px 15px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+/* Variable product add to cart button */
+.variable-product-wrapper .single_add_to_cart_button {
+    background-color: #000 \!important;
+    color: #fff \!important;
+    padding: 15px 30px \!important;
+    border: none;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+    width: 100%;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.variable-product-wrapper .single_add_to_cart_button:hover {
+    background-color: #222 \!important;
+    transform: translateY(-2px);
+}
+
+/* Variation label styling */
+.variations .label {
+    margin-bottom: 8px;
+    display: block;
+    color: #fff;
+    font-weight: 600;
+}
+
+.variations .label label {
+    font-size: 16px;
+}
+
+.variations .label .required {
+    color: var(--color-primary);
+    margin-left: 5px;
+}
+
+/* Reset variations link */
+.reset_variations {
+    display: inline-block;
+    margin-top: 10px;
+    color: #aaa;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.reset_variations:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+EOF < /dev/null
