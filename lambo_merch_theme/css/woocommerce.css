@@ -2,9 +2,37 @@
  * Custom WooCommerce styles for Lambo Merch Theme
  */
 
+/* Force Source Sans Pro for all WooCommerce text */
+.woocommerce,
+.woocommerce-page,
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.woocommerce ul.products li.product .price,
+.woocommerce div.product p.price, 
+.woocommerce div.product span.price,
+.woocommerce .woocommerce-result-count, 
+.woocommerce-page .woocommerce-result-count,
+.woocommerce .woocommerce-ordering select,
+.woocommerce div.product .woocommerce-tabs ul.tabs li a,
+.woocommerce #respond input#submit, 
+.woocommerce a.button, 
+.woocommerce button.button, 
+.woocommerce input.button {
+    font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+/* Force Georgia Italic for all WooCommerce headings */
+.woocommerce-products-header__title,
+.woocommerce div.product .product_title,
+.woocommerce div.product .woocommerce-tabs .panel h2:first-of-type,
+.woocommerce div.product .related.products h2,
+.woocommerce-loop-product__title {
+    font-family: 'Georgia', serif !important;
+    font-style: italic !important;
+}
+
 /* Shop Page Styles */
 .woocommerce-products-header__title {
-    font-family: Georgia, serif;
+    font-family: var(--font-heading);
     font-style: italic;
     font-weight: 600;
     margin-bottom: 1.5rem;
@@ -19,6 +47,7 @@
     margin-bottom: 2rem;
     font-size: 1.1rem;
     line-height: 1.6;
+    font-family: var(--font-paragraph);
 }
 
 /* Product Cards */

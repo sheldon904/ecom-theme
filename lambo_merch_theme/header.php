@@ -16,6 +16,21 @@
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
+	
+	<!-- Force load Source Sans Pro -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+	
+	<style>
+		body, p, span, div, li, a, button, input, select, textarea {
+			font-family: 'Source Sans Pro', sans-serif !important;
+		}
+		h1, h2, h3, h4, h5, h6, .woocommerce-loop-product__title {
+			font-family: 'Georgia', serif !important;
+			font-style: italic !important;
+		}
+	</style>
 
 	<?php wp_head(); ?>
 </head>

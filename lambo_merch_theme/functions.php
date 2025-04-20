@@ -192,10 +192,9 @@ add_action( 'widgets_init', 'lambo_merch_widgets_init' );
  * Enqueue scripts and styles.
  */
 function lambo_merch_scripts() {
-	// Add Source Sans Pro font
-	wp_enqueue_style('source-sans-pro', 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap', array(), null);
-	// Enqueue Google Fonts
-	wp_enqueue_style( 'lambo-merch-fonts', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap', array(), null );
+	// Add Source Sans Pro font with higher priority (1)
+	wp_enqueue_style('source-sans-pro', 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap', array(), null, 'all');
+	// Enqueue Georgia font (already available as system font)
 	
 	// Main stylesheet
 	wp_enqueue_style( 'lambo-merch-style', get_stylesheet_uri(), array(), LAMBO_MERCH_VERSION );
