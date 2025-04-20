@@ -45,13 +45,15 @@ get_header('shop');
                             <div class="product-price-container">
                                 <div class="price"><?php echo $product->get_price_html(); ?></div>
                                 
-                                <div class="stock-status">
-                                    <?php if ( $product->is_in_stock() ) : ?>
-                                        <span class="in-stock">In Stock</span>
-                                    <?php else : ?>
-                                        <span class="out-of-stock">Out of Stock</span>
-                                    <?php endif; ?>
-                                </div>
+                                <?php if ( ! $product->is_type('variable') ) : ?>
+                                    <div class="stock-status">
+                                        <?php if ( $product->is_in_stock() ) : ?>
+                                            <span class="in-stock"><?php esc_html_e( 'In Stock', 'lambo-merch' ); ?></span>
+                                        <?php else : ?>
+                                            <span class="out-of-stock"><?php esc_html_e( 'Out of Stock', 'lambo-merch' ); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                             
                             <div class="product-short-description">
@@ -195,7 +197,7 @@ jQuery(document).ready(function($) {
     // Make sure variation selects are required
     $('.variations select').attr('required', 'required');
     
-    // Basic validation for variable products
+    // Enhanced validation for variable products
     $('.variations_form').on('submit', function(e) {
         var $form = $(this);
         var $variationId = $form.find('input[name="variation_id"]');
@@ -213,7 +215,7 @@ jQuery(document).ready(function($) {
         // Check variation ID
         if (!allSelected || !$variationId.val() || $variationId.val() === '0') {
             e.preventDefault();
-            alert('Please select a size before adding to cart.');
+            alert('<?php echo esc_js( __("Please select a size (variation) before adding to cart.", "lambo-merch") ); ?>');
             return false;
         }
     });
@@ -237,15 +239,13 @@ jQuery(document).ready(function($) {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    margin-bottom: 10px;
 }
 
 /* Make variation rows display better */
 .variations {
     width: 100%;
     margin-bottom: 20px;
-}
-.variation-row {
-    margin-bottom: 15px;
 }
 .variations .label label {
     font-weight: bold;
@@ -276,5 +276,17 @@ jQuery(document).ready(function($) {
     border: 1px solid #ddd;
     border-radius: 4px;
     margin-right: 10px;
+}
+
+/* Variation availability display */
+.woocommerce-variation-availability {
+    margin-top: 10px;
+    font-weight: bold;
+}
+.stock.in-stock {
+    color: green;
+}
+.stock.out-of-stock {
+    color: red;
 }
 </style>

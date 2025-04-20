@@ -634,67 +634,69 @@ add_shortcode( 'featured_products', 'lambo_merch_featured_products_shortcode' );
 /**
  * Redirect variable products to a custom template file
  * This hook runs before the template is loaded
+ * DISABLED - using unified template approach instead
  */
-function lambo_merch_redirect_variable_products() {
-    // Only run on the single product page
-    if (!is_product()) {
-        return;
-    }
-    
-    global $post, $product;
-    
-    // Ensure we have a valid product
-    if (!is_object($product)) {
-        $product = wc_get_product($post->ID);
-    }
-    
-    // Check if this is a variable product
-    if (is_object($product) && $product->is_type('variable')) {
-        // Include our custom template instead of letting WooCommerce load the default
-        include(get_template_directory() . '/woocommerce/variable-product.php');
-        // Stop WordPress from loading any other templates
-        exit();
-    }
-}
-add_action('template_redirect', 'lambo_merch_redirect_variable_products', 999);
+// function lambo_merch_redirect_variable_products() {
+//     // Only run on the single product page
+//     if (!is_product()) {
+//         return;
+//     }
+//     
+//     global $post, $product;
+//     
+//     // Ensure we have a valid product
+//     if (!is_object($product)) {
+//         $product = wc_get_product($post->ID);
+//     }
+//     
+//     // Check if this is a variable product
+//     if (is_object($product) && $product->is_type('variable')) {
+//         // Include our custom template instead of letting WooCommerce load the default
+//         include(get_template_directory() . '/woocommerce/variable-product.php');
+//         // Stop WordPress from loading any other templates
+//         exit();
+//     }
+// }
+// add_action('template_redirect', 'lambo_merch_redirect_variable_products', 999);
 
 /**
  * Alternative approach using woocommerce_locate_template
  * This function redirects variable products to use the variable-product.php template
+ * DISABLED - using unified template approach instead
  */
-function lambo_merch_variable_product_template($template, $template_name, $template_path) {
-    // Only modify the single product template
-    if ($template_name !== 'single-product.php') {
-        return $template;
-    }
-    
-    // Check if we're viewing a product
-    if (!is_product()) {
-        return $template;
-    }
-    
-    // Get the current product
-    global $product;
-    
-    // If product doesn't exist yet, try to get it from the global post
-    if (!is_object($product) || !is_a($product, 'WC_Product')) {
-        global $post;
-        if (is_object($post) && isset($post->ID)) {
-            $product = wc_get_product($post->ID);
-        }
-    }
-    
-    // If we have a valid product and it's a variable product
-    if (is_object($product) && is_a($product, 'WC_Product') && $product->is_type('variable')) {
-        $theme_dir = get_template_directory();
-        $variable_template = $theme_dir . '/woocommerce/variable-product.php';
-        
-        // If the template exists, use it instead of the default
-        if (file_exists($variable_template)) {
-            return $variable_template;
-        }
-    }
-    
-    return $template;
-}
-add_filter('woocommerce_locate_template', 'lambo_merch_variable_product_template', 999, 3);
+// function lambo_merch_variable_product_template($template, $template_name, $template_path) {
+//     // Only modify the single product template
+//     if ($template_name !== 'single-product.php') {
+//         return $template;
+//     }
+//     
+//     // Check if we're viewing a product
+//     if (!is_product()) {
+//         return $template;
+//     }
+//     
+//     // Get the current product
+//     global $product;
+//     
+//     // If product doesn't exist yet, try to get it from the global post
+//     if (!is_object($product) || !is_a($product, 'WC_Product')) {
+//         global $post;
+//         if (is_object($post) && isset($post->ID)) {
+//             $product = wc_get_product($post->ID);
+//         }
+//     }
+//     
+//     // If we have a valid product and it's a variable product
+//     if (is_object($product) && is_a($product, 'WC_Product') && $product->is_type('variable')) {
+//         $theme_dir = get_template_directory();
+//         $variable_template = $theme_dir . '/woocommerce/variable-product.php';
+//         
+//         // If the template exists, use it instead of the default
+//         if (file_exists($variable_template)) {
+//             return $variable_template;
+//         }
+//     }
+//     
+//     return $template;
+// }
+// add_filter('woocommerce_locate_template', 'lambo_merch_variable_product_template', 999, 3);
