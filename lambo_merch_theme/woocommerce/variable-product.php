@@ -78,11 +78,23 @@ get_header('shop');
                             
                             <div class="product-variations">
                                 <div class="size-selector">
-                                    <?php 
+                                    <?php
                                     /**
-                                     * This is the correct way to display variable product add-to-cart form
+                                     * Display variable product add to cart form
                                      */
-                                    woocommerce_variable_add_to_cart();
+                                    $available_variations = $product->get_available_variations();
+                                    $attributes = $product->get_variation_attributes();
+                                    $selected_attributes = $product->get_default_attributes();
+
+                                    // Include the custom variable product template
+                                    wc_get_template(
+                                        'single-product/add-to-cart/variable.php',
+                                        array(
+                                            'available_variations' => $available_variations,
+                                            'attributes'           => $attributes,
+                                            'selected_attributes'  => $selected_attributes,
+                                        )
+                                    );
                                     ?>
                                 </div>
                             </div>

@@ -634,11 +634,7 @@ add_shortcode( 'featured_products', 'lambo_merch_featured_products_shortcode' );
 /**
  * Redirect variable products to a custom template file
  * This hook runs before the template is loaded
- * 
- * Note: This direct template include approach is now commented out
- * in favor of using the template_include filter below
  */
-/*
 function lambo_merch_redirect_variable_products() {
     // Only run on the single product page
     if (!is_product()) {
@@ -660,8 +656,7 @@ function lambo_merch_redirect_variable_products() {
         exit();
     }
 }
-*/
-// add_action('template_redirect', 'lambo_merch_redirect_variable_products', 10);
+add_action('template_redirect', 'lambo_merch_redirect_variable_products', 999);
 
 /**
  * Alternative approach using woocommerce_locate_template

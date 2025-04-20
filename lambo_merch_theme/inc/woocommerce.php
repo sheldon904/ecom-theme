@@ -283,26 +283,21 @@ function lambo_merch_variable_product_template_include($template) {
     
     return $template;
 }
-add_filter('template_include', 'lambo_merch_variable_product_template_include', 99);
+add_filter('template_include', 'lambo_merch_variable_product_template_include', 9999);
 
 /**
- * Ensure all output hooks are loaded for our custom variable products
+ * Ensure proper hooks are loaded for variable products
  */
 function lambo_merch_ensure_variation_hooks() {
-    // These hooks are already included in standard WooCommerce templates
-    // but we need to make sure they're available in our custom variable-product.php
+    // DO NOT add this hook - it creates an infinite recursion!
+    // if (!has_action('woocommerce_before_variations_form')) {
+    //     add_action('woocommerce_before_variations_form', 'woocommerce_template_single_add_to_cart', 10);
+    // }
     
+    // Make sure these hooks are properly set up
     if (!has_action('woocommerce_single_variation')) {
         add_action('woocommerce_single_variation', 'woocommerce_single_variation', 10);
         add_action('woocommerce_single_variation', 'woocommerce_single_variation_add_to_cart_button', 20);
-    }
-    
-    if (!has_action('woocommerce_before_add_to_cart_button')) {
-        add_action('woocommerce_before_add_to_cart_button', 'woocommerce_template_single_price', 10);
-    }
-    
-    if (!has_action('woocommerce_before_variations_form')) {
-        add_action('woocommerce_before_variations_form', 'woocommerce_template_single_add_to_cart', 10);
     }
 }
 add_action('template_redirect', 'lambo_merch_ensure_variation_hooks');
