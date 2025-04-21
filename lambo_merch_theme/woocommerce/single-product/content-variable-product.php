@@ -368,10 +368,7 @@ jQuery(document).ready(function($) {
     
     // Update display when variation is selected
     $('.variations_form').on('show_variation', function(event, variation) {
-        // Show selected variation details
-        if (variation) {
-            $('.variation-price-display').html('<div class="selected-variation">Selected option: ' + variation.price_html + '</div>');
-        }
+        //empty
     });
     
     // Reset display when variations are reset
