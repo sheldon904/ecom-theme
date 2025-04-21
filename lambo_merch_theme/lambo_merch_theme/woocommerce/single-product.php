@@ -66,10 +66,7 @@ get_header('shop');
                                 <?php echo apply_filters( 'woocommerce_short_description', $product->get_short_description() ); ?>
                             </div>
                             
-                            <!-- Limited edition notice - moved here and appears only once -->
-                            <div class="exclusive-product-notice">
-                                <p><?php echo esc_html__( 'Limited edition - Don\'t miss out!', 'lambo-merch' ); ?></p>
-                            </div>
+                            
                             
                             <div class="product-add-to-cart">
                                 <?php

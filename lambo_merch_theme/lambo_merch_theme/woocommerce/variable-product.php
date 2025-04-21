@@ -72,9 +72,7 @@ get_header('shop');
                                 <?php echo apply_filters('woocommerce_short_description', $product->get_short_description()); ?>
                             </div>
                             
-                            <div class="exclusive-product-notice">
-                                <p><?php echo esc_html__('Limited edition - Don\'t miss out!', 'lambo-merch'); ?></p>
-                            </div>
+                          
                             
                             <div class="product-variations">
                                 <div class="size-selector">
@@ -231,13 +229,7 @@ jQuery(document).ready(function($) {
         $(this).removeClass('error-field');
     });
     
-    // Update display when variation is selected
-    $('.variations_form').on('show_variation', function(event, variation) {
-        // Show selected variation details
-        if (variation) {
-            $('.variation-price-display').html('<div class="selected-variation">Selected option: ' + variation.price_html + '</div>');
-        }
-    });
+    
     
     // Reset display when variations are reset
     $('.variations_form').on('reset_data', function() {
