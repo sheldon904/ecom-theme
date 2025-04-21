@@ -1,0 +1,346 @@
+/**
+ * Custom WooCommerce styles for Lambo Merch Theme
+ */
+
+/* Force Source Sans Pro for all WooCommerce text */
+.woocommerce,
+.woocommerce-page,
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.woocommerce ul.products li.product .price,
+.woocommerce div.product p.price, 
+.woocommerce div.product span.price,
+.woocommerce .woocommerce-result-count, 
+.woocommerce-page .woocommerce-result-count,
+.woocommerce .woocommerce-ordering select,
+.woocommerce div.product .woocommerce-tabs ul.tabs li a,
+.woocommerce #respond input#submit, 
+.woocommerce a.button, 
+.woocommerce button.button, 
+.woocommerce input.button {
+    font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+/* Force Georgia Italic for all WooCommerce headings */
+.woocommerce-products-header__title,
+.woocommerce div.product .product_title,
+.woocommerce div.product .woocommerce-tabs .panel h2:first-of-type,
+.woocommerce div.product .related.products h2,
+.woocommerce-loop-product__title {
+    font-family: 'Georgia', serif !important;
+    font-style: italic !important;
+}
+
+/* Shop Page Styles */
+.woocommerce-products-header__title {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+}
+
+.text-red {
+    color: #ff0000;
+}
+
+.shop-description {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    font-family: var(--font-paragraph);
+}
+
+/* Product Cards */
+.woocommerce ul.products li.product, 
+.woocommerce-page ul.products li.product {
+    
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    width: 48%;
+    margin-right: 2%;
+}
+
+.woocommerce ul.products li.product:hover, 
+.woocommerce-page ul.products li.product:hover {
+    transform: translateY(-10px);
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title, 
+.woocommerce-page ul.products li.product .woocommerce-loop-product__title {
+    color: #fff;
+    font-size: 18px;
+    padding-top: 0;
+    margin-top: 15px;
+}
+
+.woocommerce ul.products li.product .price, 
+.woocommerce-page ul.products li.product .price {
+    color: #ff0000;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.woocommerce #respond input#submit, 
+.woocommerce a.button, 
+.woocommerce button.button, 
+.woocommerce input.button {
+    background-color: #ff0000;
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.woocommerce #respond input#submit:hover, 
+.woocommerce a.button:hover, 
+.woocommerce button.button:hover, 
+.woocommerce input.button:hover {
+    background-color: #cc0000;
+    color: #fff;
+}
+
+/* Pagination Styles */
+.woocommerce nav.woocommerce-pagination {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 60px;
+}
+
+.woocommerce nav.woocommerce-pagination ul {
+    display: inline-flex;
+    white-space: nowrap;
+    padding: 0;
+    clear: both;
+    border: none;
+    margin: 1px;
+}
+
+.woocommerce nav.woocommerce-pagination ul li {
+    border: none;
+    padding: 0;
+    margin: 0 5px;
+    float: left;
+    display: inline;
+    overflow: hidden;
+}
+
+.woocommerce nav.woocommerce-pagination ul li span.current,
+.woocommerce nav.woocommerce-pagination ul li a:hover {
+    background: #ff0000;
+    color: #fff;
+}
+
+.woocommerce nav.woocommerce-pagination ul li a,
+.woocommerce nav.woocommerce-pagination ul li span {
+    margin: 0;
+    text-decoration: none;
+    padding: 12px 18px;
+    line-height: 1;
+    font-size: 1em;
+    font-weight: 400;
+    min-width: 1em;
+    background: #333;
+    color: #fff;
+    display: block;
+    border-radius: 3px;
+}
+
+/* Filter Styles */
+.shop-filters {
+   
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.shop-filters h3 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #222;
+    font-size: 1.5rem;
+}
+
+.filter-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.filter-list li {
+    margin-bottom: 15px;
+}
+
+.filter-list li a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+.filter-list li a:hover {
+    color: #ff0000;
+}
+
+.filter-list li.active a {
+    color: #ff0000;
+    font-weight: 600;
+}
+
+/* Remove some default WooCommerce elements we don't need */
+.woocommerce-result-count, 
+.woocommerce-ordering {
+    display: none;
+}
+
+.woocommerce .woocommerce-breadcrumb {
+    display: none;
+}
+
+/* Newsletter section */
+.newsletter-section {
+    padding: 80px 0;
+    
+    margin-top: 60px;
+}
+
+.newsletter-section .section-title {
+    color: #fff;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+
+.newsletter-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.newsletter-form .form-control {
+    background-color: #222;
+    border: none;
+    color: #fff;
+    height: 50px;
+}
+
+.newsletter-form .btn-red {
+    background-color: #ff0000;
+    color: #fff;
+    height: 50px;
+    width: 50px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.newsletter-form .btn-red:hover {
+    background-color: #cc0000;
+}
+
+/* Product image sizing */
+.woocommerce ul.products li.product a img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 0 1em;
+    box-shadow: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .woocommerce-products-header__title {
+        font-size: 2rem;
+    }
+    
+    .shop-description {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .woocommerce ul.products[class*="columns-"] li.product, 
+    .woocommerce-page ul.products[class*="columns-"] li.product {
+        width: 100%;
+        margin-right: 0;
+    }
+    
+    .shop-filters {
+        margin-top: 30px;
+    }
+    
+    .order-md-1 {
+        order: 2;
+    }
+    
+    .order-md-2 {
+        order: 1;
+    }
+}
+
+/* Custom Product Grid 2x2 Layout */
+.woocommerce ul.products {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+}
+
+.woocommerce ul.products::before,
+.woocommerce ul.products::after {
+    display: none;
+}
+
+.woocommerce ul.products li.product {
+    width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    float: none !important;
+    clear: none !important;
+}
+
+@media (max-width: 767px) {
+    .woocommerce ul.products {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Navigation Arrows for pagination */
+.product-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 60px;
+}
+
+.pagination-arrow {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 3px;
+    margin: 0 15px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination-arrow:hover {
+    background-color: #ff0000;
+    color: #fff;
+}
+
+.pagination-arrow.disabled {
+    background-color: #333;
+    color: #777;
+    cursor: not-allowed;
+}
+
+.pagination-page {
+    color: #fff;
+    font-size: 16px;
+}
