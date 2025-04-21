@@ -109,7 +109,7 @@ get_header('shop');
                             <ul class="tabs-nav">
                                 <li class="active">
                                     <a href="#details" class="tab-link" data-tab="details">
-                                        <img src="<?php echo get_template_directory_uri(); ?>/images/backgrounds/Rectangle 10.png" class="tab-bg" alt="">
+                                    <img src="<?php echo get_template_directory_uri(); ?>/images/backgrounds/Rectangle 10.png" class="tab-bg" alt="" style="max-width: auto !important; height: 105% !important;" />
                                         <span>Details</span>
                                     </a>
                                 </li>
