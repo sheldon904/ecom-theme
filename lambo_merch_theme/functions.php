@@ -630,6 +630,22 @@ function lambo_merch_featured_products_shortcode( $atts ) {
 }
 add_shortcode( 'featured_products', 'lambo_merch_featured_products_shortcode' );
 
+
+function lambomerch_enqueue_video_handler() {
+    // Register the script (no dependencies)
+    wp_register_script(
+        'lambomerch-video', 
+        get_template_directory_uri() . '/js/video-handler.js', 
+        [], 
+        '1.0', 
+        true  // load in footer
+    );
+    wp_enqueue_script('lambomerch-video');
+}
+add_action('wp_enqueue_scripts', 'lambomerch_enqueue_video_handler');
+
+
+
 /**
  * Redirect variable products to a custom template file
  * This hook runs before the template is loaded
