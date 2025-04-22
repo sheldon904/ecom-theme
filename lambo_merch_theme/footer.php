@@ -32,13 +32,13 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                         </div>
                         
                         <!-- Vertically stacked navigation -->
-                        <div class="footer-nav">
+                        <div class="footer-nav text-center">
                             <ul>
-                                <li><a href="<?php echo esc_url(home_url('/shop')); ?>"><?php esc_html_e('Shop', 'lambo-merch'); ?></a></li>
-                                <li><a href="<?php echo esc_url(home_url('/about')); ?>"><?php esc_html_e('About', 'lambo-merch'); ?></a></li>
-                                <li><a href="<?php echo esc_url(home_url('/contact')); ?>"><?php esc_html_e('Contact', 'lambo-merch'); ?></a></li>
-                                <li><a href="<?php echo esc_url(home_url('/my-account')); ?>"><?php esc_html_e('My Account', 'lambo-merch'); ?></a></li>
-                                <li><a href="<?php echo esc_url(home_url('/wishlist')); ?>"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li>
+                            <center><li><a href="<?php echo esc_url(home_url('/shop')); ?>"><?php esc_html_e('Shop', 'lambo-merch'); ?></a></li></center>
+                            <center><li><a href="<?php echo esc_url(home_url('/about')); ?>"><?php esc_html_e('About', 'lambo-merch'); ?></a></li></center>
+                            <center><li><a href="<?php echo esc_url(home_url('/contact')); ?>"><?php esc_html_e('Contact', 'lambo-merch'); ?></a></li></center>
+                            <center><li><a href="<?php echo esc_url(home_url('/my-account')); ?>"><?php esc_html_e('My Account', 'lambo-merch'); ?></a></li></center>
+                            <center><li><a href="<?php echo esc_url(home_url('/wishlist')); ?>"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li></center>
                             </ul>
                         </div>
                         
