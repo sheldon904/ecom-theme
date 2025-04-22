@@ -1069,8 +1069,15 @@ a:hover {
     display: flex;
     position: relative;
     top: 45px;
-    flex-direction: row; /* Ensure horizontal layout */
+    flex-direction: row; /* Ensure horizontal layout for desktop */
     align-items: flex-start; /* Align items at the top */
+}
+
+/* Ensure desktop-only footer displays correctly */
+.desktop-only .footer-content-wrapper {
+    display: flex;
+    flex-direction: row !important;
+    align-items: flex-start !important;
 }
 
 .footer-logo {
@@ -1103,12 +1110,27 @@ a:hover {
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: column; /* Stack links vertically */
+    flex-direction: row; /* Horizontal by default for desktop */
 }
+
+/* Ensure desktop footer nav is horizontal */
+.desktop-only .footer-nav ul {
+    display: flex;
+    flex-direction: row !important;
+}
+
+/* For mobile, we'll override this in the media query */
 
 .footer-nav li {
     margin-bottom: 10px; /* Space between vertical items */
     text-align: left; /* Ensure left alignment on desktop */
+    margin-right: 15px; /* Space between horizontal items */
+}
+
+/* Ensure desktop footer nav items are horizontal */
+.desktop-only .footer-nav li {
+    display: inline-block;
+    text-align: left !important;
 }
 
 .footer-nav a {
@@ -1868,5 +1890,144 @@ body.has-sticky-header {
 .reset_variations:hover {
     color: var(--color-primary);
     text-decoration: underline;
+}
+
+/* Mobile-specific designs based on breakpoints */
+@media only screen and (max-width: 767px) {
+    /* Mobile homepage logo and title */
+    .mobile-homepage-logo {
+        width: 25%; /* 25% size as requested */
+        margin: 20px auto;
+        display: block;
+    }
+    
+    .mobile-homepage-title {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    /* Mobile shop now section - with button OVER the image */
+    .mobile-shop-now-container {
+        margin-bottom: 30px;
+        position: relative;
+    }
+    
+    .mobile-shop-now-container img {
+        width: 100%;
+        height: auto;
+    }
+    
+    .mobile-shop-now-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: var(--color-primary);
+        color: white;
+        padding: 12px 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 16px;
+        border: none;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        z-index: 10;
+        min-width: 160px;
+    }
+    
+    .mobile-shop-now-button:hover {
+        background-color: var(--color-primary-dark);
+        color: white;
+        text-decoration: none;
+    }
+    
+    /* Mobile footer adjustments */
+    .mobile-only .footer-content-wrapper {
+        flex-direction: column !important; /* Stack items on mobile */
+        top: 15px !important; /* Adjust top position on mobile */
+        display: flex !important;
+        width: 100% !important;
+    }
+    
+    .mobile-only .footer-logo img {
+        max-width: 25% !important; /* 25% size for footer logo */
+        margin: 0 auto !important;
+        display: block !important;
+    }
+    
+    .mobile-only .footer-nav ul {
+        flex-direction: column !important;
+        align-items: center !important; /* Center the links */
+        display: flex !important;
+    }
+    
+    .mobile-only .footer-nav li {
+        margin-right: 0 !important;
+        text-align: center !important;
+        margin-bottom: 15px !important;
+        display: block;
+        width: 100%;
+    }
+    
+    .footer-nav a {
+        font-size: 18px !important; /* Increase font size */
+        line-height: 1.2 !important; /* Decrease line height */
+    }
+    
+    /* Larger social icons for mobile */
+    .social-icons {
+        display: flex !important;
+        justify-content: center !important;
+        margin-top: 15px !important;
+    }
+    
+    .social-icon img,
+    .facebook-instagram img,
+    .youtube img {
+        height: 60px !important; /* Increase social icon size */
+        max-height: 60px !important;
+    }
+    
+    /* Ensure the subscribe section is properly centered */
+    .subscribe-section,
+    .subscribe-title,
+    .follow-title {
+        text-align: center !important;
+    }
+}
+
+/* =================================================== */
+/* CRITICAL: Desktop vs Mobile Responsive Display Rules */
+/* =================================================== */
+/* These rules MUST be at the end of the CSS file to ensure they take precedence */
+
+/* Default state (desktop) */
+.desktop-only {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Special handling for footer rows */
+.desktop-only.row {
+    display: flex !important;
+}
+
+.mobile-only {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Mobile breakpoint - Overrides desktop display settings */
+@media only screen and (max-width: 767px) {
+    .desktop-only {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    .mobile-only {
+        display: block !important;
+        visibility: visible !important;
+    }
 }
 EOF < /dev/null
