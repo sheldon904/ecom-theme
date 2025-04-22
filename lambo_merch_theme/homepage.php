@@ -70,24 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set visibility based on screen width
     desktopElements.forEach(function(el) {
-      // Handle special display requirements for footer content
-      if (el.classList.contains('row') && el.closest('.footer-widgets')) {
-        // For footer rows, which need to display as flex
-        el.style.display = isMobile ? 'none' : 'flex';
-      } else {
-        el.style.display = isMobile ? 'none' : 'block';
-      }
+      el.style.display = isMobile ? 'none' : 'block';
       el.style.visibility = isMobile ? 'hidden' : 'visible';
     });
     
     mobileElements.forEach(function(el) {
-      // Handle special display requirements for footer content
-      if (el.classList.contains('row') && el.closest('.footer-widgets')) {
-        // For footer rows, which need to display as flex
-        el.style.display = isMobile ? 'flex' : 'none';
-      } else {
-        el.style.display = isMobile ? 'block' : 'none';
-      }
+      el.style.display = isMobile ? 'block' : 'none';
       el.style.visibility = isMobile ? 'visible' : 'hidden';
     });
   }

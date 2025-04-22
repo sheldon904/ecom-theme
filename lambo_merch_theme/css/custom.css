@@ -1065,19 +1065,19 @@ a:hover {
     position: relative;
 }
 
+/* Desktop Footer Layout */
+.site-footer .row.desktop-only {
+    display: flex;
+    justify-content: space-between;
+}
+
 .footer-content-wrapper {
     display: flex;
     position: relative;
     top: 45px;
-    flex-direction: row; /* Ensure horizontal layout for desktop */
+    flex-direction: row; /* Ensure horizontal layout */
     align-items: flex-start; /* Align items at the top */
-}
-
-/* Ensure desktop-only footer displays correctly */
-.desktop-only .footer-content-wrapper {
-    display: flex;
-    flex-direction: row !important;
-    align-items: flex-start !important;
+    justify-content: flex-start; /* Align to the left side */
 }
 
 .footer-logo {
@@ -1110,27 +1110,12 @@ a:hover {
     padding: 0;
     margin: 0;
     display: flex;
-    flex-direction: row; /* Horizontal by default for desktop */
+    flex-direction: column; /* Stack links vertically */
 }
-
-/* Ensure desktop footer nav is horizontal */
-.desktop-only .footer-nav ul {
-    display: flex;
-    flex-direction: row !important;
-}
-
-/* For mobile, we'll override this in the media query */
 
 .footer-nav li {
     margin-bottom: 10px; /* Space between vertical items */
     text-align: left; /* Ensure left alignment on desktop */
-    margin-right: 15px; /* Space between horizontal items */
-}
-
-/* Ensure desktop footer nav items are horizontal */
-.desktop-only .footer-nav li {
-    display: inline-block;
-    text-align: left !important;
 }
 
 .footer-nav a {
@@ -1326,6 +1311,18 @@ a:hover {
     font-size: 32px;
     margin-bottom: 20px;
     text-transform: uppercase;
+}
+
+/* Desktop subscribe section alignment */
+@media only screen and (min-width: 768px) {
+    .desktop-only .subscribe-section {
+        text-align: right;
+    }
+    
+    .desktop-only .social-icons {
+        display: flex;
+        justify-content: flex-end;
+    }
 }
 
 /* Email Input Styling */
@@ -1943,31 +1940,26 @@ body.has-sticky-header {
     }
     
     /* Mobile footer adjustments */
-    .mobile-only .footer-content-wrapper {
+    .footer-content-wrapper {
         flex-direction: column !important; /* Stack items on mobile */
         top: 15px !important; /* Adjust top position on mobile */
-        display: flex !important;
-        width: 100% !important;
     }
     
-    .mobile-only .footer-logo img {
+    .footer-logo img {
         max-width: 25% !important; /* 25% size for footer logo */
         margin: 0 auto !important;
         display: block !important;
     }
     
-    .mobile-only .footer-nav ul {
+    .footer-nav ul {
         flex-direction: column !important;
         align-items: center !important; /* Center the links */
-        display: flex !important;
     }
     
-    .mobile-only .footer-nav li {
+    .footer-nav li {
         margin-right: 0 !important;
         text-align: center !important;
         margin-bottom: 15px !important;
-        display: block;
-        width: 100%;
     }
     
     .footer-nav a {
@@ -2008,8 +2000,7 @@ body.has-sticky-header {
     visibility: visible !important;
 }
 
-/* Special handling for footer rows */
-.desktop-only.row {
+.row.desktop-only {
     display: flex !important;
 }
 

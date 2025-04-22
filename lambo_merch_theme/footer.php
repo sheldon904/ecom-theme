@@ -95,7 +95,7 @@
                     
                     <div class="col-md-4">
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><center><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></center></h3>
+                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></h3>
                             <div class="email-signup">
                                 <form action="#" method="post" class="newsletter-form">
                                     <div class="email-input-wrap">
@@ -111,7 +111,7 @@
                                 </form>
                             </div>
                             
-                            <h3 class="follow-title"><center><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></center></h3>
+                            <h3 class="follow-title"><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></h3>
                             <div class="social-icons">
                                 <a href="https://www.instagram.com/bavarianrennsport/" target="_blank" class="social-icon facebook-instagram">
                                     <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/facebook_instagram.png" alt="Facebook/Instagram">
