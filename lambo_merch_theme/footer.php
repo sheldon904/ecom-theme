@@ -160,3 +160,56 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
 
 </body>
 </html>
+
+<style>
+@media (max-width: 767px) {
+    /* Existing mobile styles... */
+    
+    /* Increase line height for mobile footer links */
+    .footer-nav li {
+        margin-bottom: -2%; /* Set negative margin as requested */
+    }
+    
+    .footer-nav a {
+        line-height: 0.5; /* Add this line to increase spacing */
+        padding: 8px 0; /* Add padding for larger touch target */
+        font-size: 18px; /* Slightly larger font size */
+        display: inline-block; /* Makes the padding work properly */
+    }
+        /* Footer logo adjustments */
+    .footer-logo {
+        margin-bottom: -1%;
+        margin-top: -10%;
+    }
+
+    /* Subscription section spacing */
+    .subscribe-section {
+        margin-top: 5%;
+    }
+
+    /* Copyright text size */
+    .copyright {
+        font-size: 10px;
+    }
+    .footer-logo img {
+    max-width: 50%; /* Changed from 25% */
+    }
+    .subscribe-title {
+    font-size: 25px;
+    }   
+    .social-icon img,
+    .facebook-instagram img {
+        height: 65px;
+        max-height: 65px;
+    }
+    .youtube img {
+    height: 70px;
+    max-height: 70px;
+    }
+    .footer-bottom {
+    margin-top: -10px;
+    }
+}    
+
+
+</style>
