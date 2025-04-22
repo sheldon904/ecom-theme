@@ -102,29 +102,49 @@ get_header('shop');
                     </div><!-- .product-details-column -->
                 </div><!-- .product-detail-main -->
                 
-                <!-- Product Tabs Section - Removed Reviews, only keeping Details -->
-                <div class="row product-tabs-section">
-                    <div class="col-md-12">
-                        <div class="product-tabs">
-                            <ul class="tabs-nav">
-                                <li class="active">
-                                    <a href="#details" class="tab-link" data-tab="details">
-                                    <img src="<?php echo get_template_directory_uri(); ?>/images/backgrounds/Rectangle 10.png" class="tab-bg" alt="" style="max-width: auto !important; height: 105% !important;" />
-                                        <span>Details</span>
-                                    </a>
-                                </li>
-                            </ul>
-                            
-                            <div class="tabs-content">
-                                <div id="details" class="tab-content active">
-                                    <div class="product-description">
-                                        <?php echo wpautop( $product->get_description() ); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<!-- Product Tabs Section - Adding Reviews Tab -->
+<div class="row product-tabs-section">
+    <div class="col-md-12">
+        <div class="product-tabs">
+            <ul class="tabs-nav">
+                <li class="active">
+                    <a href="#details" class="tab-link" data-tab="details">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/backgrounds/Rectangle 10.png" class="tab-bg" alt="" style="max-width: auto !important; height: 105% !important; " />
+                        <span>Details</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#reviews" class="tab-link" data-tab="reviews" style="margin-left: -10%">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/backgrounds/Rectangle 10.png" class="tab-bg" alt="" style="max-width: auto !important; height: 105% !important; " />
+                        <span>Reviews</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="tabs-content">
+                <div id="details" class="tab-content active">
+                    <div class="product-description">
+                        <?php echo wpautop( $product->get_description() ); ?>
                     </div>
-                </div><!-- .product-tabs-section -->
+                </div>
+                
+                <div id="reviews" class="tab-content">
+                    <div class="product-reviews">
+                        <?php
+                        if ( comments_open() ) {
+                            comments_template();
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- .product-tabs-section -->
+
+
+
+
             </div><!-- #product-<?php the_ID(); ?> -->
             
             <?php
