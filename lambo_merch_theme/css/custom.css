@@ -1945,4 +1945,18 @@ body.has-sticky-header {
         margin-top: 15px;
     }
 }
+
+@media (max-width: 767px) {
+    /* Override the flex-start alignment for mobile devices */
+    .footer-content-wrapper {
+      align-items: center !important; /* Force center alignment on mobile */
+    }
+    
+    /* Make sure the logo is also centered */
+    .footer-logo {
+      margin-right: 0;
+      text-align: center;
+      width: 100%;
+    }
+  }
 EOF < /dev/null
