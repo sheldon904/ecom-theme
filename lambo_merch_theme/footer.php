@@ -5,8 +5,14 @@
  * @package Lambo_Merch
  */
 
-// Using CSS media queries for responsive design instead of PHP device detection
-// We no longer need the PHP variable
+// Include Mobile_Detect library if not already included
+if (!class_exists('Mobile_Detect')) {
+    require_once get_template_directory() . '/inc/mobile-detect.php';
+}
+
+$detect = new Mobile_Detect;
+// Check if user is on a mobile device like an iPhone
+$is_mobile = $detect->isMobile() && !$detect->isTablet();
 ?>
 
     </div><!-- #content -->
@@ -14,8 +20,9 @@
     <footer id="colophon" class="site-footer">
         <div class="footer-widgets">
             <div class="container">
-                <!-- Mobile footer layout (hidden on desktop via CSS) -->
-                <div class="row mobile-only">
+                <?php if ($is_mobile): // Mobile footer layout ?>
+                
+                <div class="row">
                     <div class="col-12 text-center">
                         <!-- Mobile footer logo at 25% size -->
                         <div class="footer-logo">
@@ -67,8 +74,9 @@
                     </div>
                 </div>
                 
-                <!-- Desktop footer layout (hidden on mobile via CSS) -->
-                <div class="row desktop-only">
+                <?php else: // Desktop footer layout ?>
+                
+                <div class="row">
                     <div class="col-md-4">
                         <div class="footer-content-wrapper">
                             <div class="footer-logo">
@@ -95,7 +103,7 @@
                     
                     <div class="col-md-4">
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></h3>
+                            <h3 class="subscribe-title"><center><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></center></h3>
                             <div class="email-signup">
                                 <form action="#" method="post" class="newsletter-form">
                                     <div class="email-input-wrap">
@@ -111,7 +119,7 @@
                                 </form>
                             </div>
                             
-                            <h3 class="follow-title"><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></h3>
+                            <h3 class="follow-title"><center><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></center></h3>
                             <div class="social-icons">
                                 <a href="https://www.instagram.com/bavarianrennsport/" target="_blank" class="social-icon facebook-instagram">
                                     <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/facebook_instagram.png" alt="Facebook/Instagram">
@@ -123,6 +131,8 @@
                         </div>
                     </div>
                 </div><!-- .row -->
+                
+                <?php endif; ?>
             </div><!-- .container -->
         </div><!-- .footer-widgets -->
         
