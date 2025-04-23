@@ -843,11 +843,74 @@ a:hover {
     pointer-events: none;
 }
 
-/* Add error styles for variation fields */
+.variations select,
+.quantity .value select {
+    /* layout & appearance */
+    padding: 12px 15px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #0f0f0f;
+    color: #fff;
+    font-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.variations select:hover,
+.quantity .value select:hover {
+    background-color: #1a1a1a;
+}
+.variations select:focus,
+.quantity .value select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+/* ensure both containers can position their arrow icons */
+.variations .value,
+.quantity .value {
+    position: relative;
+}
+
+/* your size‐selector icon (reused by quantity if you add one) */
+.size-selector-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: auto;
+    pointer-events: none;
+}
+
+/* ———————————————————— */
+/* Error Styles for Variations */
+/* ———————————————————— */
+
+/* Narrow the quantity dropdown to 15% */
+.quantity .value select {
+    width: 15%;
+}
+/* Overlay the down-arrow icon on the right */
+.quantity .value::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background-image: url('http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/size-down-arrow.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+}
 .variations select.error-field {
     border: 2px solid #e2401c !important;
 }
-
 .variation-error-message {
     background-color: #e2401c;
     color: #fff;
