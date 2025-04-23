@@ -227,11 +227,68 @@ get_header('shop');
   .single-product-image {
       margin-bottom: 30px;
   }
-  @media (max-width: 768px) {
+  
+  /* Mobile-specific styles */
+  @media (max-width: 767px) {
+      /* Reduce spacing above and below product image */
+      .single-product-image {
+          margin-bottom: 15px;
+          margin-top: -15px;
+      }
+      
+      /* Center the price */
+      .product-price-container {
+          text-align: center;
+      }
+      
+      /* Make size selector wider and remove label */
+      .variations .label {
+          display: none !important;
+      }
+      
+      .variations select,
+      .variations .value {
+          width: 100% !important;
+      }
+      
+      /* Adjust add to cart button position */
+      form.cart .variations_button .single_add_to_cart_button {
+          margin-bottom: 11% !important;
+      }
+      
+      /* Reduce space between wishlist button and divider */
+      .wishlist-button {
+          margin-bottom: -10px;
+      }
+      
+      .details-divider {
+          margin-top: 10px;
+      }
+      
+      /* Reduce text size in tab content */
+      .product-description p {
+          font-size: 1em !important;
+      }
+      
+      /* Hide entire tabs content by default */
+      .tabs-content {
+          display: none;
+      }
+      
+      /* Reduce space between tabs and related products section */
+      .product-tabs-section {
+          margin-bottom: 10px;
+      }
+      
+      .related-products-full-width {
+          margin-top: 20px;
+      }
+      
       .related-products-container {
           flex-direction: column;
           align-items: center;
       }
+      
       .related-product {
           flex: 0 0 100%;
           max-width: 90%;
@@ -263,6 +320,40 @@ jQuery(function($){
     // Replace the old input & buttons with a <div class="value"> wrapper
     $qtyWrap.find('label').after( $('<div class="value">').append($select) );
     $qtyWrap.find('button.minus, button.plus, input.qty').remove();
+  }
+  
+  // Mobile-specific tab behavior
+  if ($(window).width() <= 767) {
+    // Remove active class from all tabs initially
+    $('.tab-link').parent().removeClass('active');
+    
+    // Tab click behavior
+    $('.tab-link').on('click', function(e) {
+      e.preventDefault();
+      var tab = $(this).data('tab');
+      
+      // If this tab is already active, hide content and remove active class
+      if ($(this).parent().hasClass('active')) {
+        $(this).parent().removeClass('active');
+        $('.tabs-content').hide();
+        return;
+      }
+      
+      // Remove active class from all tabs
+      $('.tab-link').parent().removeClass('active');
+      
+      // Add active class to clicked tab
+      $(this).parent().addClass('active');
+      
+      // Show tabs-content container
+      $('.tabs-content').show();
+      
+      // Hide all tab content
+      $('.tab-content').hide();
+      
+      // Show selected tab content
+      $('#' + tab).show();
+    });
   }
 });
 </script>
