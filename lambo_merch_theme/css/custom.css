@@ -889,11 +889,43 @@ a:hover {
 /* ———————————————————— */
 /* Error Styles for Variations */
 /* ———————————————————— */
+.variations_button {
+    display: flex;               /* treat as flex container */
+    align-items: center;
+    justify-content: flex-start; /* children (qty + button) start at left */
+  }
+/* ── 2) Tweak the quantity box positioning ── */
+.variations_button .quantity {
+    margin-left: 0;    /* remove any auto-centering */
+    margin-right: 15px;/* space between qty and button */
+  }
+  
+  /* ── 3) Give the qty select a fixed container width ── */
+  .variations_button .quantity .value {
+    position: relative;
+    width: 60px;       /* adjust this to taste */
+  }
+  
+  /* ── 4) Make the select fill that container ── */
+  .variations_button .quantity .value select {
+    width: 100% !important;      /* override old 15% rule */
+    padding: 12px 15px;
+  }
+  
+  /* ── 5) Overlay your custom arrow on the right edge ── */
+  .variations_button .quantity .value::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 12px;                /* slide arrow into the select */
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background: url('http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/size-down-arrow.png') no-repeat center;
+    background-size: contain;
+    pointer-events: none;
+  }
 
-/* Narrow the quantity dropdown to 15% */
-.quantity .value select {
-    width: 15%;
-}
 /* Overlay the down-arrow icon on the right */
 .quantity .value::after {
     content: "";
@@ -1073,7 +1105,6 @@ a:hover {
     position: absolute;
     bottom: 15px;
     right: 15px;
-    background-color: rgba(0,0,0,0.7);
     color: var(--color-text);
     padding: 5px 15px;
     font-weight: 700;
@@ -1931,6 +1962,96 @@ body.has-sticky-header {
 .reset_variations:hover {
     color: var(--color-primary);
     text-decoration: underline;
+}
+.variations_button .single_add_to_cart_button {
+    background-color: #0f0f0f !important;  /* match select bg */
+    border: 1px solid #333 !important;     /* match select border */
+    color: #fff !important;                /* white text */
+    padding: 12px 15px !important;         /* same vertical padding as select */
+    margin-left: 15px;                     /* space from qty */
+    display: inline-block;                 /* sit inline */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* ── 3) Hover state (optional) ── */
+  .variations_button .single_add_to_cart_button:hover {
+    background-color: #1a1a1a !important;  /* match select hover */
+  }
+
+
+/* 1. Target your fallback button */
+.wishlist-button .add-to-wishlist {
+    background: url('http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/wishlist.png') no-repeat;
+    background-size: contain;
+    border: none;
+    height: 30px;     /* adjust to your image’s true height */
+    padding: 0;
+    text-indent: -9999px;  /* hides the “Add to Wishlist” text */
+    cursor: pointer;
+    display: inline-block;
+  }
+  
+  /* 2. If you’re using YITH’s shortcode (which outputs an <a> tag), override that too */
+  .yith-wcwl-add-to-wishlist a.add_to_wishlist {
+    background: url('http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/wishlist.png') no-repeat center center;
+    background-size: contain;
+    text-indent: -9999px;
+    width: 40px;       /* same image dimensions as above */
+    height: 40px;
+    display: inline-block;
+    padding: 0;
+    border: none;
+  }
+  
+
+
+/* ── Align Qty + Cart button and match button to selects ── */
+form.cart .variations_button {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  form.cart .variations_button .quantity {
+    width: auto !important;
+    margin-right: 15px !important;
+  }
+  
+  form.cart .variations_button .quantity .value {
+    width: 60px;             /* adjust if you want a narrower/wider qty */
+  }
+  
+  form.cart .variations_button .value select {
+    width: 100% !important;  /* fill its container */
+  }
+  
+  form.cart .variations_button .single_add_to_cart_button {
+    background-color: #0f0f0f !important; /* same as selects */
+    border: 1px solid #333 !important;
+    color: #fff !important;
+    padding: 12px 15px !important;
+    margin-left: 15px;      /* space between qty and button */
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  form.cart .variations_button .single_add_to_cart_button:hover {
+    background-color: #1a1a1a !important; /* same as select hover */
+  }
+  /* give the Add to Cart button some breathing room below */
+form.cart .variations_button .single_add_to_cart_button {
+    margin-bottom: 7% !important;
+  }
+
+  /* Unified background for size, quantity and Add-to-Cart */
+.variations select,
+.quantity .value select,
+form.cart .variations_button .single_add_to_cart_button {
+  background-color: #15191f !important;
+  border: 1px solid #15191f !important;
+  color: #fff !important; /* ensure text stays visible */
 }
 
 /* Mobile Homepage Specific Styles */

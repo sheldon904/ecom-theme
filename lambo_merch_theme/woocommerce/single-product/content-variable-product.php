@@ -59,9 +59,7 @@ if (post_password_required()) {
                     <?php echo apply_filters('woocommerce_short_description', $product->get_short_description()); ?>
                 </div>
                 
-                <div class="exclusive-product-notice">
-                    <p><?php echo esc_html__('Limited edition - Don\'t miss out!', 'lambo-merch'); ?></p>
-                </div>
+                
                 
                 <div class="product-variations">
                     <div class="size-selector">

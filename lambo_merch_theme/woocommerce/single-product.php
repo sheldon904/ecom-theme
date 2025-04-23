@@ -65,9 +65,7 @@ get_header('shop');
                 <?php echo apply_filters( 'woocommerce_short_description', $product->get_short_description() ); ?>
               </div>
               
-              <div class="exclusive-product-notice">
-                <p><?php echo esc_html__( 'Limited edition - Don\'t miss out!', 'lambo-merch' ); ?></p>
-              </div>
+             
               
               <div class="product-add-to-cart">
                 <?php
@@ -216,8 +214,6 @@ get_header('shop');
   }
   .related-product .product-price {
       position: absolute;
-      bottom: 30px;
-      right: 50px;
       color: white !important;
       font-size: 1.2rem;
       font-style: italic;

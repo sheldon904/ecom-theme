@@ -236,12 +236,6 @@ add_filter( 'woocommerce_product_tabs', 'lambo_merch_woocommerce_product_tabs' )
 /**
  * Add custom message to single product page
  */
-function lambo_merch_woocommerce_product_message() {
-    echo '<div class="exclusive-product-notice">';
-    echo '<p>' . esc_html__( 'Limited edition - Don\'t miss out!', 'lambo-merch' ) . '</p>';
-    echo '</div>';
-}
-add_action( 'woocommerce_single_product_summary', 'lambo_merch_woocommerce_product_message', 25 );
 
 /**
  * Set a flag when a variable product page is being displayed
