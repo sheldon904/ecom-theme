@@ -110,12 +110,8 @@ get_header();
         <div class="container-fluid p-0">
             <div class="row no-gutters">
                 <div class="col-12 text-center">
-                    <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/Big_LM_logo.png" alt="Lamborghini Merch Logo" class="mobile-homepage-logo" />
-                    <h1 class="mobile-homepage-title" style="font-family: 'Georgia', serif; font-style: italic;">Luxury Merch for Lambo Enthusiasts</h1>
-                </div>
-                
-                <div class="col-12 text-center">
                     <!-- Bull image with SHOP NOW button below -->
+                     <h1><span class="text-red">Bold</span> Gear for <span class="text-red">Bold</span> Enthusiasts</h1>
                     <div class="mobile-shop-now-container">
                         <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/bull_1.png" alt="Lamborghini Bull" class="img-fluid" />
                         <a href="/shop" class="mobile-shop-now-button">SHOP NOW</a>
