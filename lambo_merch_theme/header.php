@@ -53,24 +53,22 @@
       height: 28px;
     }
 
-    /* Logo sizing + shift left */
+    /* Logo sizing + centering (removed shift to avoid blocking icons) */
     .mobile-header .logo img {
-      width: 50%;         /* half the header width */
+      width: 50%;
       height: auto;
     }
     .mobile-header .logo {
-      margin-left: -20%;  /* move logo left by 20% */
+      margin: 0 auto;
     }
   }
 </style>
-
-
 </head>
 
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<!-- DESKTOP HEADER (unchanged) -->
+<!-- DESKTOP HEADER -->
 <div class="desktop-header">
   <header id="masthead" class="site-header sticky">
     <div class="header-main">
@@ -103,10 +101,11 @@
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/favs.png' ); ?>"
                        alt="Favorites" class="header-icon">
                 </a>
-                <a href="<?php echo esc_url( home_url( '/cart' ) ); ?>" class="header-icon-link">
+                <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-icon-link">
                   <span class="icon-text">CART</span>
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/cart.png' ); ?>"
                        alt="Cart" class="header-icon">
+                  <span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
                 </a>
               </div>
             </div>
@@ -128,9 +127,10 @@
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/favs.png"
            alt="Favorites">
     </a>
-    <a href="https://lambomerch.madefreshdev.cloud/cart/">
+    <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-icon-link">
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/cart.png"
-           alt="Cart">
+           alt="Cart" class="header-icon">
+      <span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
     </a>
   </div>
 
