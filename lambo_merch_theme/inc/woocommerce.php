@@ -175,11 +175,79 @@ function lambo_merch_woocommerce_checkout_fields( $fields ) {
             
             // Add form-group class to field container
             $field['class'][] = 'form-group';
+            
+            // Add custom styling for Lambo Merch theme
+            $field['input_class'][] = 'lambo-merch-input';
+            
+            // Increase font size and padding for better readability
+            $field['input_class'][] = 'lambo-checkout-field';
+            
+            // Optional: Change placeholder text
+            if (isset($field['placeholder'])) {
+                $field['placeholder'] = 'Enter ' . strtolower($field['label']);
+            }
         }
     }
     
     return $fields;
 }
+
+/**
+ * Remove Express Checkout options
+ */
+function lambo_merch_remove_checkout_elements() {
+    // Remove Express Checkout
+    remove_action('woocommerce_checkout_before_customer_details', 'wc_checkout_express_payment');
+    
+    // Remove Coupon form from the standard position
+    remove_action('woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10);
+    
+    // Also remove via filter for versions that use block checkout
+    add_filter('wc_get_template', function($template, $template_name, $args, $template_path, $default_path) {
+        // Remove express payment template
+        if ($template_name == 'checkout/express-payment.php' || 
+            $template_name == 'checkout/payment-method.php' && isset($args['gateway_id']) && strpos($args['gateway_id'], 'express') !== false) {
+            return '';
+        }
+        return $template;
+    }, 10, 5);
+    
+    // Remove coupon block
+    add_filter('woocommerce_checkout_coupon_message', function() {
+        return '';
+    });
+}
+add_action('init', 'lambo_merch_remove_checkout_elements');
+
+/**
+ * Disable Express Payment Methods
+ */
+function lambo_merch_disable_express_payment() {
+    return false;
+}
+add_filter('woocommerce_should_load_express_payment', 'lambo_merch_disable_express_payment');
+add_filter('woocommerce_available_payment_gateways', function($gateways) {
+    // Remove any payment methods except Stripe
+    foreach ($gateways as $key => $gateway) {
+        // Keep only the Stripe gateway, remove all others
+        if ($key !== 'stripe') {
+            unset($gateways[$key]);
+        }
+    }
+    return $gateways;
+}, 100);
+
+/**
+ * Configure Stripe as the only payment method
+ */
+function lambo_merch_stripe_only() {
+    // Only run if WooCommerce Stripe Gateway is active
+    if (class_exists('WC_Stripe_Payment_Gateway')) {
+        // Set Stripe as default
+        update_option('woocommerce_default_gateway', 'stripe');
+    }
+}
+add_action('init', 'lambo_merch_stripe_only');
 add_filter( 'woocommerce_checkout_fields', 'lambo_merch_woocommerce_checkout_fields' );
 
 /**

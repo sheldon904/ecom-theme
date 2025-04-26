@@ -1,0 +1,318 @@
+/**
+ * Custom Checkout Styling for Lambo Merch Theme
+ */
+
+/* Main checkout container */
+.woocommerce-checkout {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Override container backgrounds */
+.wc-block-checkout,
+.wp-block-woocommerce-checkout,
+.wc-block-components-sidebar,
+.wc-block-components-main,
+.woocommerce-checkout form,
+.woocommerce-checkout-payment,
+#payment, 
+.checkout-container {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Form fields - with extremely specific targeting to avoid affecting footer - using lambo-checkout-page class */
+body.lambo-checkout-page .checkout-container input[type="text"],
+body.lambo-checkout-page .checkout-container input[type="tel"],
+body.lambo-checkout-page .checkout-container input[type="email"],
+body.lambo-checkout-page .checkout-container input[type="password"],
+body.lambo-checkout-page .checkout-container textarea,
+body.lambo-checkout-page .checkout-container select,
+body.lambo-checkout-page .checkout-container .select2-container--default .select2-selection--single,
+#customer_details input[type="text"],
+#customer_details input[type="tel"],
+#customer_details input[type="email"],
+#customer_details input[type="password"],
+#customer_details textarea,
+#customer_details select,
+.checkout-container input[type="text"],
+.checkout-container input[type="tel"],
+.checkout-container input[type="email"],
+.checkout-container input[type="password"],
+.checkout-container textarea,
+.checkout-container select,
+.wc-block-checkout__contact-fields input[type="text"],
+.wc-block-checkout__contact-fields input[type="tel"],
+.wc-block-checkout__contact-fields input[type="email"],
+.wc-block-checkout__contact-fields input[type="password"],
+.wc-block-checkout__shipping-address-block input[type="text"],
+.wc-block-checkout__shipping-address-block input[type="tel"],
+.wc-block-checkout__shipping-address-block input[type="email"],
+.wc-block-checkout__shipping-address-block input[type="password"],
+.wc-block-checkout__billing-address-block input[type="text"],
+.wc-block-checkout__billing-address-block input[type="tel"],
+.wc-block-checkout__billing-address-block input[type="email"],
+.wc-block-checkout__billing-address-block input[type="password"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input input[type="text"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input input[type="email"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input input[type="tel"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input input[type="number"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input textarea,
+.wp-block-woocommerce-checkout .wc-block-components-select .components-custom-select-control__button,
+/* Stripe-specific fields */
+body.woocommerce-checkout #stripe-payment-data input.wc-stripe-elements-field,
+body.woocommerce-checkout .wc-stripe-elements-field,
+.stripe-card-group iframe,
+.wc-stripe-elements-field,
+/* Card fields */
+#payment .payment_box input[type="text"],
+#payment .payment_box input[type="password"],
+#payment .payment_box input[type="email"],
+#payment iframe,
+#stripe-payment-data .stripe-card-group {
+  background-color: #333333 !important;
+  border: 1px solid #444444 !important;
+  color: #ffffff !important;
+  padding: 12px !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+  box-shadow: none !important;
+}
+
+/* Focus state */
+.woocommerce-checkout input[type="text"]:focus,
+.woocommerce-checkout input[type="tel"]:focus,
+.woocommerce-checkout input[type="email"]:focus,
+.woocommerce-checkout input[type="password"]:focus,
+.woocommerce-checkout textarea:focus,
+.woocommerce-checkout select:focus {
+  border-color: #ff0000 !important;
+  outline: none !important;
+}
+
+/* Form labels */
+.woocommerce-checkout label {
+  color: #ffffff !important;
+  font-weight: bold !important;
+  margin-bottom: 8px !important;
+}
+
+/* Payment methods */
+#payment {
+  background-color: #000000 !important;
+}
+
+#payment div.payment_box {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+#payment .payment_methods li {
+  background-color: #000000 !important;
+}
+
+#payment .payment_methods li label {
+  color: #ffffff !important;
+}
+
+/* Standard theme checkbox styling for consistency */
+.checkout-container input[type="checkbox"],
+.woocommerce-checkout input[type="checkbox"],
+.wp-block-woocommerce-checkout .wc-block-components-checkbox input[type="checkbox"],
+.wp-block-woocommerce-checkout #ship-to-different-address input[type="checkbox"],
+.wp-block-woocommerce-checkout .woocommerce-form__input-checkbox,
+.wp-block-woocommerce-checkout .wc-block-components-radio-control__input {
+  /* Keep browser default styling but with minor enhancements */
+  width: 1.25em !important;
+  height: 1.25em !important;
+  margin-right: 0.5em !important;
+  border: 1px solid #555 !important;
+  background-color: #333333 !important;
+  vertical-align: middle !important;
+}
+
+/* Don't apply custom "after" styling, let the browser default checkmark show */
+.wp-block-woocommerce-checkout input[type="checkbox"]:checked,
+.woocommerce-checkout input[type="checkbox"]:checked,
+.wp-block-woocommerce-checkout .wc-block-components-checkbox input[type="checkbox"]:checked {
+  accent-color: #ff0000 !important;
+  background-color: #333333 !important;
+}
+
+/* Credit card fields - remove and let Stripe handle */
+.wp-block-woocommerce-checkout .wc-block-components-payment-method-icons {
+  /* Hide default payment method icons */
+  display: none !important;
+}
+
+/* Fix phone field with country flag */
+.wc-block-components-phone-number-input {
+  position: relative !important;
+}
+
+.wc-block-components-phone-number-input .wc-block-components-phone-number-input__flag {
+  left: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 2 !important;
+}
+
+.wc-block-components-phone-number-input .wc-block-components-phone-number-input__input {
+  padding-left: 50px !important; /* Give more space for flag */
+}
+
+/* Fix field labels */
+.wc-block-components-text-input label {
+  position: static !important;
+  display: block !important;
+  margin-bottom: 5px !important;
+  transform: none !important;
+  font-size: 14px !important;
+  color: #ffffff !important;
+}
+
+/* Properly position the labels relative to inputs */
+.wc-block-components-text-input.is-active label {
+  transform: none !important;
+  font-size: 14px !important;
+  margin-bottom: 5px !important;
+  position: static !important;
+}
+
+/* Make sure phone field label doesn't overlap with flag */
+.wc-block-components-phone-number-input__label,
+.wc-block-components-phone-number-input label {
+  display: block !important;
+  position: static !important;
+  margin-bottom: 5px !important;
+  transform: none !important;
+  font-size: 14px !important;
+  color: #ffffff !important;
+}
+
+/* Place order button */
+.woocommerce-checkout #place_order {
+  background-color: #ff0000 !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  font-weight: bold !important;
+  padding: 1rem 2rem !important;
+  border: none !important;
+  width: 100% !important;
+  transition: background-color 0.3s ease !important;
+}
+
+.woocommerce-checkout #place_order:hover {
+  background-color: #cc0000 !important;
+}
+
+/* Order review */
+.woocommerce-checkout .woocommerce-checkout-review-order-table {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+}
+
+.woocommerce-checkout .woocommerce-checkout-review-order-table th,
+.woocommerce-checkout .woocommerce-checkout-review-order-table td {
+  border-color: #444444 !important;
+  padding: 12px !important;
+}
+
+/* Hide express checkout section - make sure we catch everything */
+.woocommerce-checkout .express-checkout-section,
+.woocommerce-checkout #express-payment-method,
+.wp-block-woocommerce-checkout-express-payment-block,
+.wc-block-components-express-payment,
+.wc-block-components-express-payment--from-saved-payment-methods,
+div[class*="express-payment"],
+.express-payment-section {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Hide coupon form in totals */
+.woocommerce-checkout .coupon-form,
+.wp-block-woocommerce-checkout-order-summary-coupon-form-block {
+  display: none !important;
+}
+
+/* Block-based checkout customizations */
+.wc-block-checkout,
+.wp-block-woocommerce-checkout,
+body.woocommerce-checkout .wp-block-woocommerce-checkout {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+.wc-block-components-text-input input[type="text"],
+.wc-block-components-text-input input[type="email"],
+.wc-block-components-text-input input[type="tel"],
+.wc-block-components-text-input input[type="number"],
+.wc-block-components-text-input textarea,
+.wc-block-components-select .components-custom-select-control__button {
+  background-color: #333333 !important;
+  border: 1px solid #444444 !important;
+  color: #ffffff !important;
+  padding: 12px !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+}
+
+.wc-block-components-checkout-step__heading {
+  color: #ffffff !important;
+}
+
+.wc-block-components-checkout-step__title {
+  font-weight: bold !important;
+}
+
+.wc-block-components-checkout-form {
+  margin: 0 !important;
+}
+
+.wc-block-components-checkout-step,
+.wc-block-checkout__contact-fields,
+.wp-block-woocommerce-checkout-contact-information-block,
+.wc-block-components-checkout-step {
+  background-color: #000000 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.wc-block-components-totals-item {
+  color: #ffffff !important;
+}
+
+.wc-block-components-order-summary-item__total-price,
+.wc-block-components-totals-footer-item .wc-block-components-totals-item__value,
+.wc-block-components-totals-grand-total .wc-block-components-totals-item__label,
+.wc-block-components-totals-grand-total .wc-block-components-totals-item__value {
+  color: #ffffff !important;
+  font-weight: bold !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .woocommerce-checkout .col2-set .form-row-first,
+  .woocommerce-checkout .col2-set .form-row-last {
+    width: 100% !important;
+    float: none !important;
+  }
+  
+  .wc-block-components-checkout-step {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  .woocommerce-checkout #customer_details,
+  .woocommerce-checkout #order_review {
+    width: 100% !important;
+    float: none !important;
+  }
+}
