@@ -87,7 +87,9 @@ document.addEventListener('DOMContentLoaded', function() {
             '#payment input[type="number"], ' +
             '#payment input[type="password"], ' +
             'select.select, ' +
-            'textarea.input-text'
+            'textarea.input-text, ' +
+            '#order_comments, ' +
+            'textarea#order_comments'
         );
         
         inputFields.forEach(field => {
@@ -109,6 +111,65 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
         
+        // Direct style injection for all inputs on the page
+        const styleTag = document.createElement('style');
+        styleTag.textContent = `
+            /* All form fields */
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="number"],
+            input[type="password"],
+            textarea,
+            select,
+            textarea#order_comments,
+            #order_comments,
+            .select2-selection,
+            .select2-container .select2-selection--single,
+            .select2-container--default .select2-selection--single,
+            .woocommerce form .form-row .select2-container,
+            .country_select,
+            .state_select,
+            .select2-dropdown,
+            .select2-container--open .select2-dropdown,
+            #billing_country_field .select2-selection,
+            #shipping_country_field .select2-selection,
+            #billing_state_field .select2-selection,
+            #shipping_state_field .select2-selection {
+                background-color: #333333 !important;
+                color: #ffffff !important;
+                border: 1px solid #444444 !important;
+                padding: 12px !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+            }
+            
+            /* Select2 dropdown and results */
+            .select2-dropdown,
+            .select2-results__option,
+            .select2-container--default .select2-results__option,
+            .select2-search--dropdown .select2-search__field,
+            .select2-container--default .select2-search--dropdown .select2-search__field {
+                background-color: #333333 !important;
+                color: #ffffff !important;
+            }
+            
+            /* Select2 arrow color fix */
+            .select2-container--default .select2-selection--single .select2-selection__arrow b {
+                border-color: #ffffff transparent transparent transparent !important;
+            }
+            
+            /* Fix order notes field specifically */
+            textarea#order_comments,
+            #order_comments,
+            .woocommerce form .form-row textarea#order_comments {
+                background-color: #333333 !important;
+                color: #ffffff !important;
+                min-height: 100px;
+            }
+        `;
+        document.head.appendChild(styleTag);
+        
         // Credit card specific fields - direct targeting
         // These payment fields are often in iframes or loaded dynamically after page load
         setTimeout(function() {
@@ -128,11 +189,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, 1000);
         
-        // Select dropdowns
+        // Select dropdowns - more comprehensive selectors
         const selectFields = document.querySelectorAll(
+            'select, ' +
             'select.select, ' +
             '.woocommerce-input-wrapper select, ' +
-            '.wc-block-components-select .components-custom-select-control__button'
+            '.country_select, ' + 
+            '.state_select, ' +
+            '.wc-block-components-select .components-custom-select-control__button, ' +
+            '.woocommerce form .form-row .select2-container .select2-selection, ' +
+            '#billing_country_field .select2-selection, ' +
+            '#shipping_country_field .select2-selection, ' +
+            '#billing_state_field .select2-selection, ' +
+            '#shipping_state_field .select2-selection, ' +
+            '.select2-container--default .select2-selection--single, ' +
+            '.select2-container .select2-selection--single, ' +
+            '.select2-dropdown'
         );
         
         selectFields.forEach(select => {
@@ -182,44 +254,79 @@ document.addEventListener('DOMContentLoaded', function() {
         subtree: true
     });
     
-    // Function to handle Stripe and remove default payment methods
+    // Function to handle Stripe and preserve default payment methods
     const configurePayments = function() {
-        // Remove default payment methods
-        const paymentOptions = document.querySelectorAll('.wc-block-components-radio-control-accordion-option');
-        paymentOptions.forEach(option => {
-            option.style.display = 'none';
-        });
-        
-        // Remove default payment block entirely
-        const paymentBlock = document.querySelector('.wp-block-woocommerce-checkout-payment-block');
-        if (paymentBlock) {
-            const stripeForm = document.querySelector('#stripe-payment-data, .payment_method_stripe');
-            
-            // If we have a Stripe form, move it outside
-            if (stripeForm) {
-                // Create a container for Stripe
-                const stripeContainer = document.createElement('div');
-                stripeContainer.id = 'custom-stripe-container';
-                stripeContainer.style.backgroundColor = '#000000';
-                stripeContainer.style.padding = '20px';
-                stripeContainer.style.marginBottom = '20px';
+        // Make sure Stripe payment section is visible and styled correctly
+        const stripeForms = document.querySelectorAll('#stripe-payment-data, .wc-stripe-elements-field, .payment_method_stripe, .stripe-card-group');
+        stripeForms.forEach(form => {
+            if (form) {
+                form.style.display = 'block';
+                form.style.visibility = 'visible';
+                form.style.opacity = '1';
+                form.style.backgroundColor = '#333333';
+                form.style.border = '1px solid #444444';
                 
-                // Add a title
-                const stripeTitle = document.createElement('h3');
-                stripeTitle.innerText = 'Payment Information';
-                stripeTitle.style.color = '#ffffff';
-                stripeTitle.style.marginBottom = '15px';
-                stripeContainer.appendChild(stripeTitle);
-                
-                // Move the Stripe form
-                stripeContainer.appendChild(stripeForm.cloneNode(true));
-                
-                // Insert before the payment block or replace it
-                if (paymentBlock.parentNode) {
-                    paymentBlock.parentNode.insertBefore(stripeContainer, paymentBlock);
-                    paymentBlock.style.display = 'none';
+                // Make all the parent elements visible too
+                let parent = form.parentNode;
+                while (parent) {
+                    parent.style.display = 'block';
+                    parent.style.visibility = 'visible';
+                    parent.style.opacity = '1';
+                    if (parent.classList.contains('payment_box') || 
+                        parent.classList.contains('payment_method_stripe')) {
+                        parent.style.backgroundColor = '#000000';
+                    }
+                    parent = parent.parentNode;
+                    if (parent === document.body) break;
                 }
             }
+        });
+        
+        // Make sure payment methods section is visible
+        const paymentMethods = document.querySelectorAll(
+            '.payment_methods, ' + 
+            '.wc_payment_methods, ' + 
+            '.woocommerce-checkout-payment, ' + 
+            '#payment, ' + 
+            '.wc-stripe-elements-field, ' + 
+            '.wc-stripe-iban-element-field, ' + 
+            '#stripe-payment-data, ' + 
+            '#stripe-card-element, ' + 
+            '#wc-stripe-cc-form'
+        );
+        
+        paymentMethods.forEach(method => {
+            if (method) {
+                method.style.display = 'block';
+                method.style.visibility = 'visible';
+                method.style.opacity = '1';
+            }
+        });
+        
+        // Ensure the Stripe payment iframe is visible
+        const stripeIframes = document.querySelectorAll('iframe[id*="stripe"], iframe[name*="stripe"], iframe[id*="card"], iframe[name*="card"], iframe[title*="card"]');
+        stripeIframes.forEach(iframe => {
+            iframe.style.display = 'block';
+            iframe.style.visibility = 'visible';
+            iframe.style.opacity = '1';
+            iframe.style.height = 'auto';
+            iframe.style.minHeight = '40px';
+            
+            // Make parent containers visible too
+            if (iframe.parentNode) {
+                iframe.parentNode.style.display = 'block';
+                iframe.parentNode.style.visibility = 'visible';
+                iframe.parentNode.style.opacity = '1';
+            }
+        });
+        
+        // Style but don't hide the payment block
+        const paymentBlock = document.querySelector('.wp-block-woocommerce-checkout-payment-block');
+        if (paymentBlock) {
+            paymentBlock.style.backgroundColor = '#000000';
+            paymentBlock.style.display = 'block';
+            paymentBlock.style.visibility = 'visible';
+            paymentBlock.style.opacity = '1';
         }
         
         // Style Stripe elements
@@ -228,8 +335,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to style Stripe elements 
     const styleStripeElements = function() {
-        // Style Stripe fields
-        const stripeElements = document.querySelectorAll('.wc-stripe-elements-field, .stripe-card-group, #stripe-payment-data');
+        // Style Stripe fields - more comprehensive selectors
+        const stripeElements = document.querySelectorAll(
+            '.wc-stripe-elements-field, ' + 
+            '.stripe-card-group, ' + 
+            '#stripe-payment-data, ' + 
+            '.wc-stripe-iban-element-field, ' +
+            '.StripeElement, ' +
+            '.stripe-card-element, ' +
+            '.wc-credit-card-form, ' +
+            '.payment_box, ' +
+            '#add_payment_method #payment div.payment_box, ' +
+            '.woocommerce-checkout #payment div.payment_box, ' +
+            '#stripe-card-element, ' +
+            '#stripe-exp-element, ' +
+            '#stripe-cvc-element, ' +
+            '.payment_method_stripe, ' +
+            '#wc-stripe-cc-form'
+        );
+        
         stripeElements.forEach(el => {
             el.style.backgroundColor = '#333333';
             el.style.color = '#ffffff';
@@ -237,11 +361,71 @@ document.addEventListener('DOMContentLoaded', function() {
             el.style.padding = '12px';
             el.style.borderRadius = '0';
         });
+
+        // Add style tag to document head for cross-origin iframe targeting
+        const stripeStyle = document.createElement('style');
+        stripeStyle.textContent = `
+            /* Direct element targeting for Stripe */
+            .stripe-card-element, 
+            .wc-stripe-elements-field,
+            .wc-stripe-iban-element-field,
+            #stripe-card-element,
+            #stripe-exp-element,
+            #stripe-cvc-element,
+            .StripeElement,
+            #payment div.payment_box iframe,
+            .payment_box iframe,
+            #stripe-payment-data iframe,
+            iframe[id*="stripe"],
+            iframe[name*="stripe"],
+            iframe[id*="card"],
+            iframe[name*="card"],
+            iframe[title*="card"],
+            iframe[title*="stripe"] {
+                background-color: #333333 !important;
+                color: #ffffff !important;
+                border: 1px solid #444444 !important;
+            }
+            
+            /* Target Select2 dropdowns */
+            .select2-container--default .select2-selection--single,
+            .select2-container--default .select2-results__option,
+            .select2-dropdown,
+            .select2-search--dropdown .select2-search__field,
+            #billing_country_field .select2-selection,
+            #shipping_country_field .select2-selection,
+            #billing_state_field .select2-selection,
+            #shipping_state_field .select2-selection {
+                background-color: #333333 !important;
+                color: #ffffff !important;
+                border-color: #444444 !important;
+            }
+            
+            /* Target order notes field specifically */
+            #order_comments,
+            textarea#order_comments,
+            .woocommerce-checkout textarea#order_comments {
+                background-color: #333333 !important;
+                color: #ffffff !important;
+                border: 1px solid #444444 !important;
+            }
+        `;
+        document.head.appendChild(stripeStyle);
         
-        // Target credit card frames by any attributes that might identify them
+        // Target credit card frames
         const frames = document.querySelectorAll('iframe[id*="card"], iframe[name*="card"], iframe[title*="card"], iframe[id*="stripe"], iframe[name*="stripe"]');
         
         frames.forEach(frame => {
+            // Style the iframe container
+            if (frame.parentNode) {
+                frame.parentNode.style.backgroundColor = '#333333';
+                frame.parentNode.style.border = '1px solid #444444';
+                frame.parentNode.style.padding = '0';
+            }
+            
+            // Style the iframe itself
+            frame.style.backgroundColor = '#333333';
+            
             try {
                 // Try to access the frame's document (only works for same-origin frames)
                 const frameDocument = frame.contentDocument || frame.contentWindow.document;
@@ -252,8 +436,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     styleEl = frameDocument.createElement('style');
                     styleEl.id = 'lambo-card-styling';
                     styleEl.textContent = `
-                        body, html { background: transparent !important; }
-                        input, .InputElement, .InputContainer {
+                        body, html { background: #333333 !important; }
+                        input, .InputElement, .InputContainer, .StripeElement, 
+                        .StripeElement--empty, .StripeElement--focus, .StripeElement--invalid,
+                        div, span, p {
                             background-color: #333333 !important;
                             color: #ffffff !important;
                             border: 1px solid #444444 !important;
@@ -266,13 +452,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Directly style input elements
-                const inputs = frameDocument.querySelectorAll('input');
+                const inputs = frameDocument.querySelectorAll('input, div, span');
                 inputs.forEach(input => {
                     input.style.backgroundColor = '#333333';
                     input.style.color = '#ffffff';
                     input.style.border = '1px solid #444444';
-                    input.style.padding = '12px';
-                    input.style.borderRadius = '0';
                 });
             } catch (e) {
                 // Ignore cross-origin errors
@@ -308,6 +492,37 @@ document.addEventListener('DOMContentLoaded', function() {
         containers.forEach(container => {
             container.style.backgroundColor = '#000000';
             container.style.color = '#ffffff';
+        });
+        
+        // IMPORTANT: Ensure footer email field is NOT styled
+        const footerEmailInputs = document.querySelectorAll('footer input[type="email"], .footer input[type="email"], #colophon input[type="email"], .site-footer input[type="email"]');
+        footerEmailInputs.forEach(input => {
+            input.style.backgroundColor = '';
+            input.style.color = '';
+            input.style.border = '';
+            input.classList.add('footer-email-exempt');
+        });
+        
+        // CRITICAL: Make sure Stripe payment elements are always visible
+        const stripeElements = document.querySelectorAll('#payment, #stripe-payment-data, .wc-stripe-elements-field, .payment_method_stripe, .stripe-card-group, iframe[id*="stripe"], iframe[name*="stripe"], iframe[id*="card"], iframe[name*="card"], iframe[title*="card"]');
+        stripeElements.forEach(el => {
+            el.style.display = 'block';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+            
+            // Set z-index to ensure visibility
+            if (el.style.zIndex < 100) {
+                el.style.zIndex = '100';
+            }
+            
+            // Make sure all parent elements are visible too
+            let parent = el.parentNode;
+            while (parent && parent !== document.body) {
+                parent.style.display = 'block';
+                parent.style.visibility = 'visible';
+                parent.style.opacity = '1';
+                parent = parent.parentNode;
+            }
         });
     };
     

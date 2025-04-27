@@ -64,6 +64,13 @@ body.woocommerce-checkout #stripe-payment-data input.wc-stripe-elements-field,
 body.woocommerce-checkout .wc-stripe-elements-field,
 .stripe-card-group iframe,
 .wc-stripe-elements-field,
+.StripeElement,
+.wc-stripe-iban-element-field,
+#stripe-payment-data iframe,
+div[id^="stripe-"] iframe,
+#wc-stripe-cc-form iframe,
+.payment_box iframe,
+#stripe-payment-data .StripeElement,
 /* Card fields */
 #payment .payment_box input[type="text"],
 #payment .payment_box input[type="password"],
@@ -171,6 +178,27 @@ body.woocommerce-checkout .wc-stripe-elements-field,
   color: #ffffff !important;
 }
 
+/* Style select dropdowns */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100% !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+  border-color: #ffffff transparent transparent transparent !important;
+}
+
+/* Custom styling for native select elements */
+select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px top 50% !important;
+  background-size: 16px 16px !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  padding-right: 30px !important;
+}
+
 /* Properly position the labels relative to inputs */
 .wc-block-components-text-input.is-active label {
   transform: none !important;
@@ -255,7 +283,19 @@ body.woocommerce-checkout .wp-block-woocommerce-checkout {
 .wc-block-components-text-input input[type="tel"],
 .wc-block-components-text-input input[type="number"],
 .wc-block-components-text-input textarea,
-.wc-block-components-select .components-custom-select-control__button {
+.wc-block-components-select .components-custom-select-control__button,
+.country_select,
+.state_select,
+#billing_country_field .select2-selection,
+#shipping_country_field .select2-selection,
+#billing_state_field .select2-selection,
+#shipping_state_field .select2-selection,
+.select2-container--default .select2-selection--single,
+.select2-container .select2-selection--single,
+select.country_to_state,
+select.state_select,
+.woocommerce-Input.select,
+.select2-dropdown {
   background-color: #333333 !important;
   border: 1px solid #444444 !important;
   color: #ffffff !important;
