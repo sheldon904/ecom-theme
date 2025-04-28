@@ -16,16 +16,43 @@
             $('body').addClass('admin-bar');
         }
         
-        // Menu toggle functionality
-        $('.menu-toggle').on('click', function(e) {
+        // Menu toggle functionality - simplified and direct
+        $('.menu-toggle, #desktop-menu-toggle').on('click', function(e) {
             e.preventDefault();
-            $('#site-navigation').toggleClass('toggled');
+            
+            var siteNav = $('#site-navigation');
+            if (siteNav.length === 0) {
+                console.error('Navigation menu not found!');
+                return;
+            }
+            
+            // Display it!
+            siteNav.show();
+            
+            // For debugging, apply all possible display methods
+            siteNav.attr('style', 'display: block !important; visibility: visible !important; opacity: 1 !important; z-index: 100000 !important');
+            siteNav.addClass('toggled');
+            
+            // Add body class
+            $('body').addClass('menu-open');
+            
+            console.log('Menu toggle activated');
+        });
+        
+        // Close menu button
+        $('.close-menu, #site-navigation .close-menu').on('click', function() {
+            console.log('Close menu clicked');
+            $('#site-navigation').removeClass('toggled').css('display', 'none');
+            $('body').removeClass('menu-open');
         });
         
         // Close menu when clicking outside
         $(document).on('click', function(e) {
-            if (!$(e.target).closest('.menu-toggle').length && !$(e.target).closest('#site-navigation').length) {
+            if ($('#site-navigation').hasClass('toggled') && 
+                !$(e.target).closest('.menu-toggle').length && 
+                !$(e.target).closest('#site-navigation').length) {
                 $('#site-navigation').removeClass('toggled');
+                $('body').removeClass('menu-open');
             }
         });
         

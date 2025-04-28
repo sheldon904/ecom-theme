@@ -50,6 +50,7 @@ function lambo_merch_setup() {
 		array(
 			'primary' => esc_html__( 'Primary Menu', 'lambo-merch' ),
 			'footer' => esc_html__( 'Footer Menu', 'lambo-merch' ),
+			'main_menu' => esc_html__( 'Main Menu', 'lambo-merch' ),
 		)
 	);
 
@@ -218,6 +219,22 @@ function lambo_merch_scripts() {
 			$classes[] = 'lambo-checkout-page';
 			return $classes;
 		});
+	}
+	
+	// Order Received / Thank You page CSS
+	if ( is_wc_endpoint_url( 'order-received' ) ) {
+		wp_enqueue_style( 'lambo-merch-order-received', get_template_directory_uri() . '/css/order-received.css', array(), LAMBO_MERCH_VERSION );
+		
+		// Add a class to body for specific order received styling
+		add_filter( 'body_class', function( $classes ) {
+			$classes[] = 'lambo-order-received-page';
+			return $classes;
+		});
+		
+		// Add extra head content for order-received page
+		add_action('wp_head', function() {
+			include_once(get_template_directory() . '/woocommerce/checkout/thankyou-head.php');
+		}, 999);
 	}
 	
 	// Bootstrap JS

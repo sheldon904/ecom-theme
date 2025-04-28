@@ -1,0 +1,252 @@
+/**
+ * Order Received / Thank You Page Styling
+ */
+
+/* Override WooCommerce default styling */
+body.lambo-order-received-page {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+body.lambo-order-received-page .entry-content,
+body.lambo-order-received-page #content,
+body.lambo-order-received-page .site-content {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+/* Main container */
+.woocommerce-order.lambo-order-received {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: "Source Sans Pro", sans-serif;
+    color: #fff;
+    background-color: #000 !important;
+}
+
+/* Confirmation header with success icon */
+.order-confirmation-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+
+.success-icon {
+    margin: 0 auto 20px;
+    width: 64px;
+    height: 64px;
+}
+
+.woocommerce-thankyou-order-received {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Order Items Summary (Simple) at the top */
+.order-items-summary {
+    margin-bottom: 30px;
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.order-items-summary h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    color: #fff;
+}
+
+.items-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.order-item-card {
+    display: flex;
+    background: #222;
+    padding: 15px;
+    border-radius: 5px;
+    align-items: center;
+    width: 100%;
+}
+
+.item-thumbnail {
+    margin-right: 15px;
+}
+
+.item-thumbnail img {
+    width: 64px;
+    height: auto;
+    border-radius: 3px;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+
+.item-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.order-totals {
+    margin-top: 20px;
+    border-top: 1px solid #333;
+    padding-top: 15px;
+}
+
+.totals-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px 0;
+}
+
+.grand-total {
+    border-top: 1px solid #333;
+    padding-top: 10px;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* Order overview section */
+.order-overview-container {
+    margin-bottom: 30px;
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.woocommerce-order-overview {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.woocommerce-order-overview li {
+    flex: 1 1 200px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-right: 1px solid #333;
+}
+
+.woocommerce-order-overview li:last-child {
+    border-right: none;
+}
+
+.woocommerce-order-overview li strong {
+    display: block;
+    margin-top: 5px;
+    font-size: 16px;
+    color: #ddd;
+}
+
+/* Customer details box */
+.customer-details-box {
+    background: #1a1a1a;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 5px;
+}
+
+.customer-details-section h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    color: #fff;
+}
+
+/* Address sections */
+.address-section {
+    margin-bottom: 20px;
+}
+
+.address-section h4 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #ddd;
+}
+
+.address-section address {
+    line-height: 1.7;
+    color: #bbb;
+}
+
+/* Continue shopping button */
+.continue-shopping-container {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.button.continue-shopping {
+    display: inline-block;
+    background-color: #222;
+    color: #fff !important;
+    font-weight: 600;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 3px;
+    border: 1px solid #444;
+    transition: all 0.3s ease;
+}
+
+.button.continue-shopping:hover {
+    background-color: #333;
+    border-color: #555;
+    color: #fff !important;
+}
+
+/* Make sure all links are visible */
+.lambo-order-received a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.lambo-order-received a:hover {
+    color: #ddd;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .woocommerce-order-overview {
+        display: block;
+    }
+    
+    .woocommerce-order-overview li {
+        border-right: none;
+        border-bottom: 1px solid #333;
+        padding: 10px 0;
+    }
+    
+    .woocommerce-order-overview li:last-child {
+        border-bottom: none;
+    }
+    
+    .items-grid {
+        flex-direction: column;
+    }
+    
+    .order-item-card {
+        width: 100%;
+    }
+}

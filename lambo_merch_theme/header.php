@@ -17,6 +17,98 @@
   /* Desktop vs Mobile */
   .desktop-header { display: block; }
   .mobile-header  { display: none; }
+  
+  /* Main Menu Styling */
+  #site-navigation {
+    display: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    background-color: #000 !important;
+    padding: 20px !important;
+    z-index: 999999 !important;
+    width: 300px !important;
+    height: 100vh !important;
+    border-right: 1px solid #444 !important;
+    overflow-y: auto !important;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.5) !important;
+  }
+  
+  body.menu-open #site-navigation,
+  #site-navigation.toggled {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  body.menu-open:before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 99999;
+  }
+  
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+  }
+  
+  .menu-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  
+  .close-menu {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .close-menu:hover {
+    color: #999;
+  }
+  
+  .main-navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .main-navigation ul li {
+    margin-bottom: 15px;
+  }
+  
+  .main-navigation ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    text-transform: uppercase;
+    display: block;
+    padding: 8px 0;
+    transition: color 0.3s ease;
+  }
+  
+  .main-navigation ul li a:hover {
+    color: #999;
+  }
 
   @media (max-width: 767px) {
     /* Hide desktop, show mobile */
@@ -68,6 +160,35 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
+<!-- Main Navigation Menu (outside the header for proper positioning) -->
+<nav id="site-navigation" class="main-navigation">
+  <div class="menu-header">
+    <span class="menu-title">MENU</span>
+    <button class="close-menu">×</button>
+  </div>
+  <?php
+  if (has_nav_menu('main_menu')) {
+    wp_nav_menu(
+      array(
+        'theme_location' => 'main_menu',
+        'menu_id'        => 'main-menu',
+        'container'      => 'div',
+        'container_class' => 'main-menu-container',
+        'fallback_cb'    => false,
+      )
+    );
+  } else {
+    // Fallback menu with basic links
+    echo '<div class="main-menu-container"><ul id="main-menu" class="menu">';
+    echo '<li><a href="' . esc_url(home_url('/')) . '">Home</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/shop')) . '">Shop</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/about')) . '">About</a></li>';
+    echo '<li><a href="' . esc_url(home_url('/contact')) . '">Contact</a></li>';
+    echo '</ul></div>';
+  }
+  ?> 
+</nav>
+
 <!-- DESKTOP HEADER -->
 <div class="desktop-header">
   <header id="masthead" class="site-header sticky">
@@ -77,7 +198,7 @@
           <div class="col-12">
             <div class="header-content">
               <div class="header-left">
-                <a href="#" class="menu-toggle">
+                <a href="#" class="menu-toggle" id="desktop-menu-toggle">
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/menu_bars.png' ); ?>"
                        alt="Menu" class="menu-icon">
                   <span class="menu-text">MENU</span>
