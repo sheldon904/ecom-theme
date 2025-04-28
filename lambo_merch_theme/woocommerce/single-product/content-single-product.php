@@ -167,7 +167,7 @@ if (post_password_required()) {
                         if (function_exists('YITH_WCWL')): ?>
                             <?php echo do_shortcode('[yith_wcwl_add_to_wishlist]'); ?>
                         <?php else: ?>
-                            <button class="add-to-wishlist">Add to Wishlist</button>
+                            <button class="add-to-wishlist" data-product-id="<?php echo esc_attr($product->get_id()); ?>">Add to Wishlist</button>
                         <?php endif; ?>
                     </div>
                 </div>

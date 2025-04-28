@@ -38,7 +38,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                             <center><li><a href="<?php echo esc_url(home_url('/about')); ?>"><?php esc_html_e('About', 'lambo-merch'); ?></a></li></center>
                             <center><li><a href="<?php echo esc_url(home_url('/contact')); ?>"><?php esc_html_e('Contact', 'lambo-merch'); ?></a></li></center>
                             <center><li><a href="<?php echo esc_url(home_url('/my-account')); ?>"><?php esc_html_e('My Account', 'lambo-merch'); ?></a></li></center>
-                            <center><li><a href="<?php echo esc_url(home_url('/wishlist')); ?>"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li></center>
+                            <center><li><a href="/favs-2/"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li></center>
                             </ul>
                         </div>
                         
@@ -91,7 +91,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                                     <li><a href="<?php echo esc_url(home_url('/about')); ?>"><?php esc_html_e('About', 'lambo-merch'); ?></a></li>
                                     <li><a href="<?php echo esc_url(home_url('/contact')); ?>"><?php esc_html_e('Contact', 'lambo-merch'); ?></a></li>
                                     <li><a href="<?php echo esc_url(home_url('/my-account')); ?>"><?php esc_html_e('My Account', 'lambo-merch'); ?></a></li>
-                                    <li><a href="<?php echo esc_url(home_url('/wishlist')); ?>"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li>
+                                    <li><a href="/favs-2/"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li>
                                 </ul>
                             </div>
                         </div>

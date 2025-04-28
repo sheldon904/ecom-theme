@@ -209,6 +209,18 @@ function lambo_merch_scripts() {
 	// Custom CSS
 	wp_enqueue_style( 'lambo-merch-custom', get_template_directory_uri() . '/css/custom.css', array(), LAMBO_MERCH_VERSION );
 	
+	// Header Fixes CSS
+	wp_enqueue_style( 'lambo-merch-header-fixes', get_template_directory_uri() . '/css/header-fixes.css', array(), LAMBO_MERCH_VERSION );
+	
+	// Wishlist CSS and JS
+	wp_enqueue_style( 'lambo-merch-wishlist', get_template_directory_uri() . '/css/wishlist.css', array(), LAMBO_MERCH_VERSION );
+	wp_enqueue_script( 'lambo-merch-wishlist', get_template_directory_uri() . '/js/wishlist.js', array( 'jquery' ), LAMBO_MERCH_VERSION, true );
+	
+	// Search CSS
+	if ( is_search() || is_page_template( 'search-page.php' ) ) {
+		wp_enqueue_style( 'lambo-merch-search', get_template_directory_uri() . '/css/search.css', array(), LAMBO_MERCH_VERSION );
+	}
+	
 	// Checkout CSS and JS - only load on checkout page
 	if ( is_checkout() || is_page_template( 'checkoutpage.php' ) ) {
 		wp_enqueue_style( 'lambo-merch-checkout', get_template_directory_uri() . '/css/checkout.css', array(), LAMBO_MERCH_VERSION );
@@ -744,3 +756,67 @@ add_action('wp_enqueue_scripts', 'lambomerch_enqueue_video_handler');
 //     return $template;
 // }
 // add_filter('woocommerce_locate_template', 'lambo_merch_variable_product_template', 999, 3);
+
+/**
+ * Register and load custom templates
+ */
+function lambo_merch_register_templates() {
+    // Check if pages exist, if not create them
+    $wishlist_page = get_page_by_path('wishlist');
+    if (!$wishlist_page) {
+        wp_insert_post(array(
+            'post_title' => 'Favorites',
+            'post_content' => '',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_name' => 'wishlist',
+        ));
+    }
+    
+    $search_page = get_page_by_path('search');
+    if (!$search_page) {
+        wp_insert_post(array(
+            'post_title' => 'Search',
+            'post_content' => '',
+            'post_status' => 'publish',
+            'post_type' => 'page',
+            'post_name' => 'search',
+        ));
+    }
+}
+add_action('init', 'lambo_merch_register_templates');
+
+/**
+ * AJAX handler for adding products to cart from wishlist
+ */
+function lambo_merch_add_to_cart() {
+    if (!isset($_POST['product_id'])) {
+        wp_send_json_error();
+        return;
+    }
+    
+    $product_id = absint($_POST['product_id']);
+    $quantity = isset($_POST['quantity']) ? absint($_POST['quantity']) : 1;
+    
+    if (WC()->cart->add_to_cart($product_id, $quantity)) {
+        ob_start();
+        woocommerce_mini_cart();
+        $mini_cart = ob_get_clean();
+        
+        wp_send_json_success(array(
+            'fragments' => apply_filters(
+                'woocommerce_add_to_cart_fragments',
+                array(
+                    'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+                )
+            ),
+            'cart_count' => WC()->cart->get_cart_contents_count(),
+        ));
+    } else {
+        wp_send_json_error();
+    }
+    
+    wp_die();
+}
+add_action('wp_ajax_lambo_add_to_cart', 'lambo_merch_add_to_cart');
+add_action('wp_ajax_nopriv_lambo_add_to_cart', 'lambo_merch_add_to_cart');

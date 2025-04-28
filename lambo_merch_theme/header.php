@@ -212,13 +212,15 @@
                 </div>
               </div>
               <div class="header-right">
-                <a href="<?php echo esc_url( home_url( '/search' ) ); ?>" class="header-icon-link">
+                <a href="https://lambomerch.madefreshdev.cloud/search-2/" class="header-icon-link search-icon">
                   <span class="icon-text">SEARCH</span>
+                  <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/search.png' ); ?>"
                        alt="Search" class="header-icon">
                 </a>
-                <a href="<?php echo esc_url( home_url( '/wishlist' ) ); ?>" class="header-icon-link">
+                <a href="/favs-2/" class="header-icon-link">
                   <span class="icon-text">FAVS</span>
+                  <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/favs.png' ); ?>"
                        alt="Favorites" class="header-icon">
                 </a>
@@ -240,11 +242,13 @@
 <!-- MOBILE HEADER -->
 <div class="mobile-header">
   <div class="icon-set d-flex">
-    <a href="<?php echo esc_url( home_url( '/search' ) ); ?>">
+    <a href="/search-2/" class="search-icon">
+      <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/search.png"
            alt="Search">
     </a>
-    <a href="<?php echo esc_url( home_url( '/wishlist' ) ); ?>">
+    <a href="/favs-2/" class="fav-icon">
+      <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/favs.png"
            alt="Favorites">
     </a>
