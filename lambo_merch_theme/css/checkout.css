@@ -89,7 +89,7 @@ div[id^="stripe-"] iframe,
 /* Focus state */
 .woocommerce-checkout input[type="text"]:focus,
 .woocommerce-checkout input[type="tel"]:focus,
-.woocommerce-checkout input[type="email"]:focus,
+.woocommerce-checkout input[type="email"]:not(footer input[type="email"]):not(.footer input[type="email"]):not(#colophon input[type="email"]):not(.site-footer input[type="email"]):not(.email-input-wrap input[type="email"]):focus,
 .woocommerce-checkout input[type="password"]:focus,
 .woocommerce-checkout textarea:focus,
 .woocommerce-checkout select:focus {
@@ -279,7 +279,7 @@ body.woocommerce-checkout .wp-block-woocommerce-checkout {
 }
 
 .wc-block-components-text-input input[type="text"],
-.wc-block-components-text-input input[type="email"],
+.wc-block-components-text-input input[type="email"]:not(footer input[type="email"]):not(.footer input[type="email"]):not(#colophon input[type="email"]):not(.site-footer input[type="email"]):not(.email-input-wrap input[type="email"]),
 .wc-block-components-text-input input[type="tel"],
 .wc-block-components-text-input input[type="number"],
 .wc-block-components-text-input textarea,
@@ -355,4 +355,19 @@ select.state_select,
     width: 100% !important;
     float: none !important;
   }
+}
+
+/* Explicitly reset footer email input styling */
+footer input[type="email"],
+.footer input[type="email"],
+#colophon input[type="email"],
+.site-footer input[type="email"],
+.email-input-wrap input[type="email"],
+.footer-email-exempt {
+  background-color: initial !important;
+  color: initial !important;
+  border: initial !important;
+  padding: initial !important;
+  border-radius: initial !important;
+  box-shadow: initial !important;
 }

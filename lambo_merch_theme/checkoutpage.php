@@ -238,6 +238,16 @@ function lambo_merch_inline_payment_styles() {
             border-radius: initial !important;
             box-shadow: initial !important;
         }
+    /* Exempt footer email input */
+footer input[type="email"],
+.footer input[type="email"],
+#colophon input[type="email"],
+.site-footer input[type="email"] {
+    background-color: transparent !important;
+    color: inherit !important;
+    border: none !important;
+    padding: initial !important;
+}    
     </style>
     <script>
     // This script runs immediately to style the payment fields - more aggressive approach

@@ -35,6 +35,25 @@ document.addEventListener('DOMContentLoaded', function() {
         configurePayments();
     }, 2000); // Check every 2 seconds - slow enough not to cause issues
     
+
+
+    // Make sure footer email field is not affected
+const footerEmailInputs = document.querySelectorAll('footer input[type="email"], .footer input[type="email"], #colophon input[type="email"], .site-footer input[type="email"]');
+footerEmailInputs.forEach(function(input) {
+    // Reset any styling that might have been applied
+    input.style.backgroundColor = '';
+    input.style.color = '';
+    input.style.border = '';
+    input.style.borderColor = '';
+    input.removeAttribute('style');
+    
+    // Add a specific class to identify it
+    input.classList.add('footer-email-exempt');
+});
+
+
+
+
     /**
      * Apply global styles to the page via a style tag
      * This is safe and won't affect input behavior
