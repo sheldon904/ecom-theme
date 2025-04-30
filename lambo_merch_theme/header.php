@@ -14,260 +14,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <?php wp_head(); ?>
   <style>
-  /* Desktop vs Mobile */
-  .desktop-header { display: block; }
-  .mobile-header  { display: none; }
-
-  /* Media query for all devices larger than iPad Pro */
-  @media (min-width: 1025px) {
+    /* … your existing styles … */
     .desktop-header { display: block; }
     .mobile-header  { display: none; }
-  }
-  
-  /* Main Menu Styling */
-  /* Desktop Menu */
-  #site-navigation {
-    display: none !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    background-color: #fff !important;
-    padding: 0 !important;
-    z-index: 999999 !important;
-    width: 300px !important;
-    height: auto !important;
-    overflow-y: auto !important;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.2) !important;
-  }
-  
-  /* Red bar at top and bottom of menu */
-  #site-navigation:before,
-  #site-navigation:after {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 5px;
-    background-color: #ff0000;
-  }
-  
-  /* Menu visibility when open */
-  body.menu-open #site-navigation,
-  #site-navigation.toggled {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-  
-  /* Overlay when menu is open */
-  body.menu-open:before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 99999;
-  }
-  
-  /* Mobile menu header with logo */
-  .menu-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #000;
-    padding: 10px 20px;
-  }
-  
-  /* Menu logo (only visible on mobile) */
-  .menu-logo {
-    display: none;
-  }
-  
-  /* Hide menu title */
-  .menu-title {
-    display: none;
-  }
-  
-  /* Close button */
-  .close-menu {
-    background: none;
-    border: none;
-    color: #777;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .close-menu:hover {
-    color: #555;
-  }
-  
-  /* Menu items container */
-  .main-menu-container {
-    padding: 20px;
-  }
-  
-  /* Menu lists */
-  .main-navigation ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  
-  /* Menu items */
-  .main-navigation ul li {
-    margin-bottom: 0;
-    border-bottom: 1px solid #ff0000;
-  }
-  
-  .main-navigation ul li:last-child {
-    border-bottom: none;
-  }
-  
-  /* Menu links */
-  .main-navigation ul li a {
-    color: #000;
-    text-decoration: none;
-    font-size: 16px;
-    text-transform: uppercase;
-    display: block;
-    padding: 12px 0;
-    transition: color 0.3s ease;
-  }
-  
-  /* Add > character before menu items */
-  .main-navigation ul li a:before {
-    content: "> ";
-  }
-  
-  .main-navigation ul li a:hover {
-    color: #ff0000;
-  }
-  
-  /* Account and Wishlist links at bottom */
-  .menu-footer {
-    padding: 20px;
-    margin-top: 20px;
-  }
-  
-  .menu-footer a {
-    display: flex;
-    align-items: center;
-    color: #000;
-    text-decoration: none;
-    font-size: 16px;
-    margin-bottom: 15px;
-  }
-  
-  .menu-footer a:hover {
-    color: #ff0000;
-  }
-  
-  .menu-footer img {
-    width: 24px;
-    height: auto;
-    margin-right: 10px;
-  }
-
-  @media (max-width: 1024px) {
-    /* Hide desktop, show mobile for iPad Pro 12.9, iPad Pro 13 and smaller */
-    .desktop-header { display: none !important; }
-    .mobile-header  {
-      display: flex !important;
-      align-items: center;
-      justify-content: space-between;
-      background: #000;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 9999;
-      padding: 0.1rem 1rem; /* snug top/bottom */
+    /* … media queries, etc … */
+    @media (max-width: 767px) {
+      .desktop-header { display: none !important; }
+      .mobile-header  {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        background: #000;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+        padding: 0.1rem 1rem;
+      }
+      body,
+      #content {
+        padding-top: 3.5rem;
+      }
     }
-    
-    /* Critical fix for menu items disappearing below 768px */
-    .main-navigation ul,
-    .main-navigation .main-menu-container,
-    .main-navigation ul li,
-    .main-navigation ul li a {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-    }
-
-    /* Push page content below sticky header */
-    body,
-    #content {
-      padding-top: 3.5rem; /* adjust if header height changes */
-    }
-
-    /* Icon container */
-    .mobile-header .icon-set {
-      display: flex;
-      align-items: center;
-    }
-    .mobile-header .icon-set a {
-      margin-right: 1rem;  /* generous spacing */
-    }
-    .mobile-header .icon-set img {
-      width: auto;
-      height: 28px;
-    }
-
-    /* Logo sizing + centering (removed shift to avoid blocking icons) */
-    .mobile-header .logo img {
-      width: 50%;
-      height: auto;
-    }
-    .mobile-header .logo {
-      margin: 0 auto;
-    }
-    
-    /* Mobile menu structure */
-    #site-navigation {
-      background-color: #fff !important;
-    }
-    
-    /* Ensure mobile menu content is accessible */
-    .main-menu-container {
-      max-height: 50vh;
-      overflow-y: auto;
-    }
-    
-    /* Show mobile menu logo */
-    .menu-logo {
-      display: block;
-      text-align: center;
-      padding: 10px 0;
-    }
-    
-    .menu-logo img {
-      width: 50%;
-      height: auto;
-    }
-    
-    /* Mobile menu toggle button */
-    .mobile-menu-toggle {
-      display: flex;
-      align-items: center;
-      background: transparent;
-      border: none;
-      padding: 0;
-      margin-left: auto;
-    }
-    
-    .mobile-menu-toggle img {
-      width: 24px;
-      height: auto;
-    }
-  }
-</style>
+  </style>
 </head>
 
 <body <?php body_class(); ?>>
@@ -276,46 +46,23 @@
 <!-- Main Navigation Menu (outside the header for proper positioning) -->
 <nav id="site-navigation" class="main-navigation">
   <div class="menu-header">
-    <!-- Logo for mobile menu -->
     <div class="menu-logo">
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/Big_LM_logo.png" alt="Lambo Merch Logo">
     </div>
-    <!-- Desktop menu title (hidden) -->
     <span class="menu-title"></span>
     <button class="close-menu">×</button>
   </div>
   <?php
-  if (has_nav_menu('main_menu')) {
-    wp_nav_menu(
-      array(
-        'theme_location' => 'main_menu',
-        'menu_id'        => 'main-menu',
-        'container'      => 'div',
-        'container_class' => 'main-menu-container',
-        'fallback_cb'    => false,
-      )
-    );
-  } else {
-    // Fallback menu with basic links
-    echo '<div class="main-menu-container"><ul id="main-menu" class="menu">';
-    echo '<li><a href="' . esc_url(home_url('/')) . '">Home</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/shop')) . '">Shop</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/about')) . '">About</a></li>';
-    echo '<li><a href="' . esc_url(home_url('/contact')) . '">Contact</a></li>';
-    echo '</ul></div>';
+  if ( has_nav_menu( 'main_menu' ) ) {
+    wp_nav_menu( array(
+      'theme_location'  => 'main_menu',
+      'menu_id'         => 'main-menu',
+      'container'       => 'div',
+      'container_class' => 'main-menu-container',
+      'fallback_cb'     => false,
+    ) );
   }
   ?>
-  <!-- Account and Wishlist links at bottom of menu -->
-  <div class="menu-footer">
-    <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>">
-      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account_icon.png" alt="My Account">
-      MY ACCOUNT
-    </a>
-    <a href="/favs-2/">
-      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/favs_icon.png" alt="Favorites">
-      FAVS
-    </a>
-  </div>
 </nav>
 
 <!-- DESKTOP HEADER -->
@@ -341,12 +88,11 @@
                 </div>
               </div>
               <div class="header-right">
-                <a href="https://lambomerch.madefreshdev.cloud/search-2/" class="header-icon-link search-icon">
-                  <span class="icon-text">SEARCH</span>
-                  <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
-                  <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/search.png' ); ?>"
-                       alt="Search" class="header-icon">
-                </a>
+                <!-- FiboSearch bar -->
+                <div class="header-search">
+                  <?php echo do_shortcode( '[fibosearch]' ); ?>
+                </div>
+
                 <a href="/favs-2/" class="header-icon-link">
                   <span class="icon-text">FAVS</span>
                   <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
@@ -377,24 +123,22 @@
 <!-- MOBILE HEADER -->
 <div class="mobile-header">
   <div class="icon-set d-flex">
-    <a href="/search-2/" class="search-icon">
-      <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
-      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/search.png"
-           alt="Search">
-    </a>
+    <!-- FiboSearch bar (mobile) -->
+    <div class="mobile-search">
+      <?php echo do_shortcode( '[fibosearch]' ); ?>
+    </div>
+
     <a href="/favs-2/" class="fav-icon">
       <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
-      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/favs.png"
-           alt="Favorites">
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/favs.png" alt="Favorites">
     </a>
     <a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="account-icon">
       <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
-      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account.png"
-           alt="My Account">
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account.png" alt="My Account">
     </a>
-    <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-icon-link">
-      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/cart.png"
-           alt="Cart" class="header-icon">
+    <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="cart-icon">
+      <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/cart.png" alt="Cart">
       <span class="cart-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span>
     </a>
   </div>
@@ -407,7 +151,7 @@
   </div>
 
   <a href="#" class="mobile-menu-toggle">
-    <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/menu_bars.png' ); ?>" 
+    <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/menu_bars.png' ); ?>"
          alt="Menu" class="menu-icon">
   </a>
 </div>
