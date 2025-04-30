@@ -224,6 +224,12 @@
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/favs.png' ); ?>"
                        alt="Favorites" class="header-icon">
                 </a>
+                <a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="header-icon-link">
+                  <span class="icon-text">MY ACCOUNT</span>
+                  <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
+                  <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account.png"
+                       alt="My Account" class="header-icon">
+                </a>
                 <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-icon-link">
                   <span class="icon-text">CART</span>
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/cart.png' ); ?>"
@@ -251,6 +257,11 @@
       <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/favs.png"
            alt="Favorites">
+    </a>
+    <a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="account-icon">
+      <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account.png"
+           alt="My Account">
     </a>
     <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-icon-link">
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/cart.png"
