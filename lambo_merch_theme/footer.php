@@ -143,7 +143,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                     <div class="col-md-12">
                         <div class="copyright">
                             <p>
-                                &copy; <?php echo date('Y'); ?> BAVARIAN RENNSPORT |
+                                &copy; <?php echo date('Y'); ?> Lambo Merch |
                                 <a href="<?php echo esc_url(home_url('/privacy-policy')); ?>"><?php esc_html_e('PRIVACY POLICY', 'lambo-merch'); ?></a> |
                                 <a href="<?php echo esc_url(home_url('/terms-of-use')); ?>"><?php esc_html_e('TERMS OF USE', 'lambo-merch'); ?></a> |
                                 <?php esc_html_e('WEBSITE DESIGN BY', 'lambo-merch'); ?> <a href="https://mediamade.fresh" target="_blank" class="media-made"><?php esc_html_e('MEDIA MADE FRESH', 'lambo-merch'); ?></a>
