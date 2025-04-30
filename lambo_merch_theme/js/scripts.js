@@ -1,14 +1,16 @@
 jQuery(document).ready(function($) {
-    // Mobile menu toggle
+    // Desktop and mobile menu toggle
     $('.menu-toggle, .mobile-menu-toggle').click(function(e) {
         e.preventDefault();
         $('body').toggleClass('menu-open');
+        $('#site-navigation').toggleClass('toggled');
     });
     
-    // Close button for mobile menu
+    // Close button for menu
     $('.close-menu').click(function(e) {
         e.preventDefault();
         $('body').removeClass('menu-open');
+        $('#site-navigation').removeClass('toggled');
     });
     
     // Email form focus effect

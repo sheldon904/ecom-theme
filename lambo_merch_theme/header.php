@@ -17,23 +17,40 @@
   /* Desktop vs Mobile */
   .desktop-header { display: block; }
   .mobile-header  { display: none; }
+
+  /* Media query for all devices larger than iPad Pro */
+  @media (min-width: 1025px) {
+    .desktop-header { display: block; }
+    .mobile-header  { display: none; }
+  }
   
   /* Main Menu Styling */
+  /* Desktop Menu */
   #site-navigation {
     display: none !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
-    background-color: #000 !important;
-    padding: 20px !important;
+    background-color: #fff !important;
+    padding: 0 !important;
     z-index: 999999 !important;
     width: 300px !important;
     height: 100vh !important;
-    border-right: 1px solid #444 !important;
     overflow-y: auto !important;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.5) !important;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2) !important;
   }
   
+  /* Red bar at top and bottom of menu */
+  #site-navigation:before,
+  #site-navigation:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 5px;
+    background-color: #ff0000;
+  }
+  
+  /* Menu visibility when open */
   body.menu-open #site-navigation,
   #site-navigation.toggled {
     display: block !important;
@@ -41,6 +58,7 @@
     opacity: 1 !important;
   }
   
+  /* Overlay when menu is open */
   body.menu-open:before {
     content: "";
     position: fixed;
@@ -52,15 +70,21 @@
     z-index: 99999;
   }
   
+  /* Mobile menu header with logo */
   .menu-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #333;
+    background-color: #000;
+    padding: 10px 20px;
   }
   
+  /* Menu logo (only visible on mobile) */
+  .menu-logo {
+    display: none;
+  }
+  
+  /* Menu title (only for desktop) */
   .menu-title {
     font-size: 18px;
     font-weight: bold;
@@ -68,10 +92,11 @@
     text-transform: uppercase;
   }
   
+  /* Close button */
   .close-menu {
     background: none;
     border: none;
-    color: #fff;
+    color: #777;
     font-size: 24px;
     cursor: pointer;
     padding: 0;
@@ -83,35 +108,78 @@
   }
   
   .close-menu:hover {
-    color: #999;
+    color: #555;
   }
   
+  /* Menu items container */
+  .main-menu-container {
+    padding: 20px;
+  }
+  
+  /* Menu lists */
   .main-navigation ul {
     list-style: none;
     margin: 0;
     padding: 0;
   }
   
+  /* Menu items */
   .main-navigation ul li {
-    margin-bottom: 15px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #ff0000;
   }
   
+  .main-navigation ul li:last-child {
+    border-bottom: none;
+  }
+  
+  /* Menu links */
   .main-navigation ul li a {
-    color: #fff;
+    color: #000;
     text-decoration: none;
     font-size: 16px;
     text-transform: uppercase;
     display: block;
-    padding: 8px 0;
+    padding: 12px 0;
     transition: color 0.3s ease;
   }
   
+  /* Add > character before menu items */
+  .main-navigation ul li a:before {
+    content: "> ";
+  }
+  
   .main-navigation ul li a:hover {
-    color: #999;
+    color: #ff0000;
+  }
+  
+  /* Account and Wishlist links at bottom */
+  .menu-footer {
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .menu-footer a {
+    display: flex;
+    align-items: center;
+    color: #000;
+    text-decoration: none;
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .menu-footer a:hover {
+    color: #ff0000;
+  }
+  
+  .menu-footer img {
+    width: 24px;
+    height: auto;
+    margin-right: 10px;
   }
 
-  @media (max-width: 767px) {
-    /* Hide desktop, show mobile */
+  @media (max-width: 1024px) {
+    /* Hide desktop, show mobile for iPad Pro 12.9, iPad Pro 13 and smaller */
     .desktop-header { display: none !important; }
     .mobile-header  {
       display: flex !important;
@@ -153,6 +221,38 @@
     .mobile-header .logo {
       margin: 0 auto;
     }
+    
+    /* Mobile menu structure */
+    #site-navigation {
+      background-color: #fff !important;
+    }
+    
+    /* Show mobile menu logo */
+    .menu-logo {
+      display: block;
+      text-align: center;
+      padding: 10px 0;
+    }
+    
+    .menu-logo img {
+      width: 25%;
+      height: auto;
+    }
+    
+    /* Mobile menu toggle button */
+    .mobile-menu-toggle {
+      display: flex;
+      align-items: center;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin-left: auto;
+    }
+    
+    .mobile-menu-toggle img {
+      width: 24px;
+      height: auto;
+    }
   }
 </style>
 </head>
@@ -163,6 +263,11 @@
 <!-- Main Navigation Menu (outside the header for proper positioning) -->
 <nav id="site-navigation" class="main-navigation">
   <div class="menu-header">
+    <!-- Logo for mobile menu -->
+    <div class="menu-logo">
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/Big_LM_logo.png" alt="Lambo Merch Logo">
+    </div>
+    <!-- Desktop menu title -->
     <span class="menu-title">MENU</span>
     <button class="close-menu">×</button>
   </div>
@@ -186,7 +291,18 @@
     echo '<li><a href="' . esc_url(home_url('/contact')) . '">Contact</a></li>';
     echo '</ul></div>';
   }
-  ?> 
+  ?>
+  <!-- Account and Wishlist links at bottom of menu -->
+  <div class="menu-footer">
+    <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>">
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account.png" alt="My Account">
+      MY ACCOUNT
+    </a>
+    <a href="/favs-2/">
+      <img src="<?php echo esc_url(get_template_directory_uri() . '/images/icons/favs.png'); ?>" alt="Favorites">
+      FAVS
+    </a>
+  </div>
 </nav>
 
 <!-- DESKTOP HEADER -->
@@ -277,7 +393,10 @@
     </a>
   </div>
 
-  <div class="right-placeholder"><!-- plugin menu drops here --></div>
+  <a href="#" class="mobile-menu-toggle">
+    <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/menu_bars.png' ); ?>" 
+         alt="Menu" class="menu-icon" style="filter: invert(13%) sepia(94%) saturate(7009%) hue-rotate(359deg) brightness(97%) contrast(118%);">
+  </a>
 </div>
 
 <div id="content" class="site-content">
