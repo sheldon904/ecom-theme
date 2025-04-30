@@ -35,7 +35,7 @@
     padding: 0 !important;
     z-index: 999999 !important;
     width: 300px !important;
-    height: 100vh !important;
+    height: auto !important;
     overflow-y: auto !important;
     box-shadow: 2px 0 10px rgba(0,0,0,0.2) !important;
   }
@@ -84,12 +84,9 @@
     display: none;
   }
   
-  /* Menu title (only for desktop) */
+  /* Hide menu title */
   .menu-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-    text-transform: uppercase;
+    display: none;
   }
   
   /* Close button */
@@ -193,6 +190,16 @@
       z-index: 9999;
       padding: 0.1rem 1rem; /* snug top/bottom */
     }
+    
+    /* Critical fix for menu items disappearing below 768px */
+    .main-navigation ul,
+    .main-navigation .main-menu-container,
+    .main-navigation ul li,
+    .main-navigation ul li a {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
 
     /* Push page content below sticky header */
     body,
@@ -227,6 +234,12 @@
       background-color: #fff !important;
     }
     
+    /* Ensure mobile menu content is accessible */
+    .main-menu-container {
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    
     /* Show mobile menu logo */
     .menu-logo {
       display: block;
@@ -235,7 +248,7 @@
     }
     
     .menu-logo img {
-      width: 25%;
+      width: 50%;
       height: auto;
     }
     
@@ -267,8 +280,8 @@
     <div class="menu-logo">
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/Big_LM_logo.png" alt="Lambo Merch Logo">
     </div>
-    <!-- Desktop menu title -->
-    <span class="menu-title">MENU</span>
+    <!-- Desktop menu title (hidden) -->
+    <span class="menu-title"></span>
     <button class="close-menu">×</button>
   </div>
   <?php
@@ -295,11 +308,11 @@
   <!-- Account and Wishlist links at bottom of menu -->
   <div class="menu-footer">
     <a href="<?php echo esc_url(wc_get_page_permalink('myaccount')); ?>">
-      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account.png" alt="My Account">
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account_icon.png" alt="My Account">
       MY ACCOUNT
     </a>
     <a href="/favs-2/">
-      <img src="<?php echo esc_url(get_template_directory_uri() . '/images/icons/favs.png'); ?>" alt="Favorites">
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/favs_icon.png" alt="Favorites">
       FAVS
     </a>
   </div>
@@ -395,7 +408,7 @@
 
   <a href="#" class="mobile-menu-toggle">
     <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/menu_bars.png' ); ?>" 
-         alt="Menu" class="menu-icon" style="filter: invert(13%) sepia(94%) saturate(7009%) hue-rotate(359deg) brightness(97%) contrast(118%);">
+         alt="Menu" class="menu-icon">
   </a>
 </div>
 

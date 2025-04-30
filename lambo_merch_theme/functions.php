@@ -212,6 +212,9 @@ function lambo_merch_scripts() {
 	// Header Fixes CSS
 	wp_enqueue_style( 'lambo-merch-header-fixes', get_template_directory_uri() . '/css/header-fixes.css', array(), LAMBO_MERCH_VERSION );
 	
+	// Menu Fixes CSS
+	wp_enqueue_style( 'lambo-merch-menu-fixes', get_template_directory_uri() . '/css/menu-fixes.css', array(), LAMBO_MERCH_VERSION );
+	
 	// Wishlist CSS and JS
 	wp_enqueue_style( 'lambo-merch-wishlist', get_template_directory_uri() . '/css/wishlist.css', array(), LAMBO_MERCH_VERSION );
 	wp_enqueue_script( 'lambo-merch-wishlist', get_template_directory_uri() . '/js/wishlist.js', array( 'jquery' ), LAMBO_MERCH_VERSION, true );
