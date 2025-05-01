@@ -1,291 +1,343 @@
 <?php
 /**
  * Template Name: Checkout Template
- * Description: Custom checkout template that uses the standard WooCommerce checkout with custom styling.
+ * Description: Merged custom checkout page template for Lambo Merch.
  */
-
 defined( 'ABSPATH' ) || exit;
 
 get_header();
+
+// Clear notices and get the checkout object
+wc_clear_notices();
+$checkout = WC()->checkout;
 ?>
-
-<main id="primary" class="site-main lambo-checkout-page">
-  <div class="container">
-    <h2 class="checkout-heading">Checkout</h2>
-    
-    <?php 
-    // Simply output the standard WooCommerce checkout shortcode
-    echo do_shortcode('[woocommerce_checkout]');
-    ?>
-  </div>
-</main>
-
 <style>
-/* Basic styling for the checkout page */
-.lambo-checkout-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Checkout Page Styles */
+#primary.site-main {
+  color: #ffffff;
 }
-
-/* Main heading */
 .checkout-heading {
   color: #ff0000;
   font-style: italic;
   margin-bottom: 1.5rem;
   font-size: 2rem;
 }
-
-/* Main background color */
-.lambo-checkout-page,
-.woocommerce-checkout {
-  background-color: #000000;
-  color: #ffffff;
-}
-
-/* Info boxes (returning customer & coupon) */
-.woocommerce-form-login-toggle .woocommerce-info,
-.woocommerce-form-coupon-toggle .woocommerce-info {
+.checkout-info-box {
   background-color: #333333;
+  padding: 15px;
+  margin-bottom: 15px;
+  width: 100%;
   color: #ffffff;
-  border-top-color: #444444;
 }
-
-.woocommerce-form-login-toggle .woocommerce-info a,
-.woocommerce-form-coupon-toggle .woocommerce-info a {
+.checkout-link {
   color: #ffffff;
   text-decoration: underline;
+  cursor: pointer;
 }
-
-/* Login form */
-.woocommerce-form-login {
+.coupon-form {
+  display: none;
   background-color: #222222;
-  border: 1px solid #333333;
-  padding: 20px;
-  margin-bottom: 20px;
-  color: #ffffff;
+  padding: 15px;
+  margin-bottom: 15px;
+  width: 100%;
 }
-
-/* Coupon form */
-.checkout_coupon {
-  background-color: #222222;
-  border: 1px solid #333333 !important;
-  padding: 20px;
+.billing-details {
+  margin-top: 30px;
   margin-bottom: 20px;
 }
-
-/* Form fields */
-.woocommerce-checkout .form-row .input-text,
-.woocommerce-checkout .form-row select,
-.woocommerce-checkout .form-row textarea,
-.select2-container--default .select2-selection--single {
+.billing-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.billing-column,
+.shipping-column {
+  flex: 1;
+  min-width: 300px;
+}
+.form-row {
+  margin-bottom: 15px;
+}
+.form-row input[type="text"],
+.form-row input[type="email"],
+.form-row input[type="tel"],
+.form-row select,
+.form-row textarea {
+  width: 100%;
+  padding: 12px;
   background-color: #333333;
   border: 1px solid #444444;
   color: #ffffff;
-  padding: 10px;
 }
-
-/* Labels */
-.woocommerce-checkout label {
-  color: #ffffff;
+.checkbox-row {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
 }
-
-/* Order review table */
-#order_review_heading {
-  color: #ff0000;
-  font-style: italic;
+.checkbox-row input[type="checkbox"] {
+  margin-right: 10px;
+}
+.order-summary {
   margin-top: 30px;
-  margin-bottom: 15px;
-  font-size: 1.8rem;
-}
-
-#order_review {
   background-color: #222222;
   padding: 20px;
-  color: #ffffff;
 }
-
-.woocommerce-checkout-review-order-table th,
-.woocommerce-checkout-review-order-table td {
-  color: #ffffff;
-  padding: 15px 10px;
+.order-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #333333;
 }
-
-/* Payment section */
-#payment {
-  background-color: #222222 !important;
-  border-radius: 0;
+.order-item-image {
+  width: 60px;
+  height: 60px;
+  margin-right: 15px;
 }
-
-#payment div.payment_box {
-  background-color: #333333;
+.order-item-details {
+  flex: 1;
+}
+.order-item-name {
+  font-weight: bold;
   color: #ffffff;
 }
-
-#payment div.payment_box::before {
-  border-bottom-color: #333333;
-}
-
-#payment .payment_methods {
-  border-bottom: 1px solid #444444;
-}
-
-#payment .payment_methods label {
+.order-item-price {
   color: #ffffff;
 }
-
-/* Stripe elements */
-.wc-stripe-elements-field,
-.wc-stripe-iban-element-field {
+.order-item-quantity {
+  width: 60px;
+  text-align: center;
+  margin: 0 15px;
+}
+.order-item-total {
+  color: #ffffff;
+  font-weight: bold;
+  width: 80px;
+  text-align: right;
+}
+.order-totals {
+  margin-top: 20px;
+}
+.order-total-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.order-total-label {
+  color: #ffffff;
+}
+.order-total-value {
+  color: #ffffff;
+  font-weight: bold;
+}
+.payment-methods {
+  margin-top: 30px;
+}
+/* Make Stripe section gray */
+.payment_method_stripe,
+.payment_method_stripe .payment_box {
   background-color: #333333 !important;
-  border: 1px solid #444444 !important;
-  padding: 12px !important;
+  padding: 15px;
+  border-radius: 4px;
 }
-
-/* Hide express checkout options */
-.wc-proceed-to-checkout .wc-proceed-to-checkout-apple-pay-button,
-.wc-stripe-payment-request-wrapper {
-  display: none !important;
-}
-
-/* Place order button */
-#place_order {
-  background-color: #ff0000 !important;
-  color: #ffffff !important;
-  border: none !important;
-  padding: 15px 20px !important;
+/* Place Order button override */
+.place-order-button {
+  background-color: #ff0000;
+  color: #ffffff;
+  padding: 15px 30px;
+  border: none;
   text-transform: uppercase;
   font-weight: bold;
+  margin-top: 20px;
+  cursor: pointer;
   width: 100%;
 }
-
-#place_order:hover {
-  background-color: #cc0000 !important;
-}
-
-/* Two column layout */
-@media (min-width: 768px) {
-  #customer_details,
-  #order_review {
-    width: 48%;
-    float: left;
-  }
-  
-  #customer_details {
-    margin-right: 4%;
-  }
-  
-  /* Clear the floats */
-  .woocommerce-checkout:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-  
-  /* Move shipping checkbox next to billing heading */
-  #ship-to-different-address {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-  
-  .woocommerce-billing-fields {
-    position: relative;
-  }
-}
-
-/* Mobile adjustments */
 @media (max-width: 767px) {
-  .woocommerce-checkout .col2-set .col-1,
-  .woocommerce-checkout .col2-set .col-2,
-  #order_review {
-    width: 100%;
-    float: none;
+  .billing-form {
+    flex-direction: column;
   }
-  
-  #order_review_heading {
-    margin-top: 30px;
+  .billing-column,
+  .shipping-column {
+    width: 100%;
+  }
+  .order-item {
+    flex-wrap: wrap;
+  }
+  .order-item-quantity,
+  .order-item-total {
+    margin-top: 10px;
   }
 }
 </style>
 
+<main id="primary" class="site-main" style="max-width:1200px; margin:0 auto; padding:2rem;">
+  <?php
+    // Hook in notices, coupon form, etc.
+    if ( $checkout->get_checkout_fields() ) {
+      do_action( 'woocommerce_before_checkout_form', $checkout );
+    }
+  ?>
+
+  <h2 class="checkout-heading">Checkout</h2>
+
+  <?php if ( is_user_logged_in() ) : 
+    $current_user = wp_get_current_user(); ?>
+    <div class="checkout-info-box">
+      <p>Hi <?php echo esc_html( $current_user->display_name ); ?>!</p>
+    </div>
+  <?php else : ?>
+    <div class="checkout-info-box">
+      <p>Returning customer? <span class="checkout-link" id="login-trigger">Click here to login</span></p>
+    </div>
+    <div id="login-form" style="display: none; margin-bottom: 15px;">
+      <?php woocommerce_login_form([
+        'message'  => '',
+        'redirect' => wc_get_checkout_url(),
+        'hidden'   => false,
+      ]); ?>
+    </div>
+  <?php endif; ?>
+
+  <?php if ( wc_coupons_enabled() ) : ?>
+    <div class="checkout-info-box">
+      <p>Have a coupon? <span class="checkout-link showcoupon" id="coupon-trigger">Click here to enter your code</span></p>
+    </div>
+    <form class="checkout_coupon woocommerce-form-coupon coupon-form" method="post" id="coupon-form" style="display:none;">
+      <?php do_action( 'woocommerce_coupon_form' ); ?>
+    </form>
+  <?php endif; ?>
+
+  <div class="billing-details">
+    <form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" enctype="multipart/form-data">
+      <?php do_action( 'woocommerce_checkout_before_customer_details' ); ?>
+
+      <div class="billing-form">
+        <div class="billing-column">
+          <?php foreach ( $checkout->get_checkout_fields( 'billing' ) as $key => $field ) : ?>
+            <div class="form-row">
+              <?php woocommerce_form_field( $key, $field, $checkout->get_value( $key ) ); ?>
+            </div>
+          <?php endforeach; ?>
+        </div>
+
+        <div class="shipping-column" id="shipping-column" style="display: none;">
+          <?php foreach ( $checkout->get_checkout_fields( 'shipping' ) as $key => $field ) : ?>
+            <div class="form-row">
+              <?php woocommerce_form_field( $key, $field, $checkout->get_value( $key ) ); ?>
+            </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+
+      <?php do_action( 'woocommerce_checkout_after_customer_details' ); ?>
+
+      <h2 class="checkout-heading">Your Order</h2>
+      <div class="order-summary">
+        <?php if ( WC()->cart->get_cart_contents_count() > 0 ) : ?>
+          <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
+            $_product   = $cart_item['data'];
+            $quantity   = $cart_item['quantity'];
+            $size_display = '';
+            if ( $cart_item['variation_id'] && ! empty( $cart_item['variation'] ) ) {
+              foreach ( $cart_item['variation'] as $attr => $val ) {
+                if ( stripos( $attr, 'size' ) !== false ) {
+                  $size_display = $val;
+                  break;
+                }
+              }
+            }
+          ?>
+            <div class="order-item">
+              <div style="display: flex; align-items: center; width: 60%;">
+                <div class="order-item-image" style="flex: 0 0 80px;">
+                  <?php echo $_product->get_image( [80, 80] ); ?>
+                </div>
+                <div class="order-item-details" style="flex: 1; padding-left: 15px;">
+                  <div class="order-item-name">
+                    <?php echo esc_html( $_product->get_name() ); ?>
+                    <?php if ( $size_display ) : ?>
+                      <span style="font-size:0.8em; color:#aaa;"> – Size: <?php echo esc_html( $size_display ); ?></span>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              </div>
+              <div class="order-item-quantity"><?php echo esc_html( $quantity ); ?></div>
+              <div class="order-item-price"><?php echo wc_price( $_product->get_price() ); ?></div>
+              <div class="order-item-total"><?php echo wc_price( $quantity * $_product->get_price() ); ?></div>
+            </div>
+          <?php endforeach; ?>
+
+          <div class="order-totals">
+            <div class="order-total-row">
+              <div class="order-total-label">Subtotal</div>
+              <div class="order-total-value"><?php echo wc_price( WC()->cart->get_subtotal() ); ?></div>
+            </div>
+            <div class="order-total-row">
+              <div class="order-total-label">Shipping</div>
+              <div class="order-total-value">
+                <?php 
+                  if ( ! WC()->cart->needs_shipping() ) {
+                    echo '—';
+                  } else {
+                    wc_cart_totals_shipping_html();
+                  }
+                ?>
+              </div>
+            </div>
+            <div class="order-total-row" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #333333;">
+              <div class="order-total-label" style="font-weight: bold;">Total</div>
+              <div class="order-total-value" style="color: #ff0000; font-weight: bold;">
+                <?php echo wc_price( WC()->cart->get_total() ); ?>
+              </div>
+            </div>
+          </div>
+        <?php else : ?>
+          <p>Your cart is empty. Please add some products before proceeding to checkout.</p>
+        <?php endif; ?>
+      </div>
+
+      <div id="order_review" class="woocommerce-checkout-review-order">
+        <?php do_action( 'woocommerce_checkout_order_review' ); ?>
+      </div>
+
+      <div class="payment-methods">
+        <?php woocommerce_checkout_payment( $checkout ); ?>
+      </div>
+
+      <?php do_action( 'woocommerce_after_checkout_form', $checkout ); ?>
+    </form>
+  </div>
+</main>
+
 <script>
-jQuery(document).ready(function($) {
-  // Hide any payment request buttons (Google Pay, etc.)
-  $('.wc-stripe-payment-request-button-separator, .wc-stripe-payment-request-wrapper').hide();
-  
-  // Enhance form elements with proper styling
-  function styleCheckoutElements() {
-    // Style all form fields
-    $('.woocommerce-checkout .input-text, .woocommerce-checkout select, .woocommerce-checkout textarea').css({
-      'background-color': '#333333',
-      'color': '#ffffff',
-      'border': '1px solid #444444',
-      'padding': '10px'
+document.addEventListener('DOMContentLoaded', function() {
+  // Toggle login form
+  const loginTrigger = document.getElementById('login-trigger');
+  const loginForm = document.getElementById('login-form');
+  if (loginTrigger && loginForm) {
+    loginTrigger.addEventListener('click', () => {
+      loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
     });
-    
-    // Style payment boxes
-    $('#payment, #payment div.payment_box').css({
-      'background-color': '#222222',
-      'color': '#ffffff'
-    });
-    
-    // Style Stripe elements
-    $('.wc-stripe-elements-field, .wc-stripe-iban-element-field').css({
-      'background-color': '#333333',
-      'border': '1px solid #444444',
-      'padding': '15px'
-    });
-    
-    // Make Place Order button full width and styled
-    $('#place_order').css({
-      'background-color': '#ff0000',
-      'color': '#ffffff',
-      'border': 'none',
-      'width': '100%',
-      'text-transform': 'uppercase',
-      'font-weight': 'bold',
-      'padding': '15px 20px'
-    });
-    
-    // On desktop, position shipping checkbox next to billing heading
-    if ($(window).width() >= 768) {
-      $('.woocommerce-billing-fields').css('position', 'relative');
-      $('#ship-to-different-address').css({
-        'position': 'absolute',
-        'top': '0',
-        'right': '0'
-      });
-    }
   }
-  
-  // Run styling function
-  styleCheckoutElements();
-  
-  // Re-run on checkout update
-  $(document.body).on('updated_checkout', function() {
-    styleCheckoutElements();
-    
-    // Hide payment request buttons that might have been added
-    $('.wc-stripe-payment-request-button-separator, .wc-stripe-payment-request-wrapper').hide();
-  });
-  
-  // On window resize, adjust layout
-  $(window).resize(function() {
-    if ($(window).width() >= 768) {
-      $('.woocommerce-billing-fields').css('position', 'relative');
-      $('#ship-to-different-address').css({
-        'position': 'absolute',
-        'top': '0',
-        'right': '0'
-      });
-    } else {
-      $('#ship-to-different-address').css({
-        'position': 'static'
-      });
-    }
-  });
+
+  // Toggle coupon form
+  const couponTrigger = document.getElementById('coupon-trigger');
+  const couponForm = document.getElementById('coupon-form');
+  if (couponTrigger && couponForm) {
+    couponTrigger.addEventListener('click', e => {
+      e.preventDefault();
+      couponForm.style.display = couponForm.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+
+  // Toggle shipping fields
+  const shipCheckbox = document.querySelector('input[name="ship_to_different_address"]');
+  const shippingFields = document.getElementById('shipping-column');
+  if (shipCheckbox && shippingFields) {
+    shipCheckbox.addEventListener('change', () => {
+      shippingFields.style.display = shipCheckbox.checked ? 'block' : 'none';
+    });
+  }
 });
 </script>
 
