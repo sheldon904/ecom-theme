@@ -178,6 +178,24 @@ get_header('shop');
   /* 1) Hide the express‐checkout wrapper */
   .wcpay-express-checkout-wrapper { display: none !important; }
 
+  /* Mobile spacing fix for header */
+  @media (max-width: 1024px) {
+    .container {
+      position: relative;
+      z-index: 1; /* Ensure content is above elements that might be causing overlap */
+    }
+    
+    /* Add padding to first element in the product container */
+    #product-<?php the_ID(); ?> {
+      padding-top: 20px; /* Extra padding for product pages */
+    }
+    
+    /* Ensure there's spacing after scrolling */
+    .woocommerce-notices-wrapper {
+      margin-top: 20px;
+    }
+  }
+
   /* 2) Original zoom/remove & related-products CSS restored verbatim */
   .woocommerce-product-gallery__trigger {
       display: none !important;
@@ -265,14 +283,28 @@ get_header('shop');
           margin-top: 10px;
       }
       
-      /* Reduce text size in tab content */
+      /* Reduce font size by 25% in tab content */
       .product-description p {
-          font-size: 1em !important;
+          font-size: 0.75em !important; /* 25% smaller than 1em */
       }
       
-      /* Hide entire tabs content by default */
+      /* Always display the details tab on mobile/tablet */
       .tabs-content {
+          display: block !important;
+      }
+      
+      /* Show only the details tab content by default */
+      .tab-content {
           display: none;
+      }
+      
+      #details.tab-content {
+          display: block !important;
+      }
+      
+      /* Hide the reviews tab from the tabs navigation */
+      .tabs-nav li:nth-child(2) {
+          display: none !important;
       }
       
       /* Reduce space between tabs and related products section */
@@ -324,36 +356,29 @@ jQuery(function($){
   
   // Mobile-specific tab behavior
   if ($(window).width() <= 767) {
-    // Remove active class from all tabs initially
-    $('.tab-link').parent().removeClass('active');
+    // Make the first tab (Details) active by default 
+    $('.tab-link[data-tab="details"]').parent().addClass('active');
     
-    // Tab click behavior
-    $('.tab-link').on('click', function(e) {
+    // Hide the reviews tab completely
+    $('.tab-link[data-tab="reviews"]').parent().hide();
+    
+    // Show only Details tab content
+    $('#details').show();
+    $('#reviews').hide();
+    
+    // Tab click behavior for Details tab only (no-op since we always show it)
+    $('.tab-link[data-tab="details"]').on('click', function(e) {
       e.preventDefault();
-      var tab = $(this).data('tab');
-      
-      // If this tab is already active, hide content and remove active class
-      if ($(this).parent().hasClass('active')) {
-        $(this).parent().removeClass('active');
-        $('.tabs-content').hide();
-        return;
-      }
-      
-      // Remove active class from all tabs
-      $('.tab-link').parent().removeClass('active');
-      
-      // Add active class to clicked tab
-      $(this).parent().addClass('active');
-      
-      // Show tabs-content container
-      $('.tabs-content').show();
-      
-      // Hide all tab content
-      $('.tab-content').hide();
-      
-      // Show selected tab content
-      $('#' + tab).show();
+      // Do nothing - the details tab is always displayed now
     });
+  } else {
+    // Desktop behavior - hide reviews section 
+    $('.tab-link[data-tab="reviews"]').parent().hide();
+    $('#reviews').hide();
+    
+    // Ensure Details tab is active and displayed
+    $('.tab-link[data-tab="details"]').parent().addClass('active');
+    $('#details').show();
   }
 });
 </script>
