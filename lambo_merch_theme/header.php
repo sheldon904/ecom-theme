@@ -13,15 +13,47 @@
   <meta charset="<?php bloginfo('charset'); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <?php wp_head(); ?>
-  <script>
-    /* Global JavaScript variables for search functionality */
-    var site_url = '<?php echo esc_url(home_url('/')); ?>';
-    var theme_url = '<?php echo esc_url(get_template_directory_uri()); ?>';
-  </script>
   <style>
   /* Desktop vs Mobile */
   .desktop-header { display: block; }
   .mobile-header  { display: none; }
+  
+  /* FiboSearch dropdown styling */
+  .search-icon {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .search-icon .fibo-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 300px;
+    z-index: 9999;
+    background: #111;
+    padding: 10px;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    display: none;
+  }
+  
+  .search-icon:hover .fibo-dropdown,
+  .search-icon:focus-within .fibo-dropdown,
+  .search-icon.active .fibo-dropdown {
+    display: block;
+  }
+  
+  /* Mobile styles for FiboSearch */
+  @media (max-width: 767px) {
+    .fibo-dropdown.mobile {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      top: 60px;
+      z-index: 9999;
+      border-radius: 0;
+    }
+  }
 
   /* Media query for all devices larger than iPad Pro */
   @media (min-width: 1025px) {
@@ -346,11 +378,14 @@
                 </div>
               </div>
               <div class="header-right">
-                <a href="#" class="header-icon-link search-icon">
+                <div class="header-icon-link search-icon">
                   <span class="icon-text">SEARCH</span>
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/search.png' ); ?>"
                        alt="Search" class="header-icon">
-                </a>
+                  <div class="fibo-dropdown">
+                    <?php echo do_shortcode('[fibosearch]'); ?>
+                  </div>
+                </div>
                 <a href="/favs-2/" class="header-icon-link">
                   <span class="icon-text">FAVS</span>
                   <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
@@ -381,10 +416,13 @@
 <!-- MOBILE HEADER -->
 <div class="mobile-header">
   <div class="icon-set d-flex">
-    <a href="#" class="search-icon">
+    <div class="search-icon">
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/search.png"
            alt="Search">
-    </a>
+      <div class="fibo-dropdown mobile">
+        <?php echo do_shortcode('[fibosearch]'); ?>
+      </div>
+    </div>
     <a href="/favs-2/" class="fav-icon">
       <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/favs.png"

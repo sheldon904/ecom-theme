@@ -1,75 +1,137 @@
 /**
- * Search page styles
+ * Search page styles and FiboSearch integration
  */
 
-/* Header and Mobile Search Forms */
-.header-search-form,
-.mobile-search-form {
+/* Hide FiboSearch magnifying glass button */
+.dgwt-wcas-search-submit,
+.dgwt-wcas-ico-magnifier-handler {
+    display: none !important;
+}
+
+/* Make search input take full width without the button */
+.dgwt-wcas-search-input {
+    width: 100% !important;
+}
+
+/* Remove submit button padding/space */
+.dgwt-wcas-sf-wrapp input[type=search].dgwt-wcas-search-input {
+    padding-right: 15px !important;
+}
+
+/* Remove submit button container */
+.dgwt-wcas-search-submit-container {
+    display: none !important;
+}
+
+/* FiboSearch Integration */
+.search-icon-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.search-toggle {
     display: flex;
     align-items: center;
-    width: 100%;
+    cursor: pointer;
 }
 
-/* Desktop Search Form */
-.header-icon-link.search-icon .header-search-form {
-    margin-top: 0;
+.fibosearch-wrapper {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 300px;
+    z-index: 999;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
 }
 
-.header-search-form .search-field {
-    background-color: #000;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 8px 12px;
-    width: 100%;
-    min-width: 200px;
-    font-size: 14px;
-    border-radius: 0;
+/* Make search visible when active */
+.search-icon-wrapper.search-active .fibosearch-wrapper {
+    visibility: visible;
+    opacity: 1;
 }
 
-.header-search-form .search-field:focus {
-    outline: none;
-    border-color: #ff0000;
-}
-
-/* Mobile Search Form */
-.mobile-header .search-icon .mobile-search-form .search-field {
-    width: 100%;
-    padding: 8px 10px;
-    background-color: #222;
-    border: 1px solid #444;
-    color: #fff;
-    font-size: 14px;
-    border-radius: 0;
-    min-width: 160px;
-}
-
-/* Search Icons */
-.header-icon-link.search-icon,
-.mobile-header .search-icon {
-    position: relative;
-}
-
-/* Make sure the search field takes up the entire space of the icon container */
-.header-icon-link.search-icon form,
-.mobile-header .search-icon form {
-    width: 100%;
-    display: block;
-}
-
-/* Z-index adjustments for proper layering */
-.header-right {
-    position: relative;
-    z-index: 1000;
-}
-
-/* Mobile Specific Adjustments */
-@media (max-width: 767px) {
-    .mobile-header .search-icon form {
-        min-width: 28px; /* Match icon width */
+/* Default also allow hover to show search on desktop */
+@media (min-width: 768px) {
+    .search-icon-wrapper:hover .fibosearch-wrapper {
+        visibility: visible;
+        opacity: 1;
     }
 }
 
-/* Search Page Container */
+/* Mobile search styling */
+@media (max-width: 767px) {
+    .fibosearch-wrapper.mobile {
+        position: fixed !important;
+        top: 60px !important; /* Adjust as needed for your mobile header height */
+        left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 10px !important;
+        background: #000 !important;
+    }
+}
+
+/* Make FiboSearch match the theme's color scheme */
+.dgwt-wcas-sf-wrapp input[type=search].dgwt-wcas-search-input {
+    background-color: #222 !important;
+    border: 1px solid #444 !important;
+    color: #fff !important;
+}
+
+.dgwt-wcas-sf-wrapp input[type=search].dgwt-wcas-search-input:focus {
+    border-color: #FF0000 !important;
+}
+
+.dgwt-wcas-search-submit {
+    background-color: #FF0000 !important;
+}
+
+.dgwt-wcas-search-submit:hover {
+    background-color: #cc0000 !important;
+}
+
+/* Prevent the search form from being too large */
+.dgwt-wcas-search-wrapp {
+    min-width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Fix submit button alignment in vertical mode */
+.dgwt-wcas-search-form {
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Remove borders and other unnecessary styles from the FiboSearch form */
+.dgwt-wcas-sf-wrapp {
+    background: none !important;
+    padding: 0 !important;
+}
+
+/* Suggestion items styling */
+.dgwt-wcas-suggestion {
+    background-color: #333 !important;
+    border-bottom: 1px solid #444 !important;
+}
+
+.dgwt-wcas-suggestions-wrapp {
+    background-color: #333 !important;
+    border: 1px solid #444 !important;
+}
+
+.dgwt-wcas-details-wrapp {
+    background-color: #333 !important;
+    border: 1px solid #444 !important;
+}
+
+/* Highlight color for matched text */
+.dgwt-wcas-highlight {
+    color: #FF0000 !important;
+}
+
+/* Search Container */
 .search-container {
     padding: 40px 0;
 }
@@ -82,7 +144,7 @@
     font-size: 32px;
 }
 
-/* Search Page Form */
+/* Search Form */
 .search-form-container {
     max-width: 800px;
     margin: 0 auto 40px;
@@ -172,42 +234,6 @@
     background-color: #cc0000; /* Darker red */
 }
 
-/* Custom Product Style in Search Results */
-.search-results .product {
-    margin-bottom: 30px;
-}
-
-.search-results .product .woocommerce-loop-product__title {
-    color: #fff;
-    font-size: 18px;
-    text-transform: uppercase;
-    margin-top: 15px;
-    margin-bottom: 10px;
-}
-
-.search-results .product .price {
-    color: #ff0000;
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.search-results .product .button.view-sizes {
-    background-color: #ff0000;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: bold;
-    padding: 8px 15px;
-    border: none;
-    display: inline-block;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-}
-
-.search-results .product .button.view-sizes:hover {
-    background-color: #cc0000;
-}
-
 /* Pagination */
 .pagination {
     text-align: center;
@@ -237,8 +263,8 @@
 }
 
 .pagination .page-numbers li span.current {
-    background-color: #ff0000;
-    color: #fff;
+    background-color: #C8B100;
+    color: #000;
 }
 
 .pagination .page-numbers li a:hover {
@@ -257,7 +283,7 @@
     width: 40px;
     height: 40px;
     border: 3px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #ff0000;
+    border-top-color: #C8B100;
     border-radius: 50%;
     animation: spin 1s ease-in-out infinite;
 }
