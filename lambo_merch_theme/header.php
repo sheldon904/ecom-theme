@@ -11,7 +11,7 @@
 <html <?php language_attributes(); ?>>
 <head>
   <meta charset="<?php bloginfo('charset'); ?>">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <?php wp_head(); ?>
   <style>
   /* Desktop vs Mobile */
@@ -59,6 +59,20 @@
   @media (min-width: 1025px) {
     .desktop-header { display: block; }
     .mobile-header  { display: none; }
+  }
+  
+  /* Hide cart count on mobile/tablet */
+  @media (max-width: 1024px) {
+    .mobile-header .cart-count {
+      display: none !important;
+    }
+  }
+  
+  /* Hide cart count on mobile/tablet */
+  @media (max-width: 1024px) {
+    .mobile-header .cart-count {
+      display: none !important;
+    }
   }
   
   /* Main Menu Styling */
@@ -225,7 +239,9 @@
       left: 0;
       width: 100%;
       z-index: 9999;
-      padding: 0.1rem 1rem; /* snug top/bottom */
+      padding: 0.5rem 1rem; /* Increased padding for logo breathing room */
+      height: 100px; /* Increased fixed height for the larger logo */
+      box-sizing: border-box; /* Ensure padding is included in height */
     }
     
     /* Critical fix for menu items disappearing below 768px */
@@ -241,7 +257,8 @@
     /* Push page content below sticky header */
     body,
     #content {
-      padding-top: 3.5rem; /* adjust if header height changes */
+      padding-top: 130px; /* Increased padding to account for taller header (100px + 30px buffer) */
+      -webkit-overflow-scrolling: touch; /* Better iOS scrolling */
     }
 
     /* Icon container */
@@ -257,13 +274,18 @@
       height: 28px;
     }
 
-    /* Logo sizing + centering (removed shift to avoid blocking icons) */
+    /* Logo sizing + centering - proportional responsive sizing */
     .mobile-header .logo img {
-      width: 50%;
-      height: auto;
+      width: auto;
+      height: 80px; /* Doubled height from 40px to 80px */
+      max-width: 100%; /* Prevent overflow */
     }
     .mobile-header .logo {
       margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 33.33%; /* Equal width as the icon groups on either side */
     }
     
     /* Mobile menu structure */
@@ -289,6 +311,32 @@
       height: auto;
     }
     
+    /* iPad and iPad Pro specific styles for perfect logo centering - covers all iPad models including Pro */
+    @media only screen and (min-width: 768px) and (max-width: 1024px), 
+           only screen and (min-width: 1024px) and (max-width: 1366px) and (-webkit-min-device-pixel-ratio: 2) {
+      .mobile-header {
+        display: grid !important; /* Change to grid layout for better control */
+        grid-template-columns: 1fr 2fr 1fr; /* 3 columns with center being larger */
+        align-items: center;
+      }
+      
+      .mobile-header .icon-set {
+        justify-self: start; /* Align left */
+      }
+      
+      .mobile-header .logo {
+        justify-self: center; /* Center precisely */
+        width: auto; /* Let it take natural width */
+        margin: 0 auto;
+        grid-column: 2; /* Ensure it's in the center column */
+      }
+      
+      .mobile-header .mobile-menu-toggle {
+        justify-self: end; /* Align right */
+        margin-left: 0; /* Reset margin */
+      }
+    }
+
     /* Mobile menu toggle button */
     .mobile-menu-toggle {
       display: flex;
@@ -442,7 +490,7 @@
 
   <div class="logo text-center">
     <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/Big_LM_logo.png"
+      <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/05/Big_LM_logo_header-e1746073431746.png"
            alt="Lambo Merch Logo">
     </a>
   </div>
@@ -454,3 +502,32 @@
 </div>
 
 <div id="content" class="site-content">
+
+<!-- Fix for mobile header covering content when scrolling -->
+<script>
+jQuery(document).ready(function($) {
+  // Only run on mobile/tablet devices
+  if ($(window).width() <= 1024) {
+    // Make sure content starts below the header
+    function ensureContentVisibility() {
+      // Force immediate padding to be applied
+      $('#content').css('padding-top', '130px');
+      
+      // Add extra padding to first elements in major containers
+      $('.container').first().css('padding-top', '20px');
+      $('.entry-content').first().css('padding-top', '20px');
+      $('.site-main').first().css('padding-top', '20px');
+    }
+    
+    // Run on page load
+    ensureContentVisibility();
+    
+    // Also run when scrolling to top
+    $(window).on('scroll', function() {
+      if ($(window).scrollTop() < 10) {
+        ensureContentVisibility();
+      }
+    });
+  }
+});
+</script>
