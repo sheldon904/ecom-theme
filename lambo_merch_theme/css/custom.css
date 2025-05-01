@@ -1520,6 +1520,63 @@ a:hover {
     }
 }
 
+/* Tablet-specific styles (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Shop page logo sizing for tablet */
+    .desktop-layout .col-md-4 img.img-fluid {
+        max-width: 80%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    /* About page logo sizing for tablet */
+    body.page-template-aboutpage .desktop-layout .col-md-4 img.img-fluid {
+        max-width: 80%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    /* Contact page logo sizing for tablet */
+    body.page-template-contactpage .desktop-layout .col-md-4 img.img-fluid {
+        max-width: 125%; /* Increase by 25% */
+        height: auto;
+        display: block;
+        margin: 0 auto; /* Center the logo */
+    }
+    
+    /* Size selector enlargement for tablet in product page */
+    .variations select,
+    .quantity .value select {
+        font-size: 20px;
+        padding: 15px 20px;
+        height: auto;
+    }
+    
+    /* Make size selector arrow larger and adjust position */
+    .variations .value::after,
+    .quantity .value::after {
+        width: 20px;
+        height: 20px;
+        right: 15px;
+    }
+    
+    /* Make size div 100% width on tablets */
+    table.variations .value,
+    table.variations tr td.value,
+    .variations div.value,
+    div.size {
+        width: 100% !important;
+    }
+    
+    /* Ensure that the size select also takes full width */
+    table.variations select,
+    div.size select {
+        width: 100% !important;
+    }
+}
+
 @media (max-width: 1200px) {
     .header-icon-link {
         margin-left: 20px; /* Slightly reduce spacing between icons */
