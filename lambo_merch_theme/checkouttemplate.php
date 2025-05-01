@@ -41,6 +41,25 @@ $checkout = WC()->checkout;
   margin-bottom: 15px;
   width: 100%;
 }
+.coupon-form input[type="text"] {
+  width: 70%;
+  padding: 10px;
+  background-color: #333333;
+  border: 1px solid #444444;
+  color: #ffffff;
+}
+.coupon-form button {
+  width: 25%;
+  padding: 10px;
+  background-color: #ff0000;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  margin-left: 5%;
+}
+.coupon-form.active {
+  display: block;
+}
 .billing-details {
   margin-top: 30px;
   margin-bottom: 20px;
@@ -50,7 +69,10 @@ $checkout = WC()->checkout;
   flex-wrap: wrap;
   gap: 20px;
 }
-.billing-column,
+.billing-column {
+  flex: 1;
+  min-width: 300px;
+}
 .shipping-column {
   flex: 1;
   min-width: 300px;
@@ -133,14 +155,6 @@ $checkout = WC()->checkout;
 .payment-methods {
   margin-top: 30px;
 }
-/* Make Stripe section gray */
-.payment_method_stripe,
-.payment_method_stripe .payment_box {
-  background-color: #333333 !important;
-  padding: 15px;
-  border-radius: 4px;
-}
-/* Place Order button override */
 .place-order-button {
   background-color: #ff0000;
   color: #ffffff;
@@ -171,72 +185,142 @@ $checkout = WC()->checkout;
 </style>
 
 <main id="primary" class="site-main" style="max-width:1200px; margin:0 auto; padding:2rem;">
-  <?php
-    // Hook in notices, coupon form, etc.
-    if ( $checkout->get_checkout_fields() ) {
-      do_action( 'woocommerce_before_checkout_form', $checkout );
-    }
-  ?>
-
   <h2 class="checkout-heading">Checkout</h2>
-
-  <?php if ( is_user_logged_in() ) : 
-    $current_user = wp_get_current_user(); ?>
-    <div class="checkout-info-box">
-      <p>Hi <?php echo esc_html( $current_user->display_name ); ?>!</p>
-    </div>
-  <?php else : ?>
-    <div class="checkout-info-box">
-      <p>Returning customer? <span class="checkout-link" id="login-trigger">Click here to login</span></p>
-    </div>
-    <div id="login-form" style="display: none; margin-bottom: 15px;">
-      <?php woocommerce_login_form([
+  
+  <!-- Returning Customer Login Box -->
+  <div class="checkout-info-box">
+    <p>Returning customer? <span class="checkout-link" id="login-trigger">Click here to login</span></p>
+  </div>
+  <div id="login-form" style="display: none; margin-bottom: 15px;">
+    <?php 
+      woocommerce_login_form([
         'message'  => '',
         'redirect' => wc_get_checkout_url(),
         'hidden'   => false,
-      ]); ?>
-    </div>
-  <?php endif; ?>
-
-  <?php if ( wc_coupons_enabled() ) : ?>
-    <div class="checkout-info-box">
-      <p>Have a coupon? <span class="checkout-link showcoupon" id="coupon-trigger">Click here to enter your code</span></p>
-    </div>
-    <form class="checkout_coupon woocommerce-form-coupon coupon-form" method="post" id="coupon-form" style="display:none;">
-      <?php do_action( 'woocommerce_coupon_form' ); ?>
+      ]); 
+    ?>
+  </div>
+  
+  <!-- Coupon Code Box -->
+  <div class="checkout-info-box">
+    <p>Have a coupon? <span class="checkout-link" id="coupon-trigger">Click here to enter your code</span></p>
+  </div>
+  <div id="coupon-form" class="coupon-form">
+    <form method="post" action="<?php echo esc_url(wc_get_cart_url()); ?>">
+      <input type="text" name="coupon_code" placeholder="Coupon code">
+      <button type="submit" name="apply_coupon" value="Apply coupon">Apply</button>
+      <?php wp_nonce_field('woocommerce-cart', 'woocommerce-cart-nonce'); ?>
     </form>
-  <?php endif; ?>
-
+  </div>
+  
+  <!-- Billing & Shipping Details -->
   <div class="billing-details">
-    <form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url( wc_get_checkout_url() ); ?>" enctype="multipart/form-data">
-      <?php do_action( 'woocommerce_checkout_before_customer_details' ); ?>
-
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h2 class="checkout-heading" style="margin-bottom: 0;">Billing Details</h2>
+      <div class="checkbox-row" style="margin: 0;">
+        <input type="checkbox" name="ship_to_different_address" id="ship_to_different_address" value="1">
+        <label for="ship_to_different_address">Ship to a different address?</label>
+      </div>
+    </div>
+    <form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url(wc_get_checkout_url()); ?>" enctype="multipart/form-data">
       <div class="billing-form">
+        <!-- Billing Details Column -->
         <div class="billing-column">
-          <?php foreach ( $checkout->get_checkout_fields( 'billing' ) as $key => $field ) : ?>
-            <div class="form-row">
-              <?php woocommerce_form_field( $key, $field, $checkout->get_value( $key ) ); ?>
-            </div>
-          <?php endforeach; ?>
+          <div class="form-row">
+            <input type="text" name="billing_first_name" id="billing_first_name" placeholder="First name *" required>
+          </div>
+          <div class="form-row">
+            <input type="text" name="billing_last_name" id="billing_last_name" placeholder="Last name *" required>
+          </div>
+          <div class="form-row">
+            <input type="text" name="billing_company" id="billing_company" placeholder="Company (optional)">
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <input type="text" name="billing_address_1" id="billing_address_1" placeholder="Street address *" required>
+          </div>
+          <div class="form-row">
+            <input type="text" name="billing_address_2" id="billing_address_2" placeholder="Apartment, suite, unit, etc. (optional)">
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <input type="text" name="billing_city" id="billing_city" placeholder="Town / City *" required>
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <select name="billing_country" id="billing_country" class="country_to_state">
+              <option value="">Select country / region *</option>
+              <?php 
+                $countries = WC()->countries->get_countries();
+                foreach ( $countries as $code => $name ) {
+                  echo '<option value="' . esc_attr( $code ) . '">' . esc_html( $name ) . '</option>';
+                }
+              ?>
+            </select>
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <input type="text" name="billing_state" id="billing_state" placeholder="State / Province *" required>
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <input type="text" name="billing_postcode" id="billing_postcode" placeholder="ZIP Code *" required>
+          </div>
+          <div class="form-row">
+            <input type="email" name="billing_email" id="billing_email" placeholder="Email *" required>
+          </div>
+          <div class="form-row">
+            <input type="tel" name="billing_phone" id="billing_phone" placeholder="Phone number *" required>
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" name="createaccount" id="createaccount" value="1">
+            <label for="createaccount">Create an account?</label>
+          </div>
         </div>
-
+        <!-- Shipping Details Column (hidden by default) -->
         <div class="shipping-column" id="shipping-column" style="display: none;">
-          <?php foreach ( $checkout->get_checkout_fields( 'shipping' ) as $key => $field ) : ?>
-            <div class="form-row">
-              <?php woocommerce_form_field( $key, $field, $checkout->get_value( $key ) ); ?>
-            </div>
-          <?php endforeach; ?>
+          <div class="form-row">
+            <input type="text" name="shipping_first_name" id="shipping_first_name" placeholder="First name *">
+          </div>
+          <div class="form-row">
+            <input type="text" name="shipping_last_name" id="shipping_last_name" placeholder="Last name *">
+          </div>
+          <div class="form-row">
+            <input type="text" name="shipping_company" id="shipping_company" placeholder="Company (optional)">
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <input type="text" name="shipping_address_1" id="shipping_address_1" placeholder="Street address *">
+          </div>
+          <div class="form-row">
+            <input type="text" name="shipping_address_2" id="shipping_address_2" placeholder="Apartment, suite, unit, etc. (optional)">
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <input type="text" name="shipping_city" id="shipping_city" placeholder="Town / City *">
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <select name="shipping_country" id="shipping_country" class="country_to_state">
+              <option value="">Select country / region *</option>
+              <?php 
+                foreach ( $countries as $code => $name ) {
+                  echo '<option value="' . esc_attr( $code ) . '">' . esc_html( $name ) . '</option>';
+                }
+              ?>
+            </select>
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <input type="text" name="shipping_state" id="shipping_state" placeholder="State / Province *">
+          </div>
+          <div class="form-row address-field update_totals_on_change">
+            <input type="text" name="shipping_postcode" id="shipping_postcode" placeholder="ZIP Code *">
+          </div>
+          <div class="form-row">
+            <textarea name="order_comments" id="order_comments" placeholder="Notes about your order, e.g., special delivery notes." rows="4"></textarea>
+          </div>
         </div>
       </div>
-
-      <?php do_action( 'woocommerce_checkout_after_customer_details' ); ?>
-
+      
+      <!-- Order Summary -->
       <h2 class="checkout-heading">Your Order</h2>
       <div class="order-summary">
         <?php if ( WC()->cart->get_cart_contents_count() > 0 ) : ?>
           <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
-            $_product   = $cart_item['data'];
-            $quantity   = $cart_item['quantity'];
+            $_product     = $cart_item['data'];
+            $quantity     = $cart_item['quantity'];
             $size_display = '';
             if ( $cart_item['variation_id'] && ! empty( $cart_item['variation'] ) ) {
               foreach ( $cart_item['variation'] as $attr => $val ) {
@@ -256,7 +340,7 @@ $checkout = WC()->checkout;
                   <div class="order-item-name">
                     <?php echo esc_html( $_product->get_name() ); ?>
                     <?php if ( $size_display ) : ?>
-                      <span style="font-size:0.8em; color:#aaa;"> – Size: <?php echo esc_html( $size_display ); ?></span>
+                      <span style="font-size:0.8em; color:#aaa;"> &ndash; Size: <?php echo esc_html( $size_display ); ?></span>
                     <?php endif; ?>
                   </div>
                 </div>
@@ -266,7 +350,6 @@ $checkout = WC()->checkout;
               <div class="order-item-total"><?php echo wc_price( $quantity * $_product->get_price() ); ?></div>
             </div>
           <?php endforeach; ?>
-
           <div class="order-totals">
             <div class="order-total-row">
               <div class="order-total-label">Subtotal</div>
@@ -276,8 +359,9 @@ $checkout = WC()->checkout;
               <div class="order-total-label">Shipping</div>
               <div class="order-total-value">
                 <?php 
-                  if ( ! WC()->cart->needs_shipping() ) {
-                    echo '—';
+                  $packages = WC()->shipping->get_packages();
+                  if ( empty( $packages ) || ! WC()->cart->needs_shipping() ) {
+                    echo 'Enter your address to view shipping options.';
                   } else {
                     wc_cart_totals_shipping_html();
                   }
@@ -295,49 +379,68 @@ $checkout = WC()->checkout;
           <p>Your cart is empty. Please add some products before proceeding to checkout.</p>
         <?php endif; ?>
       </div>
-
-      <div id="order_review" class="woocommerce-checkout-review-order">
-        <?php do_action( 'woocommerce_checkout_order_review' ); ?>
-      </div>
-
+      
+      <!-- Payment Method and Place Order -->
       <div class="payment-methods">
         <?php woocommerce_checkout_payment( $checkout ); ?>
       </div>
-
-      <?php do_action( 'woocommerce_after_checkout_form', $checkout ); ?>
     </form>
   </div>
 </main>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Toggle login form
+  // Toggle login form display
   const loginTrigger = document.getElementById('login-trigger');
   const loginForm = document.getElementById('login-form');
   if (loginTrigger && loginForm) {
     loginTrigger.addEventListener('click', () => {
-      loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+      loginForm.style.display = (loginForm.style.display === 'none') ? 'block' : 'none';
     });
   }
-
-  // Toggle coupon form
+  // Toggle coupon form display
   const couponTrigger = document.getElementById('coupon-trigger');
   const couponForm = document.getElementById('coupon-form');
   if (couponTrigger && couponForm) {
-    couponTrigger.addEventListener('click', e => {
-      e.preventDefault();
-      couponForm.style.display = couponForm.style.display === 'none' ? 'block' : 'none';
+    couponTrigger.addEventListener('click', () => {
+      couponForm.classList.toggle('active');
+      if (couponForm.classList.contains('active')) {
+        const codeInput = couponForm.querySelector('input[name="coupon_code"]');
+        if (codeInput) setTimeout(() => codeInput.focus(), 100);
+      }
     });
   }
-
-  // Toggle shipping fields
-  const shipCheckbox = document.querySelector('input[name="ship_to_different_address"]');
+  // Show/hide shipping fields when checkbox toggled
+  const shipCheckbox = document.getElementById('ship_to_different_address');
   const shippingFields = document.getElementById('shipping-column');
   if (shipCheckbox && shippingFields) {
     shipCheckbox.addEventListener('change', () => {
       shippingFields.style.display = shipCheckbox.checked ? 'block' : 'none';
     });
   }
+  // Style Stripe payment elements after they load
+  function styleStripeElements() {
+    document.querySelectorAll('.payment_box, .wc-stripe-elements-field').forEach(el => {
+      el.style.backgroundColor = '#333333';
+      el.style.color = '#ffffff';
+    });
+    document.querySelectorAll('.payment_method_stripe label').forEach(label => {
+      label.style.color = '#ffffff';
+    });
+    document.querySelectorAll('.stripe-card-group, .wc-stripe-elements-field').forEach(container => {
+      container.style.backgroundColor = '#333333';
+      container.style.border = '1px solid #444444';
+      container.style.padding = '15px';
+    });
+  }
+  // Wait for Stripe elements to appear, then style them
+  const stripeInterval = setInterval(() => {
+    const stripeElements = document.querySelectorAll('.wc-stripe-elements-field, .payment_box');
+    if (stripeElements.length > 0) {
+      styleStripeElements();
+      clearInterval(stripeInterval);
+    }
+  }, 500);
 });
 </script>
 

@@ -15,17 +15,20 @@ jQuery(document).ready(function($) {
     
     // Email form focus effect
     $('.email-placeholder').click(function() {
-        $(this).fadeOut(200, function() {
-            $(this).siblings('input[type="email"]').focus();
-            $(this).siblings('.arrow-btn').show();
-        });
+        var $emailWrap = $(this).closest('.email-input-wrap');
+        $(this).css('opacity', '0'); // Hide placeholder on click
+        $emailWrap.find('input[type="email"]').focus();
+    });
+    
+    // Direct focus on email input
+    $('.email-input-wrap input[type="email"]').focus(function() {
+        $(this).closest('.email-input-wrap').find('.email-placeholder').css('opacity', '0'); // Hide placeholder
     });
     
     // Email form blur effect if empty
     $('input[type="email"]').blur(function() {
         if ($(this).val() === '') {
-            $(this).siblings('.arrow-btn').hide();
-            $(this).siblings('.email-placeholder').fadeIn(200);
+            $(this).closest('.email-input-wrap').find('.email-placeholder').css('opacity', '1'); // Show placeholder
         }
     });
     
