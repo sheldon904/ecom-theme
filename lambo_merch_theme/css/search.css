@@ -2,7 +2,74 @@
  * Search page styles
  */
 
-/* Search Container */
+/* Header and Mobile Search Forms */
+.header-search-form,
+.mobile-search-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Desktop Search Form */
+.header-icon-link.search-icon .header-search-form {
+    margin-top: 0;
+}
+
+.header-search-form .search-field {
+    background-color: #000;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 8px 12px;
+    width: 100%;
+    min-width: 200px;
+    font-size: 14px;
+    border-radius: 0;
+}
+
+.header-search-form .search-field:focus {
+    outline: none;
+    border-color: #ff0000;
+}
+
+/* Mobile Search Form */
+.mobile-header .search-icon .mobile-search-form .search-field {
+    width: 100%;
+    padding: 8px 10px;
+    background-color: #222;
+    border: 1px solid #444;
+    color: #fff;
+    font-size: 14px;
+    border-radius: 0;
+    min-width: 160px;
+}
+
+/* Search Icons */
+.header-icon-link.search-icon,
+.mobile-header .search-icon {
+    position: relative;
+}
+
+/* Make sure the search field takes up the entire space of the icon container */
+.header-icon-link.search-icon form,
+.mobile-header .search-icon form {
+    width: 100%;
+    display: block;
+}
+
+/* Z-index adjustments for proper layering */
+.header-right {
+    position: relative;
+    z-index: 1000;
+}
+
+/* Mobile Specific Adjustments */
+@media (max-width: 767px) {
+    .mobile-header .search-icon form {
+        min-width: 28px; /* Match icon width */
+    }
+}
+
+/* Search Page Container */
 .search-container {
     padding: 40px 0;
 }
@@ -15,7 +82,7 @@
     font-size: 32px;
 }
 
-/* Search Form */
+/* Search Page Form */
 .search-form-container {
     max-width: 800px;
     margin: 0 auto 40px;
@@ -105,6 +172,42 @@
     background-color: #cc0000; /* Darker red */
 }
 
+/* Custom Product Style in Search Results */
+.search-results .product {
+    margin-bottom: 30px;
+}
+
+.search-results .product .woocommerce-loop-product__title {
+    color: #fff;
+    font-size: 18px;
+    text-transform: uppercase;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.search-results .product .price {
+    color: #ff0000;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.search-results .product .button.view-sizes {
+    background-color: #ff0000;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 8px 15px;
+    border: none;
+    display: inline-block;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.search-results .product .button.view-sizes:hover {
+    background-color: #cc0000;
+}
+
 /* Pagination */
 .pagination {
     text-align: center;
@@ -134,8 +237,8 @@
 }
 
 .pagination .page-numbers li span.current {
-    background-color: #C8B100;
-    color: #000;
+    background-color: #ff0000;
+    color: #fff;
 }
 
 .pagination .page-numbers li a:hover {
@@ -154,7 +257,7 @@
     width: 40px;
     height: 40px;
     border: 3px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #C8B100;
+    border-top-color: #ff0000;
     border-radius: 50%;
     animation: spin 1s ease-in-out infinite;
 }

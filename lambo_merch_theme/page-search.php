@@ -57,8 +57,28 @@ get_header();
                             $search_results->the_post();
                             global $product;
                             
-                            // Display the product using WooCommerce template parts
-                            wc_get_template_part('content', 'product');
+                            // Custom product display for search results
+                            ?>
+                            <li <?php wc_product_class('', $product); ?>>
+                                <div class="product-image">
+                                    <a href="<?php echo esc_url(get_permalink()); ?>">
+                                        <?php echo $product->get_image('woocommerce_thumbnail'); ?>
+                                    </a>
+                                </div>
+                                
+                                <div class="product-details">
+                                    <h2 class="woocommerce-loop-product__title"><?php echo esc_html(get_the_title()); ?></h2>
+                                    
+                                    <?php if ($price_html = $product->get_price_html()): ?>
+                                        <span class="price"><?php echo $price_html; ?></span>
+                                    <?php endif; ?>
+                                    
+                                    <a href="<?php echo esc_url(get_permalink()); ?>" class="button view-sizes">
+                                        <?php esc_html_e('View Sizes', 'lambo-merch'); ?>
+                                    </a>
+                                </div>
+                            </li>
+                            <?php
                         }
                         
                         echo '</div>';

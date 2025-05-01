@@ -43,10 +43,83 @@ jQuery(document).ready(function($) {
         }
     });
     
-    // Make sure links for search and wishlist work properly
-    $('.header-icon-link.search-icon, .search-icon').click(function(e) {
+    // Simple, reliable search functionality - final version
+    
+    // Store original button content
+    var $desktopSearchBtn = $('.header-icon-link.search-icon');
+    var $mobileSearchBtn = $('.mobile-header .search-icon');
+    var desktopSearchOriginal = $desktopSearchBtn.html();
+    var mobileSearchOriginal = $mobileSearchBtn.html();
+    
+    // Track search state
+    var desktopSearchActive = false;
+    var mobileSearchActive = false;
+    
+    // Desktop search toggle
+    $desktopSearchBtn.click(function(e) {
         e.preventDefault();
-        window.location.href = '/search';
+        
+        if (!desktopSearchActive) {
+            // Replace button with search form
+            $(this).html('<form role="search" method="get" class="header-search-form">' +
+                '<input type="search" class="search-field" placeholder="Search products..." value="" name="s" />' +
+                '<input type="hidden" name="post_type" value="product" />' +
+                '</form>');
+            
+            $(this).find('.search-field').focus();
+            desktopSearchActive = true;
+        }
+    });
+    
+    // Mobile search toggle
+    $mobileSearchBtn.click(function(e) {
+        e.preventDefault();
+        
+        if (!mobileSearchActive) {
+            // Replace button with search form
+            $(this).html('<form role="search" method="get" class="mobile-search-form">' +
+                '<input type="search" class="search-field" placeholder="Search..." value="" name="s" />' +
+                '<input type="hidden" name="post_type" value="product" />' +
+                '</form>');
+            
+            $(this).find('.search-field').focus();
+            mobileSearchActive = true;
+        }
+    });
+    
+    // Restore search button when clicking elsewhere
+    $(document).on('click', function(e) {
+        if (desktopSearchActive && !$(e.target).closest('.header-icon-link.search-icon').length) {
+            $desktopSearchBtn.html(desktopSearchOriginal);
+            desktopSearchActive = false;
+        }
+        
+        if (mobileSearchActive && !$(e.target).closest('.mobile-header .search-icon').length) {
+            $mobileSearchBtn.html(mobileSearchOriginal);
+            mobileSearchActive = false;
+        }
+    });
+    
+    // Stop propagation for clicks inside the search form
+    $(document).on('click', '.header-search-form, .mobile-search-form', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Submit form on Enter key
+    $(document).on('keydown', '.search-field', function(e) {
+        if (e.keyCode === 13) {
+            // Get the form element
+            var $form = $(this).closest('form');
+            
+            // Get the search term
+            var searchTerm = $(this).val();
+            
+            // Redirect to search page with parameters
+            window.location.href = site_url + '?s=' + encodeURIComponent(searchTerm) + '&post_type=product';
+            
+            // Prevent default form submission
+            return false;
+        }
     });
     
     // Wishlist link click handler
