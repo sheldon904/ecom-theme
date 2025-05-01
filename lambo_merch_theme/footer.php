@@ -50,10 +50,9 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                                     <div class="email-input-wrap">
                                         <div class="email-placeholder">
                                             <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
-                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit" width="20">
                                         </div>
                                         <input type="email" name="email" placeholder="" required>
-                                        <button type="submit" class="arrow-btn" style="display:none;">
+                                        <button type="submit" class="arrow-btn">
                                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
                                         </button>
                                     </div>
@@ -109,10 +108,9 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                                     <div class="email-input-wrap">
                                         <div class="email-placeholder">
                                             <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
-                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit" width="20">
                                         </div>
                                         <input type="email" name="email" placeholder="" required>
-                                        <button type="submit" class="arrow-btn" style="display:none;">
+                                        <button type="submit" class="arrow-btn">
                                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
                                         </button>
                                     </div>

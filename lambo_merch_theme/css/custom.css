@@ -16,7 +16,7 @@
     --font-heading: 'Georgia', serif;
 }
 
-/* Global font overrides - Force Source Sans Pro for all text */
+/* Global font overrides - Use Source Sans Pro for most content */
 body, 
 p, 
 span, 
@@ -50,16 +50,17 @@ button,
     font-family: 'Source Sans Pro', sans-serif !important;
 }
 
-/* Force Georgia Italic for all headings */
+/* Force Impact for all headings */
 h1, h2, h3, h4, h5, h6,
 .woocommerce-products-header__title,
 .product_title,
 .woocommerce-loop-product__title,
 .related.products > h2,
 .woocommerce div.product .woocommerce-tabs .panel h2:first-of-type,
-.comment-reply-title {
-    font-family: 'Georgia', serif !important;
-    font-style: italic !important;
+.comment-reply-title,
+.section-title {
+    font-family: 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif !important;
+    font-style: normal !important;
 }
 
 /* Paragraph text size - 50% larger */
@@ -110,10 +111,12 @@ a:hover {
 
 .text-red {
     color: var(--color-primary);
+    font-family: 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif !important;
 }
 
 .red-text {
     color: #fc0301;
+    font-family: 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif !important;
 }
 
 .section-title {
@@ -1288,7 +1291,7 @@ a:hover {
     position: relative;
     z-index: 2;
     text-align: center;
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Source Sans Pro', sans-serif !important; /* Keep Source Sans Pro in footer */
     font-weight: 600;
     font-size: 14px;
 }
@@ -1405,11 +1408,12 @@ a:hover {
     position: relative;
     height: 45px;
     margin-bottom: 30px;
-    background: #0b0c10;
+    background: #303030; /* Lighter shade of gray */
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 15px;
+    border-radius: 3px;
 }
 
 .email-placeholder {
@@ -1423,7 +1427,8 @@ a:hover {
     font-size: 1.1em;
     pointer-events: none;
     z-index: 2;
-    background: #0b0c10;
+    background: transparent;
+    transition: opacity 0.2s ease;
 }
 
 .email-placeholder span {
@@ -1436,11 +1441,13 @@ a:hover {
     background: transparent;
     border: none;
     padding: 0;
-    display: flex;
+    display: flex !important; /* Always display */
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 3;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .arrow-btn img {
@@ -1451,7 +1458,7 @@ a:hover {
 .email-input-wrap input {
     width: 100%;
     height: 100%;
-    background: #0b0c10;
+    background: transparent;
     border: none;
     color: #fff;
     font-size: 1.1em;
