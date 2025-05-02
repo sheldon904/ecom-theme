@@ -251,6 +251,117 @@ add_action('init', 'lambo_merch_stripe_only');
 add_filter( 'woocommerce_checkout_fields', 'lambo_merch_woocommerce_checkout_fields' );
 
 /**
+ * Make sure shipping address is properly handled during checkout
+ */
+function lambo_merch_handle_shipping_address( $order_id ) {
+    // Get the order
+    $order = wc_get_order( $order_id );
+    
+    // Check if "ship to different address" was checked
+    if ( isset( $_POST['ship_to_different_address'] ) && $_POST['ship_to_different_address'] == 1 ) {
+        // Make sure the shipping address fields are correctly saved
+        // This is necessary because sometimes WooCommerce doesn't properly save shipping fields
+        if (isset($_POST['shipping_first_name'])) $order->set_shipping_first_name(sanitize_text_field($_POST['shipping_first_name']));
+        if (isset($_POST['shipping_last_name'])) $order->set_shipping_last_name(sanitize_text_field($_POST['shipping_last_name']));
+        if (isset($_POST['shipping_company'])) $order->set_shipping_company(sanitize_text_field($_POST['shipping_company']));
+        if (isset($_POST['shipping_address_1'])) $order->set_shipping_address_1(sanitize_text_field($_POST['shipping_address_1']));
+        if (isset($_POST['shipping_address_2'])) $order->set_shipping_address_2(sanitize_text_field($_POST['shipping_address_2']));
+        if (isset($_POST['shipping_city'])) $order->set_shipping_city(sanitize_text_field($_POST['shipping_city']));
+        if (isset($_POST['shipping_state'])) $order->set_shipping_state(sanitize_text_field($_POST['shipping_state']));
+        if (isset($_POST['shipping_postcode'])) $order->set_shipping_postcode(sanitize_text_field($_POST['shipping_postcode']));
+        if (isset($_POST['shipping_country'])) $order->set_shipping_country(sanitize_text_field($_POST['shipping_country']));
+        
+        // Save the updated order
+        $order->save();
+        return;
+    }
+    
+    // If ship to different address is not checked, copy billing to shipping
+    
+    // Get billing address
+    $billing_address = array(
+        'first_name' => $order->get_billing_first_name(),
+        'last_name'  => $order->get_billing_last_name(),
+        'company'    => $order->get_billing_company(),
+        'address_1'  => $order->get_billing_address_1(),
+        'address_2'  => $order->get_billing_address_2(),
+        'city'       => $order->get_billing_city(),
+        'state'      => $order->get_billing_state(),
+        'postcode'   => $order->get_billing_postcode(),
+        'country'    => $order->get_billing_country()
+    );
+    
+    // Set shipping address same as billing (regardless of what's in shipping fields)
+    $order->set_shipping_first_name( $billing_address['first_name'] );
+    $order->set_shipping_last_name( $billing_address['last_name'] );
+    $order->set_shipping_company( $billing_address['company'] );
+    $order->set_shipping_address_1( $billing_address['address_1'] );
+    $order->set_shipping_address_2( $billing_address['address_2'] );
+    $order->set_shipping_city( $billing_address['city'] );
+    $order->set_shipping_state( $billing_address['state'] );
+    $order->set_shipping_postcode( $billing_address['postcode'] );
+    $order->set_shipping_country( $billing_address['country'] );
+    
+    // Save the order
+    $order->save();
+}
+
+/**
+ * Process checkout fields before order creation to copy billing to shipping
+ * when "Ship to different address" is not checked
+ */
+function lambo_merch_process_checkout_fields( $data ) {
+    // Check if "ship to different address" checkbox is not checked or not set
+    if ( ! isset( $data['ship_to_different_address'] ) || $data['ship_to_different_address'] == 0 ) {
+        // Copy billing fields to shipping fields
+        $data['shipping_first_name'] = $data['billing_first_name'];
+        $data['shipping_last_name'] = $data['billing_last_name'];
+        $data['shipping_company'] = isset($data['billing_company']) ? $data['billing_company'] : '';
+        $data['shipping_address_1'] = $data['billing_address_1'];
+        $data['shipping_address_2'] = isset($data['billing_address_2']) ? $data['billing_address_2'] : '';
+        $data['shipping_city'] = $data['billing_city'];
+        $data['shipping_state'] = $data['billing_state'];
+        $data['shipping_postcode'] = $data['billing_postcode'];
+        $data['shipping_country'] = $data['billing_country'];
+    }
+    
+    return $data;
+}
+
+/**
+ * Ensure proper redirect to thank you page
+ */
+function lambo_merch_checkout_redirect( $order_id ) {
+    // Make sure order exists
+    if ( $order_id ) {
+        $order = wc_get_order( $order_id );
+        
+        if ( $order ) {
+            // Get the thank you page URL from WooCommerce
+            $redirect_url = $order->get_checkout_order_received_url();
+            
+            // Set cookie to indicate we're coming from checkout
+            setcookie( 'lambo_checkout_completed', '1', time() + 3600, '/' );
+            
+            // Force redirect to thank you page
+            if ( ! is_ajax() ) {
+                wp_safe_redirect( $redirect_url );
+                exit;
+            } else {
+                // For AJAX requests, return the URL for client-side redirect
+                return array(
+                    'result'   => 'success',
+                    'redirect' => $redirect_url,
+                );
+            }
+        }
+    }
+}
+add_action( 'woocommerce_thankyou', 'lambo_merch_checkout_redirect', 5, 1 );
+add_action( 'woocommerce_checkout_update_order_meta', 'lambo_merch_handle_shipping_address', 10, 1 );
+add_filter( 'woocommerce_checkout_posted_data', 'lambo_merch_process_checkout_fields', 10, 1 );
+
+/**
  * Customize WooCommerce checkout button.
  */
 function lambo_merch_woocommerce_checkout_button() {

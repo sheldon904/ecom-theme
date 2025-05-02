@@ -5,6 +5,14 @@
  */
 defined( 'ABSPATH' ) || exit;
 
+// Process checkout if needed
+if ( isset( $_POST['is_checkout_submit'] ) && $_POST['is_checkout_submit'] === '1' ) {
+    // This ensures we get redirected to the order-received page
+    add_filter( 'woocommerce_get_checkout_url', function( $url ) {
+        return wc_get_checkout_url();
+    });
+}
+
 get_header();
 
 // Clear notices and get the checkout object
@@ -218,11 +226,13 @@ $checkout = WC()->checkout;
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <h2 class="checkout-heading" style="margin-bottom: 0;">Billing Details</h2>
       <div class="checkbox-row" style="margin: 0;">
-        <input type="checkbox" name="ship_to_different_address" id="ship_to_different_address" value="1">
+        <input type="checkbox" name="ship_to_different_address" id="ship_to_different_address" value="1" <?php checked(WC()->checkout->get_value('ship_to_different_address'), 1); ?>>
         <label for="ship_to_different_address">Ship to a different address?</label>
       </div>
     </div>
     <form name="checkout" method="post" class="checkout woocommerce-checkout" action="<?php echo esc_url(wc_get_checkout_url()); ?>" enctype="multipart/form-data">
+      <!-- Add nonce field for security -->
+      <?php wp_nonce_field('woocommerce-process_checkout', 'woocommerce-process-checkout-nonce'); ?>
       <div class="billing-form">
         <!-- Billing Details Column -->
         <div class="billing-column">
@@ -275,25 +285,25 @@ $checkout = WC()->checkout;
         <!-- Shipping Details Column (hidden by default) -->
         <div class="shipping-column" id="shipping-column" style="display: none;">
           <div class="form-row">
-            <input type="text" name="shipping_first_name" id="shipping_first_name" placeholder="First name *">
+            <input type="text" name="shipping_first_name" id="shipping_first_name" placeholder="First name *" required>
           </div>
           <div class="form-row">
-            <input type="text" name="shipping_last_name" id="shipping_last_name" placeholder="Last name *">
+            <input type="text" name="shipping_last_name" id="shipping_last_name" placeholder="Last name *" required>
           </div>
           <div class="form-row">
             <input type="text" name="shipping_company" id="shipping_company" placeholder="Company (optional)">
           </div>
           <div class="form-row address-field update_totals_on_change">
-            <input type="text" name="shipping_address_1" id="shipping_address_1" placeholder="Street address *">
+            <input type="text" name="shipping_address_1" id="shipping_address_1" placeholder="Street address *" required>
           </div>
           <div class="form-row">
             <input type="text" name="shipping_address_2" id="shipping_address_2" placeholder="Apartment, suite, unit, etc. (optional)">
           </div>
           <div class="form-row address-field update_totals_on_change">
-            <input type="text" name="shipping_city" id="shipping_city" placeholder="Town / City *">
+            <input type="text" name="shipping_city" id="shipping_city" placeholder="Town / City *" required>
           </div>
           <div class="form-row address-field update_totals_on_change">
-            <select name="shipping_country" id="shipping_country" class="country_to_state">
+            <select name="shipping_country" id="shipping_country" class="country_to_state" required>
               <option value="">Select country / region *</option>
               <?php 
                 foreach ( $countries as $code => $name ) {
@@ -303,14 +313,28 @@ $checkout = WC()->checkout;
             </select>
           </div>
           <div class="form-row address-field update_totals_on_change">
-            <input type="text" name="shipping_state" id="shipping_state" placeholder="State / Province *">
+            <input type="text" name="shipping_state" id="shipping_state" placeholder="State / Province *" required>
           </div>
           <div class="form-row address-field update_totals_on_change">
-            <input type="text" name="shipping_postcode" id="shipping_postcode" placeholder="ZIP Code *">
+            <input type="text" name="shipping_postcode" id="shipping_postcode" placeholder="ZIP Code *" required>
           </div>
           <div class="form-row">
             <textarea name="order_comments" id="order_comments" placeholder="Notes about your order, e.g., special delivery notes." rows="4"></textarea>
           </div>
+        </div>
+        
+        <!-- Hidden fields for shipping address when "Ship to different address" is unchecked -->
+        <div id="shipping-same-as-billing-fields" style="display: none;">
+          <!-- These fields will be populated by JS before form submission -->
+          <input type="hidden" name="shipping_first_name" id="same_as_billing_first_name">
+          <input type="hidden" name="shipping_last_name" id="same_as_billing_last_name">
+          <input type="hidden" name="shipping_company" id="same_as_billing_company">
+          <input type="hidden" name="shipping_address_1" id="same_as_billing_address_1">
+          <input type="hidden" name="shipping_address_2" id="same_as_billing_address_2">
+          <input type="hidden" name="shipping_city" id="same_as_billing_city">
+          <input type="hidden" name="shipping_country" id="same_as_billing_country">
+          <input type="hidden" name="shipping_state" id="same_as_billing_state">
+          <input type="hidden" name="shipping_postcode" id="same_as_billing_postcode">
         </div>
       </div>
       
@@ -398,6 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
       loginForm.style.display = (loginForm.style.display === 'none') ? 'block' : 'none';
     });
   }
+  
   // Toggle coupon form display
   const couponTrigger = document.getElementById('coupon-trigger');
   const couponForm = document.getElementById('coupon-form');
@@ -410,14 +435,120 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  // Show/hide shipping fields when checkbox toggled
+  
+  // Set up visibility toggle for shipping fields
   const shipCheckbox = document.getElementById('ship_to_different_address');
   const shippingFields = document.getElementById('shipping-column');
-  if (shipCheckbox && shippingFields) {
-    shipCheckbox.addEventListener('change', () => {
-      shippingFields.style.display = shipCheckbox.checked ? 'block' : 'none';
+  const shippingSameAsBillingFields = document.getElementById('shipping-same-as-billing-fields');
+  
+  // Function to handle shipping fields display based on checkbox
+  function toggleShippingFields() {
+    const isShipDifferent = shipCheckbox.checked;
+    
+    // Toggle visibility of fields
+    shippingFields.style.display = isShipDifferent ? 'block' : 'none';
+    shippingSameAsBillingFields.style.display = isShipDifferent ? 'none' : 'block';
+    
+    // Toggle required attribute on shipping fields
+    const requiredFields = [
+      'shipping_first_name', 'shipping_last_name', 'shipping_address_1',
+      'shipping_city', 'shipping_country', 'shipping_state', 'shipping_postcode'
+    ];
+    
+    requiredFields.forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (field) {
+        if (isShipDifferent) {
+          field.setAttribute('required', 'required');
+        } else {
+          field.removeAttribute('required');
+        }
+      }
+    });
+    
+    // If shipping to same address, copy billing values to hidden shipping fields
+    if (!isShipDifferent) {
+      updateHiddenShippingFields();
+    }
+  }
+  
+  // Function to copy billing values to hidden shipping fields
+  function updateHiddenShippingFields() {
+    const billingFields = [
+      'first_name', 'last_name', 'company', 'address_1', 'address_2', 
+      'city', 'state', 'postcode', 'country'
+    ];
+    
+    billingFields.forEach(field => {
+      const billingField = document.getElementById('billing_' + field);
+      const hiddenShippingField = document.getElementById('same_as_billing_' + field);
+      
+      if (billingField && hiddenShippingField) {
+        hiddenShippingField.value = billingField.value;
+      }
     });
   }
+  
+  // Apply initial state and add change listener
+  if (shipCheckbox && shippingFields && shippingSameAsBillingFields) {
+    // Set initial state
+    toggleShippingFields();
+    
+    // Add change event listener
+    shipCheckbox.addEventListener('change', toggleShippingFields);
+    
+    // Add input listeners to billing fields to update hidden shipping fields
+    const billingFields = [
+      'first_name', 'last_name', 'company', 'address_1', 'address_2', 
+      'city', 'state', 'postcode', 'country'
+    ];
+    
+    billingFields.forEach(field => {
+      const billingField = document.getElementById('billing_' + field);
+      
+      if (billingField) {
+        // Update shipping field when billing field changes
+        billingField.addEventListener('input', function() {
+          if (!shipCheckbox.checked) {
+            const hiddenShippingField = document.getElementById('same_as_billing_' + field);
+            if (hiddenShippingField) {
+              hiddenShippingField.value = this.value;
+            }
+          }
+        });
+      }
+    });
+  }
+  
+  // Handle form submission
+  const checkoutForm = document.querySelector('form.checkout.woocommerce-checkout');
+  if (checkoutForm) {
+    checkoutForm.addEventListener('submit', function(e) {
+      // Final check to ensure fields are properly set up
+      if (shipCheckbox.checked) {
+        // If shipping to different address, ensure hidden fields aren't used
+        const hiddenFields = shippingSameAsBillingFields.querySelectorAll('input');
+        hiddenFields.forEach(field => {
+          field.setAttribute('disabled', 'disabled');
+        });
+      } else {
+        // If shipping to same address, update hidden fields and disable visible shipping fields
+        updateHiddenShippingFields();
+        const visibleShippingInputs = shippingFields.querySelectorAll('input, select, textarea');
+        visibleShippingInputs.forEach(field => {
+          field.setAttribute('disabled', 'disabled');
+        });
+      }
+      
+      // Add a flag to indicate we're submitting the checkout form
+      const hiddenFlag = document.createElement('input');
+      hiddenFlag.type = 'hidden';
+      hiddenFlag.name = 'is_checkout_submit';
+      hiddenFlag.value = '1';
+      checkoutForm.appendChild(hiddenFlag);
+    });
+  }
+  
   // Style Stripe payment elements after they load
   function styleStripeElements() {
     document.querySelectorAll('.payment_box, .wc-stripe-elements-field').forEach(el => {
@@ -433,6 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
       container.style.padding = '15px';
     });
   }
+  
   // Wait for Stripe elements to appear, then style them
   const stripeInterval = setInterval(() => {
     const stripeElements = document.querySelectorAll('.wc-stripe-elements-field, .payment_box');
