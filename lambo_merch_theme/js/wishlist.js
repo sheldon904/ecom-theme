@@ -46,6 +46,33 @@ jQuery(document).ready(function($) {
                 
                 // Update wishlist count
                 this.updateWishlistCount();
+                
+                // If the user is logged in, update server-side wishlist
+                if (typeof lambo_wishlist_params !== 'undefined' && lambo_wishlist_params.ajaxurl) {
+                    $.ajax({
+                        type: 'POST',
+                        url: lambo_wishlist_params.ajaxurl,
+                        data: {
+                            action: 'lambo_update_user_wishlist',
+                            wishlist: wishlist
+                        },
+                        success: function(response) {
+                            // Wishlist updated on server
+                        }
+                    });
+                } else if (typeof ajaxurl !== 'undefined') {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajaxurl,
+                        data: {
+                            action: 'lambo_update_user_wishlist',
+                            wishlist: wishlist
+                        },
+                        success: function(response) {
+                            // Wishlist updated on server
+                        }
+                    });
+                }
             } else {
                 // Product already in wishlist
                 this.showMessage('Product is already in your favorites!', 'info');
@@ -53,7 +80,7 @@ jQuery(document).ready(function($) {
         },
         
         removeFromWishlist: function(productId) {
-            // Convert productId to string to ensure consistent comparison
+            // Convert productId to string for consistent comparison
             productId = productId.toString();
             
             // Get existing wishlist items
@@ -75,12 +102,11 @@ jQuery(document).ready(function($) {
                 // Update wishlist count
                 this.updateWishlistCount();
                 
-                // If on wishlist page, remove the product element
+                // If on wishlist page, remove the product element in the DOM
                 if ($('.wishlist-product[data-product-id="' + productId + '"]').length) {
                     $('.wishlist-product[data-product-id="' + productId + '"]').fadeOut(300, function() {
                         $(this).remove();
-                        
-                        // Check if wishlist is empty
+                        // If list becomes empty, show empty state
                         if ($('.wishlist-product').length === 0) {
                             $('.wishlist-products').html('<div class="empty-wishlist"><p>Your favorites list is empty.</p><a href="' + wc_add_to_cart_params.shop_url + '" class="button continue-shopping">Continue Shopping</a></div>');
                         }
@@ -88,7 +114,19 @@ jQuery(document).ready(function($) {
                 }
                 
                 // If the user is logged in, also update the server-side wishlist
-                if (typeof ajaxurl !== 'undefined') {
+                if (typeof lambo_wishlist_params !== 'undefined' && lambo_wishlist_params.ajaxurl) {
+                    $.ajax({
+                        type: 'POST',
+                        url: lambo_wishlist_params.ajaxurl,
+                        data: {
+                            action: 'lambo_update_user_wishlist',
+                            wishlist: wishlist
+                        },
+                        success: function(response) {
+                            // Wishlist updated on server
+                        }
+                    });
+                } else if (typeof ajaxurl !== 'undefined') {
                     $.ajax({
                         type: 'POST',
                         url: ajaxurl,
@@ -122,23 +160,19 @@ jQuery(document).ready(function($) {
                 success: function(response) {
                     if (response.success) {
                         LamboWishlist.showMessage('Product added to cart!', 'success');
-                        
-                        // Update cart fragments
+                        // Replace fragments (mini-cart, etc.) if returned
                         if (response.fragments) {
                             $.each(response.fragments, function(key, value) {
                                 $(key).replaceWith(value);
                             });
                         }
-                        
-                        // Update cart item count
+                        // Update cart item count in header
                         $('.cart-count').text(response.cart_count);
-                        
-                        // Trigger event for WooCommerce to update cart fragments
+                        // Trigger WooCommerce event for added to cart
                         $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, null]);
                     } else {
                         LamboWishlist.showMessage('Error adding product to cart.', 'error');
                     }
-                    
                     $('.wishlist-product[data-product-id="' + productId + '"] .add-to-cart').text('Add to Cart').prop('disabled', false);
                 },
                 error: function(xhr, status, error) {
@@ -151,8 +185,7 @@ jQuery(document).ready(function($) {
         
         getWishlist: function() {
             var wishlist = [];
-            
-            // Check for cookie
+            // Check for wishlist cookie
             if (document.cookie.indexOf('lambo_wishlist=') !== -1) {
                 var cookieValue = document.cookie.split('; ').find(row => row.startsWith('lambo_wishlist='));
                 if (cookieValue) {
@@ -163,12 +196,11 @@ jQuery(document).ready(function($) {
                     }
                 }
             }
-            
             return Array.isArray(wishlist) ? wishlist : [];
         },
         
         saveWishlist: function(wishlist) {
-            // Set cookie for 30 days
+            // Set/update cookie for 30 days
             var date = new Date();
             date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
             document.cookie = 'lambo_wishlist=' + encodeURIComponent(JSON.stringify(wishlist)) + '; expires=' + date.toUTCString() + '; path=/';
@@ -176,24 +208,21 @@ jQuery(document).ready(function($) {
         
         updateWishlistCount: function() {
             var count = this.getWishlist().length;
-            
-            // Update wishlist count in header
+            // Update wishlist count in header icon
             $('.wishlist-count').text(count > 0 ? count : '');
         },
         
         showMessage: function(message, type) {
-            // Create message element if it doesn't exist
+            // Create a floating message element if not already present
             if ($('.lambo-wishlist-message').length === 0) {
                 $('body').append('<div class="lambo-wishlist-message"></div>');
             }
-            
-            // Set message content and type
+            // Set message text and style
             $('.lambo-wishlist-message')
                 .attr('class', 'lambo-wishlist-message ' + type)
                 .html(message)
                 .fadeIn(300);
-            
-            // Hide message after 3 seconds
+            // Auto-hide message after 3 seconds
             clearTimeout(this.messageTimeout);
             this.messageTimeout = setTimeout(function() {
                 $('.lambo-wishlist-message').fadeOut(300);
@@ -201,6 +230,6 @@ jQuery(document).ready(function($) {
         }
     };
     
-    // Initialize wishlist
+    // Initialize wishlist functionality
     LamboWishlist.init();
 });
