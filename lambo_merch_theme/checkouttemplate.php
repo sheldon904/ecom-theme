@@ -7,10 +7,13 @@ defined( 'ABSPATH' ) || exit;
 
 // Process checkout if needed
 if ( isset( $_POST['is_checkout_submit'] ) && $_POST['is_checkout_submit'] === '1' ) {
-    // This ensures we get redirected to the order-received page
-    add_filter( 'woocommerce_get_checkout_url', function( $url ) {
-        return wc_get_checkout_url();
-    });
+    // This ensures we get redirected to the order-received page after checkout
+    add_filter( 'woocommerce_get_checkout_order_received_url', function( $url, $order ) {
+        // Make sure we redirect to our custom template for order received
+        $order_id = $order->get_id();
+        $order_key = $order->get_order_key();
+        return wc_get_endpoint_url( 'order-received', $order_id, wc_get_checkout_url() ) . '?key=' . $order_key;
+    }, 10, 2);
 }
 
 get_header();
@@ -526,14 +529,53 @@ document.addEventListener('DOMContentLoaded', function() {
     checkoutForm.addEventListener('submit', function(e) {
       // Final check to ensure fields are properly set up
       if (shipCheckbox.checked) {
-        // If shipping to different address, ensure hidden fields aren't used
+        // If shipping to different address, make sure shipping fields are enabled
+        // and hidden fields are disabled
         const hiddenFields = shippingSameAsBillingFields.querySelectorAll('input');
         hiddenFields.forEach(field => {
           field.setAttribute('disabled', 'disabled');
         });
+        
+        // Enable all shipping fields to ensure they're submitted
+        const visibleShippingInputs = shippingFields.querySelectorAll('input, select, textarea');
+        visibleShippingInputs.forEach(field => {
+          field.removeAttribute('disabled');
+        });
+        
+        // Add a flag indicating shipping to different address
+        const shipDiffAddressFlag = document.createElement('input');
+        shipDiffAddressFlag.type = 'hidden';
+        shipDiffAddressFlag.name = 'ship_to_different_address';
+        shipDiffAddressFlag.value = '1';
+        checkoutForm.appendChild(shipDiffAddressFlag);
       } else {
-        // If shipping to same address, update hidden fields and disable visible shipping fields
-        updateHiddenShippingFields();
+        // If shipping to same address, copy billing values to shipping fields
+        const billingFields = [
+          'first_name', 'last_name', 'company', 'address_1', 'address_2', 
+          'city', 'state', 'postcode', 'country'
+        ];
+        
+        billingFields.forEach(field => {
+          const billingValue = document.getElementById('billing_' + field).value;
+          const shippingField = document.getElementById('shipping_' + field);
+          
+          // Create a shipping field if it doesn't exist
+          if (!shippingField) {
+            const newField = document.createElement('input');
+            newField.type = 'hidden';
+            newField.name = 'shipping_' + field;
+            newField.id = 'shipping_' + field;
+            newField.value = billingValue;
+            checkoutForm.appendChild(newField);
+          } else {
+            // Update existing shipping field
+            shippingField.value = billingValue;
+            // Make sure it's not disabled
+            shippingField.removeAttribute('disabled');
+          }
+        });
+        
+        // Disable visible shipping section fields to prevent conflicts
         const visibleShippingInputs = shippingFields.querySelectorAll('input, select, textarea');
         visibleShippingInputs.forEach(field => {
           field.setAttribute('disabled', 'disabled');
@@ -546,6 +588,9 @@ document.addEventListener('DOMContentLoaded', function() {
       hiddenFlag.name = 'is_checkout_submit';
       hiddenFlag.value = '1';
       checkoutForm.appendChild(hiddenFlag);
+      
+      // Log the form data for debugging
+      console.log('Shipping to different address:', shipCheckbox.checked);
     });
   }
   

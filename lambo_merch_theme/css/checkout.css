@@ -219,7 +219,14 @@ select {
 }
 
 /* Place order button */
-.woocommerce-checkout #place_order {
+.woocommerce-checkout #place_order,
+.woocommerce-checkout button#place_order,
+.woocommerce-checkout input#place_order,
+.woocommerce-checkout #payment #place_order,
+.woocommerce-checkout .woocommerce #payment #place_order,
+.woocommerce-checkout #payment .place-order #place_order,
+.woocommerce-checkout button[type="submit"],
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"] {
   background-color: #ff0000 !important;
   color: #ffffff !important;
   text-transform: uppercase !important;
@@ -227,11 +234,52 @@ select {
   padding: 1rem 2rem !important;
   border: none !important;
   width: 100% !important;
-  transition: background-color 0.3s ease !important;
+  transition: none !important;
+  -webkit-appearance: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  /* Prevent any default states from showing */
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
 }
 
-.woocommerce-checkout #place_order:hover {
+.woocommerce-checkout #place_order:hover,
+.woocommerce-checkout button#place_order:hover,
+.woocommerce-checkout input#place_order:hover,
+.woocommerce-checkout #payment #place_order:hover,
+.woocommerce-checkout .woocommerce #payment #place_order:hover,
+.woocommerce-checkout #payment .place-order #place_order:hover,
+.woocommerce-checkout button[type="submit"]:hover,
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"]:hover {
   background-color: #cc0000 !important;
+  color: #ffffff !important;
+}
+
+/* Target active, focus, and focus-visible states to prevent flashing */
+.woocommerce-checkout #place_order:active,
+.woocommerce-checkout #place_order:focus,
+.woocommerce-checkout #place_order:focus-visible,
+.woocommerce-checkout button#place_order:active,
+.woocommerce-checkout button#place_order:focus,
+.woocommerce-checkout button#place_order:focus-visible,
+.woocommerce-checkout input#place_order:active,
+.woocommerce-checkout input#place_order:focus,
+.woocommerce-checkout input#place_order:focus-visible,
+.woocommerce-checkout #payment #place_order:active,
+.woocommerce-checkout #payment #place_order:focus,
+.woocommerce-checkout #payment #place_order:focus-visible,
+.woocommerce-checkout button[type="submit"]:active,
+.woocommerce-checkout button[type="submit"]:focus,
+.woocommerce-checkout button[type="submit"]:focus-visible,
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"]:active,
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"]:focus,
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"]:focus-visible {
+  background-color: #ff0000 !important;
+  color: #ffffff !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 /* Order review */
@@ -357,17 +405,38 @@ select.state_select,
   }
 }
 
-/* Explicitly reset footer email input styling */
+/* Explicitly exclude footer email input from checkout styling */
 footer input[type="email"],
 .footer input[type="email"],
 #colophon input[type="email"],
 .site-footer input[type="email"],
 .email-input-wrap input[type="email"],
-.footer-email-exempt {
+.footer-email-exempt,
+body:not(.lambo-checkout-page) input[type="email"] {
   background-color: initial !important;
   color: initial !important;
   border: initial !important;
   padding: initial !important;
   border-radius: initial !important;
   box-shadow: initial !important;
+  font-size: initial !important;
+  line-height: initial !important;
+  width: initial !important;
+  height: initial !important;
+  margin: initial !important;
+}
+
+/* Target checkout email fields more specifically to avoid affecting footer */
+body.woocommerce-checkout form.checkout #billing_email,
+body.woocommerce-checkout form.checkout .woocommerce-checkout-payment input[type="email"],
+body.woocommerce-checkout #customer_details input[type="email"],
+#billing_email,
+#shipping_email {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  border: 1px solid #444444 !important;
+  padding: 12px !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+  box-shadow: none !important;
 }
