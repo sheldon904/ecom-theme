@@ -45,10 +45,29 @@ footerEmailInputs.forEach(function(input) {
     input.style.color = '';
     input.style.border = '';
     input.style.borderColor = '';
+    input.style.padding = '';
+    input.style.borderRadius = '';
+    input.style.fontSize = '';
+    input.style.lineHeight = '';
+    input.style.boxShadow = '';
+    input.style.width = '';
+    input.style.height = '';
+    input.style.margin = '';
     input.removeAttribute('style');
     
     // Add a specific class to identify it
     input.classList.add('footer-email-exempt');
+    
+    // Add a mutation observer to ensure styles don't get reapplied
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'style') {
+                input.removeAttribute('style');
+            }
+        });
+    });
+    
+    observer.observe(input, { attributes: true });
 });
 
 
@@ -152,21 +171,40 @@ footerEmailInputs.forEach(function(input) {
      * This uses classnames rather than direct style manipulation
      */
     function safelyStyleFormFields() {
-        // Add a class to all form fields that need styling
-        const formFields = document.querySelectorAll(
-            'input[type="text"], input[type="email"], input[type="tel"], ' +
-            'input[type="number"], input[type="password"], textarea, select, ' +
-            '.select2-selection'
+        // Add a class to the body element to help with CSS targeting
+        document.body.classList.add('lambo-checkout-page');
+        
+        // Get only checkout form fields, not footer or other forms
+        const checkoutForms = document.querySelectorAll(
+            'form.checkout, ' +
+            '.woocommerce-checkout form, ' +
+            '#customer_details, ' +
+            '.woocommerce-checkout-payment'
         );
         
-        formFields.forEach(field => {
-            if (!field.classList.contains('lambo-styled')) {
-                field.classList.add('lambo-styled');
-                
-                // Add event listeners safely without recreating elements
-                field.addEventListener('focus', handleFieldFocus);
-                field.addEventListener('blur', handleFieldBlur);
-            }
+        checkoutForms.forEach(form => {
+            // Only target form fields within checkout forms
+            const formFields = form.querySelectorAll(
+                'input[type="text"], input[type="email"], input[type="tel"], ' +
+                'input[type="number"], input[type="password"], textarea, select, ' +
+                '.select2-selection'
+            );
+            
+            formFields.forEach(field => {
+                if (!field.classList.contains('lambo-styled')) {
+                    field.classList.add('lambo-styled');
+                    
+                    // Add event listeners safely without recreating elements
+                    field.addEventListener('focus', handleFieldFocus);
+                    field.addEventListener('blur', handleFieldBlur);
+                }
+            });
+        });
+        
+        // Exempt any footer fields from styling
+        document.querySelectorAll('footer input, .footer input, #colophon input, .site-footer input').forEach(field => {
+            field.classList.remove('lambo-styled');
+            field.classList.add('footer-email-exempt');
         });
     }
     
@@ -269,6 +307,49 @@ footerEmailInputs.forEach(function(input) {
         
         // Style Stripe elements
         styleStripeElements();
+        
+        // Handle place order button styling
+        stylePlaceOrderButton();
+    }
+    
+    /**
+     * Apply styling to place order button
+     * This fixes the white flash when clicking
+     */
+    function stylePlaceOrderButton() {
+        const placeOrderBtn = document.querySelector('#place_order');
+        if (placeOrderBtn) {
+            // Apply direct styling
+            placeOrderBtn.style.backgroundColor = '#ff0000';
+            placeOrderBtn.style.color = '#ffffff';
+            placeOrderBtn.style.textTransform = 'uppercase';
+            placeOrderBtn.style.fontWeight = 'bold';
+            placeOrderBtn.style.padding = '1rem 2rem';
+            placeOrderBtn.style.border = 'none';
+            placeOrderBtn.style.width = '100%';
+            placeOrderBtn.style.transition = 'none';
+            placeOrderBtn.style.webkitAppearance = 'none';
+            placeOrderBtn.style.borderRadius = '0';
+            placeOrderBtn.style.boxShadow = 'none';
+            placeOrderBtn.style.outline = 'none';
+            
+            // Prevent any default button behavior
+            placeOrderBtn.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                this.style.backgroundColor = '#cc0000';
+            });
+            
+            placeOrderBtn.addEventListener('mouseup', function(e) {
+                this.style.backgroundColor = '#ff0000';
+            });
+            
+            // Prevent the default focus outline which can cause flashing
+            placeOrderBtn.addEventListener('focus', function(e) {
+                this.style.outline = 'none';
+                this.style.boxShadow = 'none';
+                this.style.backgroundColor = '#ff0000';
+            });
+        }
     }
     
     /**
