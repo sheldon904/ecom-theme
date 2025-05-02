@@ -87,28 +87,14 @@ div[id^="stripe-"] iframe,
 }
 
 /* Focus state */
-body.woocommerce-checkout form.checkout input[type="text"]:focus,
-body.woocommerce-checkout form.checkout input[type="tel"]:focus,
-body.woocommerce-checkout form.checkout input[type="email"]:focus,
-body.woocommerce-checkout form.checkout input[type="password"]:focus,
-body.woocommerce-checkout form.checkout textarea:focus,
-body.woocommerce-checkout form.checkout select:focus,
-body.woocommerce-checkout #customer_details input:focus {
+.woocommerce-checkout input[type="text"]:focus,
+.woocommerce-checkout input[type="tel"]:focus,
+.woocommerce-checkout input[type="email"]:not(footer input[type="email"]):not(.footer input[type="email"]):not(#colophon input[type="email"]):not(.site-footer input[type="email"]):not(.email-input-wrap input[type="email"]):focus,
+.woocommerce-checkout input[type="password"]:focus,
+.woocommerce-checkout textarea:focus,
+.woocommerce-checkout select:focus {
   border-color: #ff0000 !important;
   outline: none !important;
-}
-
-/* Ensure footer input is never affected */
-footer input[type="email"]:focus,
-.footer input[type="email"]:focus,
-#colophon input[type="email"]:focus,
-.site-footer input[type="email"]:focus,
-.email-input-wrap input[type="email"]:focus,
-.footer-email-exempt:focus {
-  border-color: #cccccc !important;
-  outline: auto !important;
-  background-color: #ffffff !important;
-  color: #333333 !important;
 }
 
 /* Form labels */
@@ -427,25 +413,17 @@ footer input[type="email"],
 .email-input-wrap input[type="email"],
 .footer-email-exempt,
 body:not(.lambo-checkout-page) input[type="email"] {
-  /* Reset all properties to default */
-  all: initial !important;
-  /* Then set key properties needed for footer email field */
-  display: inline-block !important;
-  box-sizing: border-box !important;
-  font-family: inherit !important;
-  appearance: auto !important;
-  -webkit-appearance: auto !important;
-  -moz-appearance: auto !important;
-  /* Override any other styles that might be applied */
-  background-color: #ffffff !important;
-  color: #333333 !important;
-  border: 1px solid #cccccc !important;
-  border-radius: 0 !important;
-  padding: 8px 12px !important;
-  font-size: 14px !important;
-  line-height: 1.5 !important;
-  width: auto !important;
-  height: auto !important;
+  background-color: initial !important;
+  color: initial !important;
+  border: initial !important;
+  padding: initial !important;
+  border-radius: initial !important;
+  box-shadow: initial !important;
+  font-size: initial !important;
+  line-height: initial !important;
+  width: initial !important;
+  height: initial !important;
+  margin: initial !important;
 }
 
 /* Target checkout email fields more specifically to avoid affecting footer */
@@ -461,4 +439,82 @@ body.woocommerce-checkout #customer_details input[type="email"],
   border-radius: 0 !important;
   font-size: 16px !important;
   box-shadow: none !important;
+}
+/* --- Exempt the footer newsletter field from checkout styling --- */
+.footer-email-exempt {
+  all: unset !important;             /* remove all inherited styles */
+  width: auto !important;            /* restore normal width */
+  background: none !important;       /* transparent/black per base theme */
+  border: none !important;
+  color: #ffffff !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+/* put the little arrow button back to its normal style */
+.footer-email-exempt + .arrow-btn {
+  background: #000 !important;       /* or whatever your normal button bg is */
+  color:  #fff !important;
+}
+/* Make Select2 fields match our other inputs */
+.woocommerce-checkout .select2-selection.lambo-styled {
+  height:    50px !important;
+  line-height: 50px !important;
+  color:     #ffffff !important;
+}
+/* Completely hide the “save new payment method” area */
+.woocommerce-checkout .woocommerce-SavedPaymentMethods-saveNew {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* --------------------------------------------
+   1) Inner Select2 text → white
+-------------------------------------------- */
+.woocommerce-checkout .select2-selection__rendered {
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------
+   2) Exempt the footer subscribe form
+   from ALL checkout page CSS
+-------------------------------------------- */
+/* Target only on the checkout page */
+.woocommerce-checkout footer input.footer-email-exempt {
+  all: unset !important;          /* remove any inherited styling */
+  /* now restore only what you need: */
+  background: transparent;        /* your normal footer bg */
+  color:      #ffffff !important; /* white placeholder/text */
+  box-shadow: none !important;
+  padding:    0 !important;
+  margin:     0 !important;
+  width:      auto !important;
+  height:     auto !important;
+}
+
+/* If your arrow-button lives immediately after that input: */
+.woocommerce-checkout footer input.footer-email-exempt + button.arrow-btn {
+  all: unset !important;
+  background: transparent !important; /* or the base-theme button bg */
+  color:      #ffffff !important;
+  box-shadow: none !important;
+  padding:    0 1rem !important;     /* adjust to match normal footer look */
+}
+/*────────────────────────────────────────
+  1) Email-input wrap → #0b0c10 instead of #303030
+────────────────────────────────────────*/
+.woocommerce-checkout footer .email-input-wrap {
+  background-color: #0b0c10 !important;
+}
+
+/* Footer styling removed */
+
+/*────────────────────────────────────────
+  3) (Optional) If your arrow-button sits
+     next to the email field, keep it dark
+────────────────────────────────────────*/
+.woocommerce-checkout footer input.footer-email-exempt + button.arrow-btn {
+  background: #0b0c10 !important;
+  color:      #ffffff !important;
 }
