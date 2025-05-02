@@ -53,11 +53,14 @@ jQuery(document).ready(function($) {
         },
         
         removeFromWishlist: function(productId) {
+            // Convert productId to string to ensure consistent comparison
+            productId = productId.toString();
+            
             // Get existing wishlist items
             var wishlist = this.getWishlist();
             
             // Find product in wishlist
-            var index = wishlist.indexOf(productId.toString());
+            var index = wishlist.indexOf(productId);
             
             if (index !== -1) {
                 // Remove product from wishlist
@@ -83,17 +86,35 @@ jQuery(document).ready(function($) {
                         }
                     });
                 }
+                
+                // If the user is logged in, also update the server-side wishlist
+                if (typeof ajaxurl !== 'undefined') {
+                    $.ajax({
+                        type: 'POST',
+                        url: ajaxurl,
+                        data: {
+                            action: 'lambo_update_user_wishlist',
+                            wishlist: wishlist
+                        },
+                        success: function(response) {
+                            // Wishlist updated on server
+                        }
+                    });
+                }
             }
         },
         
         addToCart: function(productId) {
             $.ajax({
                 type: 'POST',
-                url: wc_add_to_cart_params.ajax_url,
+                url: typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.ajax_url : ajaxurl,
                 data: {
                     action: 'lambo_add_to_cart',
                     product_id: productId,
-                    quantity: 1
+                    quantity: 1,
+                    // Use our nonce if available, otherwise fallback to WooCommerce nonce
+                    security: typeof lambo_ajax !== 'undefined' ? lambo_ajax.nonce : 
+                             (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.nonce : '')
                 },
                 beforeSend: function() {
                     $('.wishlist-product[data-product-id="' + productId + '"] .add-to-cart').text('Adding...').prop('disabled', true);
@@ -111,14 +132,18 @@ jQuery(document).ready(function($) {
                         
                         // Update cart item count
                         $('.cart-count').text(response.cart_count);
+                        
+                        // Trigger event for WooCommerce to update cart fragments
+                        $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, null]);
                     } else {
                         LamboWishlist.showMessage('Error adding product to cart.', 'error');
                     }
                     
                     $('.wishlist-product[data-product-id="' + productId + '"] .add-to-cart').text('Add to Cart').prop('disabled', false);
                 },
-                error: function() {
-                    LamboWishlist.showMessage('Error adding product to cart.', 'error');
+                error: function(xhr, status, error) {
+                    console.log('Error details:', xhr.responseText);
+                    LamboWishlist.showMessage('Error adding product to cart. Please try again.', 'error');
                     $('.wishlist-product[data-product-id="' + productId + '"] .add-to-cart').text('Add to Cart').prop('disabled', false);
                 }
             });

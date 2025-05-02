@@ -30,7 +30,7 @@
     right: 0;
     width: 300px;
     z-index: 9999;
-    background: #111;
+    background: transparent;
     padding: 10px;
     border-radius: 0 0 4px 4px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
