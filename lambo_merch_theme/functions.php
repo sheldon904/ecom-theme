@@ -806,36 +806,150 @@ add_action('init', 'lambo_merch_register_templates');
  * AJAX handler for adding products to cart from wishlist
  */
 function lambo_merch_add_to_cart() {
+    // Verify nonce
+    if (isset($_POST['security'])) {
+        $nonce_verified = wp_verify_nonce($_POST['security'], 'lambo_add_to_cart_nonce');
+        
+        if (!$nonce_verified) {
+            // Try with WooCommerce nonce as fallback
+            $nonce_verified = wp_verify_nonce($_POST['security'], 'woocommerce-add-to-cart');
+            
+            if (!$nonce_verified) {
+                wp_send_json_error(array('message' => 'Security check failed'));
+                return;
+            }
+        }
+    }
+    
     if (!isset($_POST['product_id'])) {
-        wp_send_json_error();
+        wp_send_json_error(array('message' => 'Product ID not provided'));
         return;
     }
     
     $product_id = absint($_POST['product_id']);
     $quantity = isset($_POST['quantity']) ? absint($_POST['quantity']) : 1;
     
-    if (WC()->cart->add_to_cart($product_id, $quantity)) {
+    // Check if the product exists and can be purchased
+    $product = wc_get_product($product_id);
+    if (!$product) {
+        wp_send_json_error(array('message' => 'Product does not exist'));
+        return;
+    }
+    
+    // For debugging
+    error_log("Adding to cart: Product ID: $product_id, Quantity: $quantity");
+    
+    // Handle variable products
+    if ($product->is_type('variable')) {
+        $variation_id = isset($_POST['variation_id']) ? absint($_POST['variation_id']) : 0;
+        
+        if ($variation_id > 0) {
+            // If variation ID is provided, use it
+            $variation = wc_get_product($variation_id);
+            
+            if (!$variation || $variation->get_parent_id() != $product_id) {
+                wp_send_json_error(array('message' => 'Invalid variation ID'));
+                return;
+            }
+            
+            // For debugging
+            error_log("Using variation ID: $variation_id");
+            
+            // Get variation attributes
+            $variation_data = wc_get_product_variation_attributes($variation_id);
+            
+            // Add to cart
+            $added = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation_data);
+        } else {
+            // If no variation ID provided, get the default variation
+            $available_variations = $product->get_available_variations();
+            
+            if (!empty($available_variations)) {
+                $variation_id = $available_variations[0]['variation_id'];
+                $variation_data = wc_get_product_variation_attributes($variation_id);
+                
+                // For debugging
+                error_log("Using default variation ID: $variation_id");
+                
+                $added = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation_data);
+            } else {
+                wp_send_json_error(array('message' => 'This product requires variation selection'));
+                return;
+            }
+        }
+    } else {
+        // Simple product
+        $added = WC()->cart->add_to_cart($product_id, $quantity);
+    }
+    
+    if ($added) {
         ob_start();
         woocommerce_mini_cart();
         $mini_cart = ob_get_clean();
         
+        // Generate cart fragments
+        $fragments = apply_filters(
+            'woocommerce_add_to_cart_fragments',
+            array(
+                'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+            )
+        );
+        
         wp_send_json_success(array(
-            'fragments' => apply_filters(
-                'woocommerce_add_to_cart_fragments',
-                array(
-                    'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
-                )
-            ),
+            'fragments' => $fragments,
             'cart_count' => WC()->cart->get_cart_contents_count(),
+            'cart_hash' => WC()->cart->get_cart_hash(),
         ));
     } else {
-        wp_send_json_error();
+        // Clear previous notices
+        wc_clear_notices();
+        
+        // Get new notices
+        $notices = wc_get_notices();
+        $error_message = !empty($notices['error']) ? $notices['error'][0]['notice'] : 'Failed to add product to cart';
+        
+        error_log("Failed to add to cart. Error: $error_message");
+        
+        wp_send_json_error(array('message' => $error_message));
     }
     
     wp_die();
 }
 add_action('wp_ajax_lambo_add_to_cart', 'lambo_merch_add_to_cart');
 add_action('wp_ajax_nopriv_lambo_add_to_cart', 'lambo_merch_add_to_cart');
+
+/**
+ * AJAX handler for updating user wishlist
+ */
+function lambo_merch_update_user_wishlist() {
+    // Only for logged-in users
+    if (!is_user_logged_in()) {
+        wp_send_json_error();
+        return;
+    }
+    
+    if (!isset($_POST['wishlist'])) {
+        wp_send_json_error();
+        return;
+    }
+    
+    $wishlist = $_POST['wishlist'];
+    
+    // Sanitize the wishlist array
+    if (is_array($wishlist)) {
+        $wishlist = array_map('absint', $wishlist);
+    } else {
+        $wishlist = array();
+    }
+    
+    // Update user meta
+    $current_user_id = get_current_user_id();
+    update_user_meta($current_user_id, 'lambo_wishlist', $wishlist);
+    
+    wp_send_json_success();
+    wp_die();
+}
+add_action('wp_ajax_lambo_update_user_wishlist', 'lambo_merch_update_user_wishlist');
 
 /**
  * Disable FiboSearch form submission on Enter key
