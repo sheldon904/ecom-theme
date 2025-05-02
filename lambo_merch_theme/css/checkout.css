@@ -87,14 +87,28 @@ div[id^="stripe-"] iframe,
 }
 
 /* Focus state */
-.woocommerce-checkout input[type="text"]:focus,
-.woocommerce-checkout input[type="tel"]:focus,
-.woocommerce-checkout input[type="email"]:not(footer input[type="email"]):not(.footer input[type="email"]):not(#colophon input[type="email"]):not(.site-footer input[type="email"]):not(.email-input-wrap input[type="email"]):focus,
-.woocommerce-checkout input[type="password"]:focus,
-.woocommerce-checkout textarea:focus,
-.woocommerce-checkout select:focus {
+body.woocommerce-checkout form.checkout input[type="text"]:focus,
+body.woocommerce-checkout form.checkout input[type="tel"]:focus,
+body.woocommerce-checkout form.checkout input[type="email"]:focus,
+body.woocommerce-checkout form.checkout input[type="password"]:focus,
+body.woocommerce-checkout form.checkout textarea:focus,
+body.woocommerce-checkout form.checkout select:focus,
+body.woocommerce-checkout #customer_details input:focus {
   border-color: #ff0000 !important;
   outline: none !important;
+}
+
+/* Ensure footer input is never affected */
+footer input[type="email"]:focus,
+.footer input[type="email"]:focus,
+#colophon input[type="email"]:focus,
+.site-footer input[type="email"]:focus,
+.email-input-wrap input[type="email"]:focus,
+.footer-email-exempt:focus {
+  border-color: #cccccc !important;
+  outline: auto !important;
+  background-color: #ffffff !important;
+  color: #333333 !important;
 }
 
 /* Form labels */
@@ -413,17 +427,25 @@ footer input[type="email"],
 .email-input-wrap input[type="email"],
 .footer-email-exempt,
 body:not(.lambo-checkout-page) input[type="email"] {
-  background-color: initial !important;
-  color: initial !important;
-  border: initial !important;
-  padding: initial !important;
-  border-radius: initial !important;
-  box-shadow: initial !important;
-  font-size: initial !important;
-  line-height: initial !important;
-  width: initial !important;
-  height: initial !important;
-  margin: initial !important;
+  /* Reset all properties to default */
+  all: initial !important;
+  /* Then set key properties needed for footer email field */
+  display: inline-block !important;
+  box-sizing: border-box !important;
+  font-family: inherit !important;
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  -moz-appearance: auto !important;
+  /* Override any other styles that might be applied */
+  background-color: #ffffff !important;
+  color: #333333 !important;
+  border: 1px solid #cccccc !important;
+  border-radius: 0 !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 /* Target checkout email fields more specifically to avoid affecting footer */
