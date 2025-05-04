@@ -104,12 +104,6 @@ get_header('shop');
                     <span>Details</span>
                   </a>
                 </li>
-                <li>
-                  <a href="#reviews" class="tab-link" data-tab="reviews">
-                    <img src="<?php echo get_template_directory_uri(); ?>/images/backgrounds/Rectangle 10.png" class="tab-bg" alt="" style="max-width:auto; height:105%"/>
-                    <span>Reviews</span>
-                  </a>
-                </li>
               </ul>
               
               <div class="tabs-content">
@@ -117,9 +111,6 @@ get_header('shop');
                   <div class="product-description">
                     <?= wpautop( $product->get_description() ); ?>
                   </div>
-                </div>
-                <div id="reviews" class="tab-content">
-                  <?php comments_template(); ?>
                 </div>
               </div>
             </div>
@@ -293,18 +284,9 @@ get_header('shop');
           display: block !important;
       }
       
-      /* Show only the details tab content by default */
-      .tab-content {
-          display: none;
-      }
-      
+      /* Always show the details tab content */
       #details.tab-content {
           display: block !important;
-      }
-      
-      /* Hide the reviews tab from the tabs navigation */
-      .tabs-nav li:nth-child(2) {
-          display: none !important;
       }
       
       /* Reduce space between tabs and related products section */
@@ -354,31 +336,8 @@ jQuery(function($){
     $qtyWrap.find('button.minus, button.plus, input.qty').remove();
   }
   
-  // Mobile-specific tab behavior
-  if ($(window).width() <= 767) {
-    // Make the first tab (Details) active by default 
-    $('.tab-link[data-tab="details"]').parent().addClass('active');
-    
-    // Hide the reviews tab completely
-    $('.tab-link[data-tab="reviews"]').parent().hide();
-    
-    // Show only Details tab content
-    $('#details').show();
-    $('#reviews').hide();
-    
-    // Tab click behavior for Details tab only (no-op since we always show it)
-    $('.tab-link[data-tab="details"]').on('click', function(e) {
-      e.preventDefault();
-      // Do nothing - the details tab is always displayed now
-    });
-  } else {
-    // Desktop behavior - hide reviews section 
-    $('.tab-link[data-tab="reviews"]').parent().hide();
-    $('#reviews').hide();
-    
-    // Ensure Details tab is active and displayed
-    $('.tab-link[data-tab="details"]').parent().addClass('active');
-    $('#details').show();
-  }
+  // Make Details tab always active
+  $('.tab-link[data-tab="details"]').parent().addClass('active');
+  $('#details').show();
 });
 </script>

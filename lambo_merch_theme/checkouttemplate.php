@@ -198,6 +198,39 @@ $checkout = WC()->checkout;
   cursor: pointer;
   width: 100%;
 }
+
+/* Payment Method Selection Styles */
+.payment-method-selection {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+.payment-method-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+.payment-method-option {
+  flex: 1;
+  min-width: 150px;
+  padding: 15px;
+  background-color: #222222;
+  border: 1px solid #333333;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.payment-method-option:hover {
+  background-color: #333333;
+}
+.payment-method-option input[type="radio"] {
+  margin-right: 10px;
+}
+.payment-method-option label {
+  cursor: pointer;
+  color: #ffffff;
+  font-weight: bold;
+}
 @media (max-width: 767px) {
   .billing-form {
     flex-direction: column;
@@ -429,6 +462,9 @@ $checkout = WC()->checkout;
           <p>Your cart is empty. Please add some products before proceeding to checkout.</p>
         <?php endif; ?>
       </div>
+      
+      <!-- Payment Method Heading -->
+      <h2 class="checkout-heading">Payment Method</h2>
       
       <!-- Payment Method and Place Order -->
       <div class="payment-methods">
