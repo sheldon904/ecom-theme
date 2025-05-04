@@ -27,41 +27,59 @@ document.addEventListener('DOMContentLoaded', function() {
     // This runs less frequently and doesn't interfere with typing
     setInterval(function() {
         safelyStyleFormFields();
-        hideExpressCheckout();
+        configurePayments(); // Run this first to set up payment method toggle
+        hideExpressCheckout(); // Then decide what to hide based on selection
         hideCouponForm();
-        configurePayments();
     }, 2000); // Check every 2 seconds - slow enough not to cause issues
 
-    // Make sure footer email field is not affected
-    const footerEmailInputs = document.querySelectorAll('footer input[type="email"], .footer input[type="email"], #colophon input[type="email"], .site-footer input[type="email"]');
+    // Only fix the footer email field on checkout page
+    const footerEmailInputs = document.querySelectorAll('footer input[type="email"], .footer input[type="email"], #colophon input[type="email"], .site-footer input[type="email"], .email-input-wrap input[type="email"]');
     footerEmailInputs.forEach(function(input) {
-        // Reset any styling that might have been applied
-        input.style.backgroundColor = '';
-        input.style.color = '';
-        input.style.border = '';
-        input.style.borderColor = '';
-        input.style.padding = '';
-        input.style.borderRadius = '';
-        input.style.fontSize = '';
-        input.style.lineHeight = '';
-        input.style.boxShadow = '';
-        input.style.width = '';
-        input.style.height = '';
-        input.style.margin = '';
-        input.removeAttribute('style');
-        
-        // Add a specific class to identify it
-        input.classList.add('footer-email-exempt');
-        
-        // Add a mutation observer to ensure styles don't get reapplied
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.attributeName === 'style') {
-                    input.removeAttribute('style');
-                }
+        // Only apply these fixes on the checkout page
+        if (document.body.classList.contains('woocommerce-checkout')) {
+            // Reset any styling that might have been applied
+            input.style.backgroundColor = 'transparent';
+            input.style.color = '#ffffff';
+            input.style.border = 'none';
+            input.style.padding = '0';
+            input.style.borderRadius = '0';
+            input.style.boxShadow = 'none';
+            input.style.width = 'auto';
+            input.style.height = 'auto';
+            input.style.margin = '0';
+            input.style.display = 'inline-block';
+            input.style.visibility = 'visible';
+            input.style.opacity = '1';
+            input.style.textIndent = '0';
+            
+            // Add a specific class to identify it
+            input.classList.add('footer-email-exempt');
+            
+            // Add a mutation observer to ensure styles don't get reapplied
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'style') {
+                        // Only reapply styles on the checkout page
+                        if (document.body.classList.contains('woocommerce-checkout')) {
+                            input.style.backgroundColor = 'transparent';
+                            input.style.color = '#ffffff';
+                            input.style.border = 'none';
+                            input.style.padding = '0';
+                            input.style.borderRadius = '0';
+                            input.style.boxShadow = 'none';
+                            input.style.width = 'auto';
+                            input.style.height = 'auto';
+                            input.style.margin = '0';
+                            input.style.display = 'inline-block';
+                            input.style.visibility = 'visible';
+                            input.style.opacity = '1';
+                            input.style.textIndent = '0';
+                        }
+                    }
+                });
             });
-        });
-        observer.observe(input, { attributes: true });
+            observer.observe(input, { attributes: true });
+        }
     });
 
     /**
@@ -204,6 +222,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function hideExpressCheckout() {
+        // We want to show both payment options, so we won't hide express checkout
+        // We'll only hide express elements outside of the payment box
+        
+        // These express payment elements should still be shown
+        const allowedElements = [
+            '.wc-stripe-payment-request-wrapper',
+            '.wc-stripe-payment-request-button-separator',
+            '.payment_button',
+            '.payment-request-button'
+        ];
+        
+        // Find elements matching these allowed selectors
+        const allowedSelectors = allowedElements.join(', ');
+        const allowedPaymentElements = document.querySelectorAll(allowedSelectors);
+        
+        // Make sure these elements are visible
+        allowedPaymentElements.forEach(element => {
+            // Only show if it's inside the payment box
+            const isInPaymentBox = element.closest('.payment_box') !== null;
+            if (isInPaymentBox) {
+                element.style.display = 'block';
+                element.style.visibility = 'visible';
+                element.style.height = 'auto';
+                element.style.width = 'auto';
+                element.style.overflow = 'visible';
+                element.style.opacity = '1';
+                element.style.margin = '';
+                element.style.padding = '';
+            }
+        });
+        
+        // Hide other express checkout elements outside of payment section
         const expressElements = [
             '.wp-block-woocommerce-checkout-express-payment-block',
             '.wc-block-components-express-payment',
@@ -211,16 +261,21 @@ document.addEventListener('DOMContentLoaded', function() {
             '.express-payment-section',
             '[class*="express-payment"]'
         ];
+        
         expressElements.forEach(selector => {
             document.querySelectorAll(selector).forEach(element => {
-                element.style.display = 'none';
-                element.style.visibility = 'hidden';
-                element.style.height = '0';
-                element.style.width = '0';
-                element.style.overflow = 'hidden';
-                element.style.opacity = '0';
-                element.style.margin = '0';
-                element.style.padding = '0';
+                // Only hide if it's NOT inside the payment box
+                const isInPaymentBox = element.closest('.payment_box') !== null;
+                if (!isInPaymentBox) {
+                    element.style.display = 'none';
+                    element.style.visibility = 'hidden';
+                    element.style.height = '0';
+                    element.style.width = '0';
+                    element.style.overflow = 'hidden';
+                    element.style.opacity = '0';
+                    element.style.margin = '0';
+                    element.style.padding = '0';
+                }
             });
         });
     }
@@ -240,6 +295,57 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function configurePayments() {
-        // Additional payment method configurations can go here if needed
+        // We're now showing both payment methods side by side
+        // Remove any existing inline styles from payment elements
+        const paymentElements = document.querySelectorAll(
+            '.payment_method, ' +
+            '.payment_box, ' +
+            '.wc-stripe-elements-field, ' +
+            '.wc-stripe-payment-request-wrapper, ' +
+            '.wc-stripe-payment-request-button-separator, ' +
+            '.payment_button, ' +
+            '.stripe-card-group'
+        );
+        
+        paymentElements.forEach(el => {
+            // Remove inline display style
+            if (el.style.display) {
+                el.style.removeProperty('display');
+            }
+            
+            // Remove visibility styles
+            if (el.style.visibility) {
+                el.style.removeProperty('visibility');
+            }
+            
+            // Remove opacity styles
+            if (el.style.opacity) {
+                el.style.removeProperty('opacity');
+            }
+        });
+        
+        // Ensure payment box is visible
+        const paymentBoxes = document.querySelectorAll('.payment_box');
+        paymentBoxes.forEach(box => {
+            box.style.display = 'block';
+        });
+        
+        // Make sure Express Checkout elements are visible
+        const expressElements = document.querySelectorAll(
+            '.wc-stripe-payment-request-wrapper, ' +
+            '.wc-stripe-payment-request-button-separator'
+        );
+        
+        expressElements.forEach(el => {
+            el.style.display = 'block';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+            el.style.height = 'auto';
+            el.style.width = 'auto';
+            el.style.overflow = 'visible';
+        });
+        
+        // Debug log
+        console.log('Payment display configured to show all payment options');
     }
 });

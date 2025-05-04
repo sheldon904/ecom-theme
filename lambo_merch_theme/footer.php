@@ -51,7 +51,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                                         <div class="email-placeholder">
                                             <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
                                         </div>
-                                        <input type="email" name="email" placeholder="" required>
+                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required>
                                         <button type="submit" class="arrow-btn">
                                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
                                         </button>
@@ -109,7 +109,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                                         <div class="email-placeholder">
                                             <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
                                         </div>
-                                        <input type="email" name="email" placeholder="" required>
+                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required>
                                         <button type="submit" class="arrow-btn">
                                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
                                         </button>
@@ -156,10 +156,56 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
 
 <?php wp_footer(); ?>
 
+<script>
+// Only fix the footer email field on the checkout page
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.body.classList.contains('woocommerce-checkout')) {
+        // Fix for footer email input visibility on checkout page
+        function fixFooterEmailInput() {
+            const footerEmailInputs = document.querySelectorAll('.site-footer input[type="email"], .email-input-wrap input[type="email"], footer input[type="email"]');
+            footerEmailInputs.forEach(function(input) {
+                input.style.backgroundColor = 'transparent';
+                input.style.color = '#ffffff';
+                input.style.display = 'inline-block';
+                input.style.visibility = 'visible';
+                input.style.opacity = '1';
+                input.classList.add('footer-email-exempt');
+            });
+        }
+        
+        // Run immediately and then periodically
+        fixFooterEmailInput();
+        setInterval(fixFooterEmailInput, 1000);
+    }
+});
+</script>
+
 </body>
 </html>
 
 <style>
+/* Specific fix ONLY for checkout page footer email input */
+body.woocommerce-checkout .site-footer input[type="email"],
+body.woocommerce-checkout footer input[type="email"],
+body.woocommerce-checkout .email-input-wrap input[type="email"] {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    border: none !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    text-indent: 0 !important;
+}
+
+/* Only apply this dark background to checkout page */
+body.woocommerce-checkout .email-input-wrap {
+    background-color: #0b0c10 !important;
+}
+
 @media (max-width: 767px) {
     /* Existing mobile styles... */
     

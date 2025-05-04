@@ -464,7 +464,7 @@
 <!-- MOBILE HEADER -->
 <div class="mobile-header">
   <div class="icon-set d-flex">
-    <div class="search-icon">
+    <div class="search-icon" style="padding-right: 10%;">
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/search.png"
            alt="Search">
       <div class="fibo-dropdown mobile">

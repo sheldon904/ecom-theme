@@ -481,16 +481,26 @@ body.woocommerce-checkout #customer_details input[type="email"],
    from ALL checkout page CSS
 -------------------------------------------- */
 /* Target only on the checkout page */
-.woocommerce-checkout footer input.footer-email-exempt {
+.woocommerce-checkout footer input.footer-email-exempt,
+.woocommerce-checkout .footer input[type="email"],
+.woocommerce-checkout #colophon input[type="email"],
+.woocommerce-checkout .site-footer input[type="email"],
+.woocommerce-checkout .email-input-wrap input[type="email"] {
   all: unset !important;          /* remove any inherited styling */
   /* now restore only what you need: */
-  background: transparent;        /* your normal footer bg */
+  background: transparent !important;        /* your normal footer bg */
   color:      #ffffff !important; /* white placeholder/text */
   box-shadow: none !important;
   padding:    0 !important;
   margin:     0 !important;
   width:      auto !important;
   height:     auto !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  text-indent: 0 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
 }
 
 /* If your arrow-button lives immediately after that input: */
