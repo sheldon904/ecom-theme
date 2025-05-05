@@ -186,7 +186,7 @@ get_header();
                         }
                     }
                 ?>
-                    <div class="cart-item" style="
+                    <div class="cart-item wishlist-product" style="
                         background: #222222;
                         display: flex;
                         align-items: center;
@@ -358,7 +358,7 @@ get_header();
                         }
                     }
                 ?>
-                    <div class="cart-item" style="
+                    <div class="cart-item wishlist-product" style="
                         background: #222222;
                         display: flex;
                         align-items: center;
@@ -541,41 +541,6 @@ jQuery(document).ready(function($) {
         addMultipleProductsToCart(productIds, $(this), buttonText, quantities, variationIds);
     });
     
-    // Handle "Remove from Wishlist" button clicks
-    $('.remove-from-wishlist').on('click', function(e) {
-        e.preventDefault();
-        const productId = $(this).data('product-id');
-        const $itemElement = $(this).closest('.cart-item');
-        const $mobileActionsElement = $itemElement.next('div');
-        
-        if (!productId) return;
-        
-        // Remove from wishlist with animation
-        removeFromWishlist(productId, function() {
-            $itemElement.fadeOut(300, function() {
-                $itemElement.remove();
-                
-                if ($mobileActionsElement.length && $mobileActionsElement.css('margin-top') === '-1rem') {
-                    $mobileActionsElement.remove();
-                }
-                
-                // Check if wishlist is now empty
-                if ($('.cart-item').length === 0) {
-                    // Replace with empty wishlist message
-                    const emptyHtml = `
-                        <div style="text-align:center; padding:50px 0;">
-                            <p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>
-                            <a href="${woocommerce_params.shop_url || '<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>'}" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">
-                                Continue Shopping
-                            </a>
-                        </div>
-                    `;
-                    $('.desktop-layout, .mobile-layout').html(emptyHtml);
-                }
-            });
-        });
-    });
-    
     // Function to add multiple products to cart
     function addMultipleProductsToCart(productIds, $button, originalText, quantities, variationIds) {
         let addedCount = 0;
@@ -657,75 +622,6 @@ jQuery(document).ready(function($) {
         
         // Start the sequential process
         addNextProduct(0);
-    }
-    
-    // Function to remove item from wishlist
-    function removeFromWishlist(productId, callback) {
-        // Convert productId to string to ensure consistent comparison
-        productId = productId.toString();
-        
-        // Get existing wishlist items
-        var wishlist = [];
-        
-        // Check for cookie
-        if (document.cookie.indexOf('lambo_wishlist=') !== -1) {
-            var cookieValue = document.cookie.split('; ').find(row => row.startsWith('lambo_wishlist='));
-            if (cookieValue) {
-                try {
-                    wishlist = JSON.parse(decodeURIComponent(cookieValue.split('=')[1]));
-                } catch (e) {
-                    wishlist = [];
-                }
-            }
-        }
-        
-        // Find product in wishlist
-        var index = wishlist.indexOf(productId);
-        
-        if (index !== -1) {
-            // Remove product from wishlist
-            wishlist.splice(index, 1);
-            
-            // Set cookie for 30 days
-            var date = new Date();
-            date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-            document.cookie = 'lambo_wishlist=' + encodeURIComponent(JSON.stringify(wishlist)) + '; expires=' + date.toUTCString() + '; path=/';
-            
-            // If the user is logged in, also update the server-side wishlist
-            if (typeof ajaxurl !== 'undefined') {
-                $.ajax({
-                    type: 'POST',
-                    url: ajaxurl,
-                    data: {
-                        action: 'lambo_update_user_wishlist',
-                        wishlist: wishlist,
-                        security: typeof lambo_ajax !== 'undefined' ? lambo_ajax.nonce : ''
-                    },
-                    success: function() {
-                        // Call the callback function after successful removal
-                        if (typeof callback === 'function') {
-                            callback();
-                        }
-                    },
-                    error: function() {
-                        // Call the callback function even if the server update fails
-                        if (typeof callback === 'function') {
-                            callback();
-                        }
-                    }
-                });
-            } else {
-                // Call the callback function if not logged in
-                if (typeof callback === 'function') {
-                    callback();
-                }
-            }
-        } else {
-            // Item not found in wishlist, call callback anyway
-            if (typeof callback === 'function') {
-                callback();
-            }
-        }
     }
 });
 </script>
