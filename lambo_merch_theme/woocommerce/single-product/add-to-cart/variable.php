@@ -112,41 +112,33 @@ do_action('woocommerce_before_add_to_cart_form');
 
 <script>
 jQuery(document).ready(function($) {
-    // Make sure variation selects are required
-    $('.variations select').attr('required', 'required');
-    
-    // Enhanced validation for variable products
+    // Simple validation for variable products
     $('.variations_form').on('submit', function(e) {
-        var $form = $(this);
-        var $variationId = $form.find('input[name="variation_id"]');
-        var $selects = $form.find('.variations select');
-        var allSelected = true;
-        
-        // Check all variation dropdowns
-        $selects.each(function() {
-            if (!$(this).val()) {
-                allSelected = false;
-                $(this).addClass('error-field');
+        // Check if any variation select is empty
+        var emptySelects = false;
+        $(this).find('.variations select').each(function() {
+            if ($(this).val() === '') {
+                emptySelects = true;
+                return false; // Break the loop
             }
         });
         
-        // Check variation ID
-        if (!allSelected || !$variationId.val() || $variationId.val() === '0') {
+        // Only block submission if there are empty selects
+        if (emptySelects) {
             e.preventDefault();
             alert('Please select size before adding to cart.');
             return false;
         }
     });
     
-    // Remove error class when selection is made
-    $('.variations select').on('change', function() {
-        $(this).removeClass('error-field');
+    // Update price display when variation is selected
+    $('.variations_form').on('show_variation', function(event, variation) {
+        if (variation.price_html) {
+            $('.variation-price-display').html(variation.price_html);
+        }
     });
     
-    $('.variations_form').on('show_variation', function(event, variation) {
-    //empty
-});
-    // Reset display when variations are reset
+    // Reset price display when reset
     $('.variations_form').on('reset_data', function() {
         $('.variation-price-display').html('');
     });

@@ -5,36 +5,11 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-// ** Display custom Thank You page if order received endpoint is active **
-if ( function_exists('is_wc_endpoint_url') && is_wc_endpoint_url('order-received') ) {
-  get_header();
-  wc_clear_notices();
-  echo '<main id="primary" class="site-main" style="max-width:1200px; margin:0 auto; padding:2rem;">';
-  // Retrieve order ID and key from query vars
-  $order_id = isset($_GET['order-received']) ? absint($_GET['order-received']) : 0;
-  $order_key = isset($_GET['key']) ? wc_clean( wp_unslash($_GET['key'] ) ) : '';
-  $order = false;
-  if ( $order_id && $order_id > 0 ) {
-      $order = wc_get_order( $order_id );
-  }
-  if ( ! $order || ! $order_key || $order->get_order_key() !== $order_key ) {
-      // Invalid order or key – show generic thank you message
-      $order = false;
-  }
-  include get_template_directory() . '/thankyou.php';
-  echo '</main>';
-  get_footer();
-  return;
-}
+// Let the template_include filter handle the thank you page
 
 // Process checkout form submission if needed
 if ( isset( $_POST['is_checkout_submit'] ) && $_POST['is_checkout_submit'] === '1' ) {
-  // Ensure we get redirected to the order-received page after checkout
-  add_filter( 'woocommerce_get_checkout_order_received_url', function( $url, $order ) {
-      $order_id = $order->get_id();
-      $order_key = $order->get_order_key();
-      return wc_get_endpoint_url( 'order-received', $order_id, wc_get_checkout_url() ) . '?key=' . $order_key;
-  }, 10, 2);
+  // We don't need to modify the URL - let WooCommerce handle it
 }
 
 get_header();
