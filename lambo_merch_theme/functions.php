@@ -101,11 +101,12 @@ function lambo_merch_setup() {
 		)
 	);
 
-	// Add WooCommerce support
+	// Add WooCommerce support with full feature set
 	add_theme_support( 'woocommerce' );
 	add_theme_support( 'wc-product-gallery-zoom' );
 	add_theme_support( 'wc-product-gallery-lightbox' );
 	add_theme_support( 'wc-product-gallery-slider' );
+	add_theme_support( 'woocommerce-ajax' ); // Ensure AJAX support is enabled
 }
 add_action( 'after_setup_theme', 'lambo_merch_setup' );
 
@@ -242,7 +243,8 @@ function lambo_merch_scripts() {
 	// Checkout CSS and JS - only load on checkout page
 	if ( is_checkout() || is_page_template( 'checkoutpage.php' ) ) {
 		wp_enqueue_style( 'lambo-merch-checkout', get_template_directory_uri() . '/css/checkout.css', array(), LAMBO_MERCH_VERSION );
-		wp_enqueue_script( 'lambo-merch-checkout-js', get_template_directory_uri() . '/js/checkout.js', array( 'jquery' ), LAMBO_MERCH_VERSION, true );
+		// Enqueue checkout script with WooCommerce checkout scripts as dependencies
+			wp_enqueue_script( 'lambo-merch-checkout-js', get_template_directory_uri() . '/js/checkout.js', array( 'jquery', 'wc-checkout' ), LAMBO_MERCH_VERSION, true );
 		
 		// Add a class to body for specific checkout styling
 		add_filter( 'body_class', function( $classes ) {
@@ -313,49 +315,6 @@ require get_template_directory() . '/inc/class-wp-bootstrap-navwalker.php';
  * Add Mobile Detect library
  */
 require get_template_directory() . '/inc/mobile-detect.php';
-
-/**
- * Fix order-received endpoint to properly retrieve order ID from the URL
- */
-function lambo_merch_fix_order_received_endpoint() {
-    global $wp;
-    
-    // Check if this is an order-received URL
-    if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/order-received/') !== false) {
-        $url_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        
-        // Extract the order ID from the path (supports URLs with or without trailing slash)
-        if (preg_match('#/order-received/(\d+)/?#', $url_path, $matches)) {
-            $order_id = absint($matches[1]);
-            
-            // Set the order-received query var with the extracted order ID
-            $wp->query_vars['order-received'] = $order_id;
-        }
-    }
-}
-
-/**
- * Fix thank you page by providing a dedicated template for the order-received endpoint
- */
-function lambo_merch_use_custom_thank_you_template($template) {
-    // Check if this is an order-received endpoint
-    if (is_wc_endpoint_url('order-received')) {
-        // Use our custom thank you template
-        $custom_template = get_template_directory() . '/thankyou.php';
-        if (file_exists($custom_template)) {
-            return $custom_template;
-        }
-    }
-    
-    return $template;
-}
-
-// Hook to parse_request to fix the order-received query var
-add_action('parse_request', 'lambo_merch_fix_order_received_endpoint', 5);
-
-// Hook to template_include to use our custom thank you template
-add_filter('template_include', 'lambo_merch_use_custom_thank_you_template', 99);
-add_action('parse_request', 'lambo_merch_fix_order_received_endpoint', 5);
 
 /**
  * Implement custom Walker Class for Bootstrap nav menu
@@ -897,56 +856,28 @@ function lambo_merch_add_to_cart() {
                 return;
             }
             
-            // Get variation attributes from the request
-            $variation_data = array();
+            // For debugging
+            error_log("Using variation ID: $variation_id");
             
-            // Look for attribute data in the POST request
-            foreach($_POST as $key => $value) {
-                if (strpos($key, 'attribute_') === 0) {
-                    $variation_data[$key] = $value;
-                }
-            }
-            
-            // If no attributes were found in POST, try to get them from the variation
-            if (empty($variation_data)) {
-                $variation_data = wc_get_product_variation_attributes($variation_id);
-            }
+            // Get variation attributes
+            $variation_data = wc_get_product_variation_attributes($variation_id);
             
             // Add to cart
             $added = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation_data);
         } else {
-            // If no variation ID provided, try to find one that matches the selected attributes
-            $attributes = array();
+            // If no variation ID provided, get the default variation
+            $available_variations = $product->get_available_variations();
             
-            // Look for attribute data in the POST request
-            foreach($_POST as $key => $value) {
-                if (strpos($key, 'attribute_') === 0) {
-                    $attributes[$key] = $value;
-                }
-            }
-            
-            if (!empty($attributes)) {
-                // Find matching variation
-                $data_store = WC_Data_Store::load('product');
-                $variation_id = $data_store->find_matching_product_variation($product, $attributes);
+            if (!empty($available_variations)) {
+                $variation_id = $available_variations[0]['variation_id'];
+                $variation_data = wc_get_product_variation_attributes($variation_id);
                 
-                if ($variation_id) {
-                    $added = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $attributes);
-                } else {
-                    wp_send_json_error(array('message' => 'No matching variation found for the selected attributes'));
-                    return;
-                }
+                // For debugging
+                error_log("Using default variation ID: $variation_id");
+                
+                $added = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation_data);
             } else {
-                // If no attributes selected, try to use the default variation
-                $available_variations = $product->get_available_variations();
-                
-                if (!empty($available_variations)) {
-                    $variation_id = $available_variations[0]['variation_id'];
-                    $variation_data = wc_get_product_variation_attributes($variation_id);
-                    
-                    $added = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation_data);
-                } else {
-                    wp_send_json_error(array('message' => 'This product requires variation selection'));
+                wp_send_json_error(array('message' => 'This product requires variation selection'));
                 return;
             }
         }
@@ -1190,27 +1121,49 @@ function lambo_merch_fibosearch_config() {
 add_action('init', 'lambo_merch_fibosearch_config');
 
 /**
- * Safely format the order received URL
+ * Properly handle checkout redirection to order received page
  */
-function lambo_merch_format_order_received_url($url, $order) {
-    if (!$order) {
-        return $url;
+function lambo_merch_checkout_redirect_to_thankyou() {
+    // If we're already on the order-received endpoint, do nothing - let templates handle it
+    if (is_wc_endpoint_url('order-received')) {
+        return;
     }
     
-    try {
-        // Get standard WooCommerce URL structure
-        $order_id = $order->get_id();
-        $order_key = $order->get_order_key();
-        
-        // Create a clean URL in standard WooCommerce format
-        return wc_get_endpoint_url('order-received', $order_id, wc_get_checkout_url()) . '?key=' . $order_key;
-    } catch (Exception $e) {
-        // In case of any error, return the original URL
-        return $url;
+    // For order completion, ensure we redirect properly
+    if (is_checkout() && isset($_POST['woocommerce-process-checkout-nonce'])) {
+        add_action('woocommerce_thankyou', function($order_id) {
+            $order = wc_get_order($order_id);
+            if ($order) {
+                // Force redirect to the order-received page with our template
+                $thankyou_url = $order->get_checkout_order_received_url();
+                wp_redirect($thankyou_url);
+                exit;
+            }
+        }, 1); // Priority 1 to run before anything else
     }
 }
-add_filter('woocommerce_get_checkout_order_received_url', 'lambo_merch_format_order_received_url', 10, 2);
+add_action('template_redirect', 'lambo_merch_checkout_redirect_to_thankyou', 5);
 
+/**
+ * Override WooCommerce get_checkout_url to ensure redirections work correctly
+ */
+function lambo_merch_override_checkout_url($url) {
+    // If we've just processed a checkout, redirect to order received page
+    if (isset($_GET['order-received']) && !empty($_GET['order-received'])) {
+        $order_id = absint($_GET['order-received']);
+        $order_key = isset($_GET['key']) ? wc_clean($_GET['key']) : '';
+        
+        if ($order_id > 0) {
+            $order = wc_get_order($order_id);
+            if ($order && $order->get_order_key() === $order_key) {
+                return $order->get_checkout_order_received_url();
+            }
+        }
+    }
+    
+    return $url;
+}
+add_filter('woocommerce_get_checkout_url', 'lambo_merch_override_checkout_url', 99);
 
 /**
  * Fix shipping address handling in checkout

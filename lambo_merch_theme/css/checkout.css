@@ -294,22 +294,161 @@ select {
   padding: 12px !important;
 }
 
-/* Hide express checkout section - make sure we catch everything */
-.woocommerce-checkout .express-checkout-section,
-.woocommerce-checkout #express-payment-method,
-.wp-block-woocommerce-checkout-express-payment-block,
-.wc-block-components-express-payment,
-.wc-block-components-express-payment--from-saved-payment-methods,
-div[class*="express-payment"],
-.express-payment-section {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  width: 0 !important;
-  margin: 0 !important;
+/**
+ * Payment section styling - minimalist approach
+ */
+
+/* Main payment container */
+#payment {
+  background-color: #000000 !important;
+  border: 1px solid #444444 !important;
+  border-radius: 0 !important;
+  margin-top: 30px !important;
+  padding: 25px !important;
+  color: #ffffff !important;
+}
+
+/* Express Checkout Section */
+.express-checkout-section {
+  margin-bottom: 30px !important;
+  text-align: center !important;
+}
+
+.express-payment-title h3 {
+  color: #ffffff !important;
+  font-size: 18px !important;
+  margin-bottom: 15px !important;
+  text-align: center !important;
+}
+
+.express-payment-buttons {
+  margin: 0 auto !important;
+  max-width: 400px !important;
+}
+
+/* OR separator */
+.express-payment-or {
+  position: relative !important;
+  text-align: center !important;
+  margin: 30px 0 !important;
+}
+
+.express-payment-or span {
+  display: inline-block !important;
+  position: relative !important;
+  padding: 0 15px !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+  z-index: 1 !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+}
+
+.express-payment-or:before {
+  content: "" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1px !important;
+  background-color: #444444 !important;
+  z-index: 0 !important;
+}
+
+/* Payment methods list */
+#payment ul.payment_methods {
+  border-bottom: 1px solid #444444 !important;
+  padding: 0 0 20px !important;
+  margin: 0 0 20px !important;
+}
+
+/* Individual payment method item */
+#payment ul.payment_methods li {
+  line-height: 2 !important;
+  margin-bottom: 10px !important;
   padding: 0 !important;
-  overflow: hidden !important;
-  opacity: 0 !important;
+}
+
+/* Payment method labels */
+#payment ul.payment_methods li label {
+  color: #ffffff !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+  padding-left: 8px !important;
+}
+
+/* Payment method radio buttons */
+#payment ul.payment_methods li input[type="radio"] {
+  margin-right: 8px !important;
+}
+
+/* Payment box */
+#payment div.payment_box {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  padding: 15px !important;
+  margin: 10px 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Payment box arrow */
+#payment div.payment_box:before {
+  border-bottom-color: #333333 !important;
+}
+
+/* Stripe elements field */
+.wc-stripe-elements-field,
+.stripe-card-group {
+  background-color: #333333 !important;
+  border: 1px solid #444444 !important;
+  padding: 15px !important;
+  border-radius: 0 !important;
+}
+
+/* Express Checkout Buttons */
+.wc-stripe-payment-request-wrapper {
+  margin-bottom: 15px !important;
+}
+
+/* Place order button container */
+#payment .place-order {
+  margin-top: 25px !important;
+  padding: 0 !important;
+}
+
+/* Place order button */
+#place_order {
+  background-color: #ff0000 !important;
+  color: #ffffff !important;
+  font-weight: bold !important;
+  text-transform: uppercase !important;
+  padding: 15px 30px !important;
+  width: 100% !important;
+  border: none !important;
+  border-radius: 0 !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important;
+}
+
+#place_order:hover {
+  background-color: #cc0000 !important;
+}
+
+/* Make sure other WooCommerce elements in payment section follow theme */
+.woocommerce-terms-and-conditions-wrapper {
+  margin-bottom: 20px !important;
+  color: #ffffff !important;
+}
+
+.woocommerce-privacy-policy-text {
+  margin-bottom: 20px !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+}
+
+.woocommerce-SavedPaymentMethods-saveNew {
+  color: #ffffff !important;
 }
 
 /* Hide coupon form in totals */

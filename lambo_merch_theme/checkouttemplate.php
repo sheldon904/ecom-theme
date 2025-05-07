@@ -5,11 +5,20 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-// Let the template_include filter handle the thank you page
+// ** Display custom Thank You page if order received endpoint is active **
+if ( function_exists('is_wc_endpoint_url') && is_wc_endpoint_url('order-received') ) {
+  include get_template_directory() . '/thankyou.php';
+  return;
+}
 
 // Process checkout form submission if needed
 if ( isset( $_POST['is_checkout_submit'] ) && $_POST['is_checkout_submit'] === '1' ) {
-  // We don't need to modify the URL - let WooCommerce handle it
+  // Ensure we get redirected to the order-received page after checkout
+  add_filter( 'woocommerce_get_checkout_order_received_url', function( $url, $order ) {
+      $order_id = $order->get_id();
+      $order_key = $order->get_order_key();
+      return wc_get_endpoint_url( 'order-received', $order_id, wc_get_checkout_url() ) . '?key=' . $order_key;
+  }, 10, 2);
 }
 
 get_header();
