@@ -101,18 +101,11 @@ function lambo_merch_setup() {
 		)
 	);
 
-	// Add WooCommerce support with full feature set
+	// Add WooCommerce support
 	add_theme_support( 'woocommerce' );
 	add_theme_support( 'wc-product-gallery-zoom' );
 	add_theme_support( 'wc-product-gallery-lightbox' );
 	add_theme_support( 'wc-product-gallery-slider' );
-	add_theme_support( 'woocommerce-ajax' ); // Ensure AJAX support is enabled
-    
-    // CRITICAL: Set specific flags for Express Checkout support
-	add_theme_support( 'wc-gateway-stripe' );
-	add_theme_support( 'wc-gateway-stripe-apple-pay' );
-	add_theme_support( 'wc-gateway-stripe-google-pay' );
-	add_theme_support( 'wc-gateway-stripe-payment-request' );
 }
 add_action( 'after_setup_theme', 'lambo_merch_setup' );
 
@@ -227,7 +220,15 @@ function lambo_merch_scripts() {
 	
 	// Wishlist CSS and JS
 	wp_enqueue_style( 'lambo-merch-wishlist', get_template_directory_uri() . '/css/wishlist.css', array(), LAMBO_MERCH_VERSION );
-	wp_enqueue_script( 'lambo-merch-wishlist', get_template_directory_uri() . '/js/wishlist.js', array( 'jquery' ), LAMBO_MERCH_VERSION, true );
+	
+	// Enqueue the global wishlist script with higher priority to ensure it loads early
+	wp_enqueue_script( 'lambo-merch-global-wishlist', get_template_directory_uri() . '/js/global-wishlist.js', array( 'jquery' ), LAMBO_MERCH_VERSION, false );
+	wp_localize_script( 'lambo-merch-global-wishlist', 'lambo_wishlist_params', array(
+		'ajaxurl' => admin_url( 'admin-ajax.php' )
+	) );
+	
+	// Original wishlist script (now dependent on global wishlist script)
+	wp_enqueue_script( 'lambo-merch-wishlist', get_template_directory_uri() . '/js/wishlist.js', array( 'jquery', 'lambo-merch-global-wishlist' ), LAMBO_MERCH_VERSION, true );
 	wp_localize_script( 'lambo-merch-wishlist', 'lambo_wishlist_params', array(
 		'ajaxurl' => admin_url( 'admin-ajax.php' )
 	) );
@@ -249,8 +250,7 @@ function lambo_merch_scripts() {
 	// Checkout CSS and JS - only load on checkout page
 	if ( is_checkout() || is_page_template( 'checkoutpage.php' ) ) {
 		wp_enqueue_style( 'lambo-merch-checkout', get_template_directory_uri() . '/css/checkout.css', array(), LAMBO_MERCH_VERSION );
-		// Enqueue checkout script with WooCommerce checkout scripts as dependencies
-			wp_enqueue_script( 'lambo-merch-checkout-js', get_template_directory_uri() . '/js/checkout.js', array( 'jquery', 'wc-checkout' ), LAMBO_MERCH_VERSION, true );
+		wp_enqueue_script( 'lambo-merch-checkout-js', get_template_directory_uri() . '/js/checkout.js', array( 'jquery' ), LAMBO_MERCH_VERSION, true );
 		
 		// Add a class to body for specific checkout styling
 		add_filter( 'body_class', function( $classes ) {
@@ -269,10 +269,13 @@ function lambo_merch_scripts() {
 			return $classes;
 		});
 		
-		// Add extra head content for order-received page
-		add_action('wp_head', function() {
-			include_once(get_template_directory() . '/woocommerce/checkout/thankyou-head.php');
-		}, 999);
+		// Add extra head content for order-received page if the file exists
+		$thankyou_head_file = get_template_directory() . '/woocommerce/checkout/thankyou-head.php';
+		if (file_exists($thankyou_head_file)) {
+			add_action('wp_head', function() use ($thankyou_head_file) {
+				include_once($thankyou_head_file);
+			}, 999);
+		}
 	}
 	
 	// Bootstrap JS
@@ -321,55 +324,6 @@ require get_template_directory() . '/inc/class-wp-bootstrap-navwalker.php';
  * Add Mobile Detect library
  */
 require get_template_directory() . '/inc/mobile-detect.php';
-
-/**
- * Initialize Stripe Express Checkout
- * Ensures Apple Pay and Google Pay buttons appear correctly
- */
-function lambo_merch_init_express_checkout() {
-    if (is_checkout() || is_page_template('checkoutpage.php')) {
-        // Only run on checkout pages
-        if (class_exists('WC_Stripe_Payment_Request')) {
-            // Add script to footer
-            add_action('wp_footer', function() {
-                echo '<div id="express-payment-output" style="display:none;"></div>';
-                echo '<script type="text/javascript">
-                    jQuery(document).ready(function($) {
-                        // Force show Payment Request Button on checkout
-                        $(document.body).trigger("wc-payment-request-buttons-init");
-                        $(document.body).trigger("wc-payment-request-button-checkout-init");
-                        $(document.body).trigger("update_checkout");
-                        
-                        // Make sure express payment elements are visible
-                        var expressElements = [
-                            ".wc-stripe-payment-request-wrapper",
-                            ".wc-stripe-payment-request-button-separator",
-                            ".payment-request-button",
-                            ".apple-pay-button",
-                            ".google-pay-button",
-                            ".express-checkout-section",
-                            ".express-checkout-container",
-                            ".wp-block-woocommerce-checkout-express-payment-block",
-                            ".wc-block-components-express-payment"
-                        ];
-                        
-                        $.each(expressElements, function(index, selector) {
-                            $(selector).css({
-                                "display": "block",
-                                "visibility": "visible",
-                                "opacity": "1",
-                                "height": "auto",
-                                "width": "auto",
-                                "overflow": "visible"
-                            });
-                        });
-                    });
-                </script>';
-            }, 999);
-        }
-    }
-}
-add_action('template_redirect', 'lambo_merch_init_express_checkout');
 
 /**
  * Implement custom Walker Class for Bootstrap nav menu
@@ -981,34 +935,50 @@ add_action('wp_ajax_nopriv_lambo_add_to_cart', 'lambo_merch_add_to_cart');
  * AJAX handler for updating user wishlist
  */
 function lambo_merch_update_user_wishlist() {
-    // Only for logged-in users
-    if (!is_user_logged_in()) {
-        wp_send_json_error();
-        return;
-    }
-    
     if (!isset($_POST['wishlist'])) {
-        wp_send_json_error();
+        wp_send_json_error(array('message' => 'Wishlist data not provided'));
         return;
     }
     
     $wishlist = $_POST['wishlist'];
     
-    // Sanitize the wishlist array
-    if (is_array($wishlist)) {
-        $wishlist = array_map('absint', $wishlist);
-    } else {
-        $wishlist = array();
+    // Validate the wishlist data
+    if (!is_array($wishlist)) {
+        // Try to decode if it's a JSON string
+        $wishlist = json_decode(stripslashes($wishlist), true);
+        
+        if (!is_array($wishlist)) {
+            $wishlist = array();
+        }
     }
     
-    // Update user meta
-    $current_user_id = get_current_user_id();
-    update_user_meta($current_user_id, 'lambo_wishlist', $wishlist);
+    // Sanitize the wishlist array - ensure all items are strings for consistency
+    $sanitized_wishlist = array();
+    foreach ($wishlist as $item) {
+        // Convert to string to maintain consistency with JavaScript
+        $sanitized_wishlist[] = (string) $item;
+    }
     
-    wp_send_json_success();
+    // Debug log
+    error_log('Updating wishlist: ' . print_r($sanitized_wishlist, true));
+    
+    // For logged-in users, update user meta
+    if (is_user_logged_in()) {
+        $current_user_id = get_current_user_id();
+        update_user_meta($current_user_id, 'lambo_wishlist', $sanitized_wishlist);
+        error_log("Updated wishlist for user ID $current_user_id");
+    }
+    
+    // The cookie is handled by JavaScript, so we only need to acknowledge the update
+    wp_send_json_success(array(
+        'message' => 'Wishlist updated successfully',
+        'wishlist' => $sanitized_wishlist,
+        'user_logged_in' => is_user_logged_in()
+    ));
     wp_die();
 }
 add_action('wp_ajax_lambo_update_user_wishlist', 'lambo_merch_update_user_wishlist');
+add_action('wp_ajax_nopriv_lambo_update_user_wishlist', 'lambo_merch_update_user_wishlist');
 
 /**
  * Disable FiboSearch form submission on Enter key

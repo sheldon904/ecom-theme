@@ -166,8 +166,46 @@ if (post_password_required()) {
                         // Check if YITH WooCommerce Wishlist is active
                         if (function_exists('YITH_WCWL')): ?>
                             <?php echo do_shortcode('[yith_wcwl_add_to_wishlist]'); ?>
-                        <?php else: ?>
-                            <button class="add-to-wishlist" data-product-id="<?php echo esc_attr($product->get_id()); ?>">Add to Wishlist</button>
+                        <?php else: 
+                            // Store product ID in both integer and string format for debugging
+                            $product_id = $product->get_id();
+                            $product_id_str = (string)$product_id;
+                        ?>
+                            <button class="add-to-wishlist" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                Add to Wishlist
+                            </button>
+                            
+                            <!-- Debug script for wishlist button -->
+                            <script>
+                            jQuery(document).ready(function($) {
+                                console.log('Add to Wishlist button loaded for product ID:', <?php echo $product_id; ?>);
+                                
+                                // Check if LamboWishlist is accessible
+                                setTimeout(function() {
+                                    console.log('LamboWishlist object availability check:', typeof window.LamboWishlist);
+                                    if (typeof window.LamboWishlist === 'undefined') {
+                                        console.error('LamboWishlist object is not accessible!');
+                                    }
+                                }, 500);
+                                
+                                // Add direct event listener for this specific button
+                                $('.wishlist-button .add-to-wishlist').on('click', function(e) {
+                                    e.preventDefault();
+                                    console.log('Wishlist button clicked directly!');
+                                    var productId = $(this).data('product-id');
+                                    console.log('Product ID from clicked button:', productId);
+                                    
+                                    if (typeof window.LamboWishlist !== 'undefined' && 
+                                        typeof window.LamboWishlist.addToWishlist === 'function') {
+                                        window.LamboWishlist.addToWishlist(productId);
+                                        console.log('Called LamboWishlist.addToWishlist() successfully');
+                                    } else {
+                                        console.error('Cannot access LamboWishlist.addToWishlist function');
+                                        alert('Error: Could not add product to wishlist. Please try again later.');
+                                    }
+                                });
+                            });
+                            </script>
                         <?php endif; ?>
                     </div>
                 </div>

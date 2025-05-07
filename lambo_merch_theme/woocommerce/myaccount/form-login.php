@@ -11,20 +11,21 @@ defined( 'ABSPATH' ) || exit;
 
 ?>
 
-<?php do_action( 'woocommerce_before_customer_login_form' ); ?>
-
 <?php if ( 'yes' === get_option( 'woocommerce_enable_myaccount_registration' ) ) : ?>
 
 <div class="u-columns col2-set" id="customer_login">
-
+    <?php // Output WooCommerce notices at top of form container ?>
+    <?php wc_print_notices(); ?>
     <div class="u-column1 col-1">
 
 <?php else: ?>
 
 <div id="customer_login">
+    <?php wc_print_notices(); ?>
 
 <?php endif; ?>
 
+        <?php do_action( 'woocommerce_before_customer_login_form' ); ?>
         <h2><?php esc_html_e( 'Login', 'woocommerce' ); ?></h2>
 
         <form class="woocommerce-form woocommerce-form-login login" method="post">
@@ -144,6 +145,8 @@ defined( 'ABSPATH' ) || exit;
     font-weight: 500 !important;
     text-align: center !important;
     width: 100% !important;
+    display: block !important;
+    clear: both !important;
 }
 
 /* Position error messages correctly */
@@ -154,6 +157,13 @@ defined( 'ABSPATH' ) || exit;
     top: auto !important;
     left: auto !important;
     z-index: 10 !important;
+}
+
+/* Specifically target error messages in the login form */
+#customer_login .woocommerce-error {
+    width: 100% !important;
+    margin-bottom: 30px !important;
+    float: none !important;
 }
 
 /* Login form styling */
@@ -186,13 +196,16 @@ defined( 'ABSPATH' ) || exit;
 
 <script>
 jQuery(document).ready(function($) {
-    // Move error notices to the top of the content
+    // Make sure error notices display properly
     function moveErrorNotices() {
         if ($('.woocommerce-error').length > 0) {
-            // Add padding to prevent notices from being hidden under fixed headers
+            // Ensure error messages are visible with good spacing
             $('.woocommerce-error').css({
-                'margin-top': '50px',
-                'margin-bottom': '30px'
+                'display': 'block',
+                'width': '100%',
+                'margin-top': '0',
+                'margin-bottom': '30px',
+                'clear': 'both'
             });
             
             // Make sure error messages are visible

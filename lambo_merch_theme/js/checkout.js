@@ -9,25 +9,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set the main background to black - only for checkout page
     document.body.style.backgroundColor = '#000000';
     
-    // Apply global styles for the page
+    // Global styles that won't interfere with form inputs
     applyGlobalStyles();
     
     // Apply initial styling to form fields without affecting user input
     safelyStyleFormFields();
     
-    // Only hide coupon form
+    // Hide elements we don't want to show
+    hideExpressCheckout();
     hideCouponForm();
     
-    // Ensure express checkout elements are visible
-    ensureExpressCheckoutVisible();
+    // Configure payment methods
+    configurePayments();
     
     // Instead of using MutationObserver which causes the form jumping issue,
     // periodically check for new elements that need styling
     // This runs less frequently and doesn't interfere with typing
     setInterval(function() {
         safelyStyleFormFields();
+        configurePayments(); // Run this first to set up payment method toggle
+        hideExpressCheckout(); // Then decide what to hide based on selection
         hideCouponForm();
-        ensureExpressCheckoutVisible();
     }, 2000); // Check every 2 seconds - slow enough not to cause issues
 
     // Only fix the footer email field on checkout page
@@ -139,9 +141,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 border-color: #444444 !important;
             }
             
-            /* Hide only coupon form */
+            /* Hide coupon form and express checkout */
             .woocommerce-checkout .coupon-form,
-            .woocommerce-checkout [class*="coupon-form"] {
+            .woocommerce-checkout [class*="coupon-form"],
+            .woocommerce-checkout .wp-block-woocommerce-checkout-express-payment-block,
+            .woocommerce-checkout [class*="express-payment"] {
                 display: none !important;
                 visibility: hidden !important;
                 height: 0 !important;
@@ -152,28 +156,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding: 0 !important;
             }
             
-            /* Ensure Express Checkout elements are visible */
-            .wc-stripe-payment-request-wrapper,
-            .wc-stripe-payment-request-button-separator,
-            .payment-request-button,
-            .apple-pay-button,
-            .google-pay-button,
-            .express-checkout-section,
-            .express-checkout-container,
-            .wp-block-woocommerce-checkout-express-payment-block,
-            .wc-block-components-express-payment,
-            [class*="wc-stripe-payment-request-"],
-            [class*="apple-pay-"],
-            [class*="google-pay-"],
-            div[class*="express-payment"] {
-                display: block !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                height: auto !important;
-                width: auto !important;
-                overflow: visible !important;
-                margin: 10px auto !important;
-                max-width: 750px !important;
+            /* Payment methods containers */
+            .woocommerce-checkout #payment,
+            .woocommerce-checkout .payment_box,
+            .woocommerce-checkout .wc-stripe-elements-field,
+            .woocommerce-checkout .stripe-card-group {
+                background-color: #000000 !important;
+                color: #ffffff !important;
+            }
+            
+            /* Stripe iframe containers */
+            .woocommerce-checkout .wc-stripe-elements-field,
+            .woocommerce-checkout .stripe-card-group {
+                border: 1px solid #444444 !important;
+                padding: 12px !important;
             }
         `;
         document.head.appendChild(styleTag);
@@ -225,64 +221,63 @@ document.addEventListener('DOMContentLoaded', function() {
         e.target.style.borderColor = '#444444';
     }
     
-    /**
-     * This function ensures express checkout buttons are visible
-     * It specifically targets payment request buttons from Stripe
-     */
-    function ensureExpressCheckoutVisible() {
-        // Target all express checkout elements
-        const expressTargets = [
+    function hideExpressCheckout() {
+        // We want to show both payment options, so we won't hide express checkout
+        // We'll only hide express elements outside of the payment box
+        
+        // These express payment elements should still be shown
+        const allowedElements = [
             '.wc-stripe-payment-request-wrapper',
             '.wc-stripe-payment-request-button-separator',
-            '.payment-request-button',
-            '.apple-pay-button',
-            '.google-pay-button',
-            '.express-checkout-section',
-            '.express-checkout-container',
-            '.wp-block-woocommerce-checkout-express-payment-block',
-            '.wc-block-components-express-payment',
-            '[class*="wc-stripe-payment-request-"]',
-            '[class*="apple-pay-"]',
-            '[class*="google-pay-"]',
-            'div[class*="express-payment"]'
+            '.payment_button',
+            '.payment-request-button'
         ];
         
-        // Select all elements matching these targets
-        const expressElements = document.querySelectorAll(expressTargets.join(', '));
+        // Find elements matching these allowed selectors
+        const allowedSelectors = allowedElements.join(', ');
+        const allowedPaymentElements = document.querySelectorAll(allowedSelectors);
         
-        // Make each element fully visible
-        expressElements.forEach(element => {
-            if (element) {
-                // Force visibility
+        // Make sure these elements are visible
+        allowedPaymentElements.forEach(element => {
+            // Only show if it's inside the payment box
+            const isInPaymentBox = element.closest('.payment_box') !== null;
+            if (isInPaymentBox) {
                 element.style.display = 'block';
                 element.style.visibility = 'visible';
-                element.style.opacity = '1';
                 element.style.height = 'auto';
                 element.style.width = 'auto';
                 element.style.overflow = 'visible';
-                element.style.margin = '10px auto';
-                element.style.maxWidth = '750px';
-                
-                // Remove any classes that might hide elements
-                element.classList.remove('hidden', 'hide', 'disabled', 'collapsed');
-                
-                // Check parent elements too
-                let parent = element.parentElement;
-                while (parent && parent.tagName !== 'BODY') {
-                    parent.style.display = 'block';
-                    parent.style.visibility = 'visible';
-                    parent.style.opacity = '1';
-                    parent.style.height = 'auto';
-                    parent.style.overflow = 'visible';
-                    parent = parent.parentElement;
-                }
+                element.style.opacity = '1';
+                element.style.margin = '';
+                element.style.padding = '';
             }
         });
         
-        // If no express elements found, add a console message
-        if (expressElements.length === 0) {
-            console.log('Express checkout elements not found yet. Will retry.');
-        }
+        // Hide other express checkout elements outside of payment section
+        const expressElements = [
+            '.wp-block-woocommerce-checkout-express-payment-block',
+            '.wc-block-components-express-payment',
+            '.wc-block-components-express-payment--from-saved-payment-methods',
+            '.express-payment-section',
+            '[class*="express-payment"]'
+        ];
+        
+        expressElements.forEach(selector => {
+            document.querySelectorAll(selector).forEach(element => {
+                // Only hide if it's NOT inside the payment box
+                const isInPaymentBox = element.closest('.payment_box') !== null;
+                if (!isInPaymentBox) {
+                    element.style.display = 'none';
+                    element.style.visibility = 'hidden';
+                    element.style.height = '0';
+                    element.style.width = '0';
+                    element.style.overflow = 'hidden';
+                    element.style.opacity = '0';
+                    element.style.margin = '0';
+                    element.style.padding = '0';
+                }
+            });
+        });
     }
     
     function hideCouponForm() {
@@ -299,5 +294,58 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // We don't need configurePayments anymore as it's been replaced by stylePaymentSection
+    function configurePayments() {
+        // We're now showing both payment methods side by side
+        // Remove any existing inline styles from payment elements
+        const paymentElements = document.querySelectorAll(
+            '.payment_method, ' +
+            '.payment_box, ' +
+            '.wc-stripe-elements-field, ' +
+            '.wc-stripe-payment-request-wrapper, ' +
+            '.wc-stripe-payment-request-button-separator, ' +
+            '.payment_button, ' +
+            '.stripe-card-group'
+        );
+        
+        paymentElements.forEach(el => {
+            // Remove inline display style
+            if (el.style.display) {
+                el.style.removeProperty('display');
+            }
+            
+            // Remove visibility styles
+            if (el.style.visibility) {
+                el.style.removeProperty('visibility');
+            }
+            
+            // Remove opacity styles
+            if (el.style.opacity) {
+                el.style.removeProperty('opacity');
+            }
+        });
+        
+        // Ensure payment box is visible
+        const paymentBoxes = document.querySelectorAll('.payment_box');
+        paymentBoxes.forEach(box => {
+            box.style.display = 'block';
+        });
+        
+        // Make sure Express Checkout elements are visible
+        const expressElements = document.querySelectorAll(
+            '.wc-stripe-payment-request-wrapper, ' +
+            '.wc-stripe-payment-request-button-separator'
+        );
+        
+        expressElements.forEach(el => {
+            el.style.display = 'block';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
+            el.style.height = 'auto';
+            el.style.width = 'auto';
+            el.style.overflow = 'visible';
+        });
+        
+        // Debug log
+        console.log('Payment display configured to show all payment options');
+    }
 });
