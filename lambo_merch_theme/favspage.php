@@ -94,18 +94,78 @@ get_header();
         // Get wishlist from user meta
         $current_user_id = get_current_user_id();
         $wishlist_items = get_user_meta($current_user_id, 'lambo_wishlist', true);
+        
+        // Ensure we have an array
         if (!is_array($wishlist_items)) {
             $wishlist_items = array();
         }
+        
+        // Debug
+        error_log('User wishlist from meta: ' . print_r($wishlist_items, true));
     } else {
         // Get wishlist from cookies
         if (isset($_COOKIE['lambo_wishlist'])) {
+            // Try to decode the cookie value
             $wishlist_items = json_decode(stripslashes($_COOKIE['lambo_wishlist']), true);
+            
+            // Ensure we have an array
             if (!is_array($wishlist_items)) {
                 $wishlist_items = array();
             }
+            
+            // Debug
+            error_log('Guest wishlist from cookie: ' . print_r($wishlist_items, true));
         }
     }
+    
+    // Ensure all product IDs are strings for consistency with JavaScript
+    $normalized_wishlist = array();
+    foreach ($wishlist_items as $item) {
+        $normalized_wishlist[] = (string) $item;
+    }
+    $wishlist_items = $normalized_wishlist;
+    
+    // Filter out invalid products that no longer exist
+    $valid_wishlist_items = array();
+    foreach ($wishlist_items as $product_id) {
+        $product = wc_get_product($product_id);
+        if ($product && $product->exists()) {
+            $valid_wishlist_items[] = $product_id;
+        }
+    }
+    $wishlist_items = $valid_wishlist_items;
+    
+    // If the filtered list differs from the original, update the saved wishlist
+    if (count($valid_wishlist_items) !== count($normalized_wishlist)) {
+        if (is_user_logged_in()) {
+            update_user_meta($current_user_id, 'lambo_wishlist', $valid_wishlist_items);
+        }
+        // Cookie will be updated by the JavaScript validation
+    }
+    
+    // Output additional debug info to console on page load
+    ?>
+    <script>
+    console.log('========= FAVORITES PAGE LOAD DEBUG INFO =========');
+    console.log('PHP Server-side wishlist items:', <?php echo json_encode($wishlist_items); ?>);
+    console.log('Cookie exists:', document.cookie.indexOf('lambo_wishlist=') !== -1);
+    
+    // Parse cookie if it exists
+    if (document.cookie.indexOf('lambo_wishlist=') !== -1) {
+        try {
+            var cookieValue = document.cookie.split('; ').find(function(row) { return row.startsWith('lambo_wishlist='); });
+            if (cookieValue) {
+                var decodedValue = decodeURIComponent(cookieValue.split('=')[1]);
+                console.log('Raw cookie value:', decodedValue);
+                console.log('Parsed cookie value:', JSON.parse(decodedValue));
+            }
+        } catch (e) {
+            console.error('Error parsing wishlist cookie on page load:', e);
+        }
+    }
+    console.log('==========================================');
+    </script>
+    <?php
     ?>
     
     <!-- DESKTOP LAYOUT -->
@@ -192,7 +252,8 @@ get_header();
                         align-items: center;
                         padding: 1rem;
                         margin-bottom: 1rem;
-                    " data-product-id="<?php echo esc_attr($product_id); ?>">
+                    " data-product-id="<?php echo esc_attr($product_id); ?>" data-id-type="<?php echo gettype($product_id); ?>">
+                        <!-- Debug: Product ID: <?php echo esc_attr($product_id); ?> (<?php echo gettype($product_id); ?>) -->
                         <!-- Checkbox -->
                         <div style="flex: 0 0 30px; text-align: center;">
                             <input type="checkbox" name="selected_products[]" value="<?php echo esc_attr($product_id); ?>" class="fav-checkbox" style="width: 20px; height: 20px;">
@@ -364,7 +425,8 @@ get_header();
                         align-items: center;
                         padding: 1rem;
                         margin-bottom: 1rem;
-                    " data-product-id="<?php echo esc_attr($product_id); ?>">
+                    " data-product-id="<?php echo esc_attr($product_id); ?>" data-id-type="<?php echo gettype($product_id); ?>">
+                        <!-- Debug: Product ID: <?php echo esc_attr($product_id); ?> (<?php echo gettype($product_id); ?>) -->
                         <!-- Checkbox -->
                         <div style="flex: 0 0 30px; text-align: center;">
                             <input type="checkbox" name="selected_products[]" value="<?php echo esc_attr($product_id); ?>" class="fav-checkbox" style="width: 20px; height: 20px;">
@@ -623,6 +685,63 @@ jQuery(document).ready(function($) {
         // Start the sequential process
         addNextProduct(0);
     }
+});
+</script>
+
+<!-- Wishlist display validation that updates DOM without reloading -->
+<script>
+// Handle potential discrepancies between displayed items and actual wishlist
+jQuery(document).ready(function($) {
+    // Delay check to ensure wishlist.js has loaded and run
+    setTimeout(function() {
+        // Get current wishlist from the cookie/localStorage
+        var currentWishlist = [];
+        
+        try {
+            if (typeof LamboWishlist !== 'undefined' && typeof LamboWishlist.getWishlist === 'function') {
+                currentWishlist = LamboWishlist.getWishlist();
+            } else if (document.cookie.indexOf('lambo_wishlist=') !== -1) {
+                var cookieValue = document.cookie.split('; ').find(function(row) { return row.startsWith('lambo_wishlist='); });
+                if (cookieValue) {
+                    currentWishlist = JSON.parse(decodeURIComponent(cookieValue.split('=')[1]));
+                }
+            }
+            
+            console.log('Wishlist validation - current wishlist:', currentWishlist);
+            
+            // Instead of reloading, directly update the DOM to match the actual wishlist
+            $('.cart-item').each(function() {
+                var itemId = $(this).data('product-id').toString();
+                // If this item is not in the wishlist, remove it from the DOM
+                if (currentWishlist.indexOf(itemId) === -1) {
+                    console.log('Removing displayed item that is not in wishlist:', itemId);
+                    var $item = $(this);
+                    var $mobileActions = $item.next('.mobile-actions');
+                    
+                    $item.fadeOut(300, function() {
+                        $item.remove();
+                        if ($mobileActions.length) {
+                            $mobileActions.remove();
+                        }
+                        
+                        // If list becomes empty, show empty state
+                        if ($('.cart-item').length === 0) {
+                            var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
+                                '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
+                                '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
+                                '" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">' +
+                                'Continue Shopping</a></div>';
+                            
+                            $('.desktop-layout, .mobile-layout').html(emptyHtml);
+                        }
+                    });
+                }
+            });
+            
+        } catch (e) {
+            console.error('Error in wishlist validation:', e);
+        }
+    }, 500); // Wait half a second for everything to initialize
 });
 </script>
 

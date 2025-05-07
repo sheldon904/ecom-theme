@@ -154,6 +154,9 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
     </footer><!-- #colophon -->
 </div><!-- #page -->
 
+<!-- Global notification container for wishlist messages -->
+<div class="lambo-wishlist-message" style="display: none;"></div>
+
 <?php wp_footer(); ?>
 
 <script>

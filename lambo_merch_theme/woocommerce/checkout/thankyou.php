@@ -17,7 +17,7 @@ get_header();
 
 <main id="primary" class="site-main">
     <div class="woocommerce-order lambo-order-received">
-
+        <!-- Order Received Content Start -->
         <?php
         if ( $order ) :
 
@@ -215,7 +215,7 @@ get_header();
             </div>
 
         <?php endif; ?>
-
+        <!-- Order Received Content End -->
     </div>
 </main>
 
