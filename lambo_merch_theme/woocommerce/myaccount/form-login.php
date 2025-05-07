@@ -11,10 +11,6 @@ defined( 'ABSPATH' ) || exit;
 
 ?>
 
-<div class="account-notices-wrapper">
-    <?php wc_print_notices(); ?>
-</div>
-
 <?php do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 <?php if ( 'yes' === get_option( 'woocommerce_enable_myaccount_registration' ) ) : ?>
@@ -137,16 +133,7 @@ defined( 'ABSPATH' ) || exit;
 <?php do_action( 'woocommerce_after_customer_login_form' ); ?>
 
 <style>
-/* Dedicated wrapper for notices at the top of the page */
-.account-notices-wrapper {
-    width: 100% !important;
-    display: block !important;
-    clear: both !important;
-    padding: 10px 0 !important;
-    margin-bottom: 20px !important;
-}
-
-/* Style the error messages */
+/* Notices styling for error messages */
 .woocommerce-error {
     margin: 0 0 20px 0 !important;
     padding: 15px 20px !important;
@@ -157,28 +144,25 @@ defined( 'ABSPATH' ) || exit;
     font-weight: 500 !important;
     text-align: center !important;
     width: 100% !important;
-    display: block !important;
-    clear: both !important;
-    float: none !important;
-    box-sizing: border-box !important;
-    position: static !important;
 }
 
-/* Reset any floating or positioning that might be affecting the login form */
-.woocommerce-account .woocommerce {
-    display: block !important;
-    width: 100% !important;
-    clear: both !important;
+/* Position error messages correctly */
+.woocommerce-MyAccount-content .woocommerce-error,
+.woocommerce-account .woocommerce-error {
+    margin-bottom: 30px !important;
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 10 !important;
 }
 
-/* Login form styling to ensure proper layout */
+/* Login form styling */
 #customer_login {
     display: flex !important;
     flex-wrap: wrap !important;
     gap: 30px !important;
     width: 100% !important;
-    margin-top: 10px !important;
-    clear: both !important;
+    margin-top: 30px !important;
 }
 
 #customer_login .u-column1,
@@ -202,25 +186,22 @@ defined( 'ABSPATH' ) || exit;
 
 <script>
 jQuery(document).ready(function($) {
-    // Ensure error notices appear in the dedicated wrapper
+    // Move error notices to the top of the content
     function moveErrorNotices() {
-        // If WooCommerce notices exist but aren't in our wrapper
-        if ($('.woocommerce-error').length > 0 && $('.account-notices-wrapper .woocommerce-error').length === 0) {
-            // Move any notices to our dedicated wrapper
-            $('.woocommerce-error').detach().appendTo('.account-notices-wrapper');
+        if ($('.woocommerce-error').length > 0) {
+            // Add padding to prevent notices from being hidden under fixed headers
+            $('.woocommerce-error').css({
+                'margin-top': '50px',
+                'margin-bottom': '30px'
+            });
             
-            // Make sure they're visible
-            $('.account-notices-wrapper').show();
+            // Make sure error messages are visible
+            $('.woocommerce-error').show();
         }
     }
     
     // Run on page load
     moveErrorNotices();
-    
-    // Also run after AJAX completions (for dynamic notices)
-    $(document).ajaxComplete(function() {
-        moveErrorNotices();
-    });
     
     // Show/hide password functionality
     $('.show-password-checkbox').change(function() {
