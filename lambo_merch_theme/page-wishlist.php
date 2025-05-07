@@ -9,6 +9,40 @@
  */
 
 get_header(); 
+
+// DIRECT DATABASE CHECK - Bypass the functions to directly query favorite products
+
+// Generate a visitor ID from cookie or create a new one if it doesn't exist
+if (!isset($_COOKIE['lambo_visitor_id'])) {
+    $visitor_id = md5(uniqid('visitor_', true));
+    setcookie('lambo_visitor_id', $visitor_id, time() + (30 * DAY_IN_SECONDS), '/');
+} else {
+    $visitor_id = $_COOKIE['lambo_visitor_id'];
+}
+
+// Use that visitor ID for guests, or the WordPress user ID for logged in users
+$user_id = is_user_logged_in() ? 'user_' . get_current_user_id() : 'visitor_' . $visitor_id;
+
+// Initialize empty array for favorites
+$favorite_product_ids = array();
+
+// Connect to the WordPress database directly
+global $wpdb;
+
+// Get all products that have the favorite meta key for this user with a value of 1
+$query = $wpdb->prepare("
+    SELECT post_id 
+    FROM {$wpdb->postmeta} 
+    WHERE meta_key = %s 
+    AND meta_value = %s
+", "favorite_" . $user_id, '1');
+
+// Execute the query
+$favorite_product_ids = $wpdb->get_col($query);
+
+// Log for debugging
+error_log('Direct DB Query: ' . $query);
+error_log('Found favorite products: ' . implode(', ', $favorite_product_ids));
 ?>
 
 <div class="container">
@@ -17,77 +51,56 @@ get_header();
             <h1 class="wishlist-title"><?php esc_html_e('My Favorites', 'lambo-merch'); ?></h1>
             
             <div class="wishlist-container">
-                <?php
-                // Get wishlist items from cookies or user meta if logged in
-                $wishlist_items = array();
-                
-                if (is_user_logged_in()) {
-                    // Get wishlist from user meta
-                    $current_user_id = get_current_user_id();
-                    $wishlist_items = get_user_meta($current_user_id, 'lambo_wishlist', true);
-                    if (!is_array($wishlist_items)) {
-                        $wishlist_items = array();
-                    }
-                } else {
-                    // Get wishlist from cookies
-                    if (isset($_COOKIE['lambo_wishlist'])) {
-                        $wishlist_items = json_decode(stripslashes($_COOKIE['lambo_wishlist']), true);
-                        if (!is_array($wishlist_items)) {
-                            $wishlist_items = array();
-                        }
-                    }
-                }
-                
-                if (!empty($wishlist_items)) {
-                    echo '<div class="wishlist-products">';
-                    foreach ($wishlist_items as $product_id) {
-                        $product = wc_get_product($product_id);
-                        
-                        // Skip if product doesn't exist
-                        if (!$product) {
-                            continue;
-                        }
-                        
-                        ?>
-                        <div class="wishlist-product" data-product-id="<?php echo esc_attr($product_id); ?>">
-                            <div class="wishlist-product-image">
-                                <a href="<?php echo esc_url(get_permalink($product_id)); ?>">
-                                    <?php echo $product->get_image('medium'); ?>
-                                </a>
-                            </div>
+                <?php if (!empty($favorite_product_ids)): ?>
+                    <div class="wishlist-products">
+                        <?php foreach ($favorite_product_ids as $product_id): 
+                            // Get the product
+                            $product = wc_get_product($product_id);
                             
-                            <div class="wishlist-product-details">
-                                <h2 class="wishlist-product-title">
+                            // Skip if product doesn't exist
+                            if (!$product || !is_a($product, 'WC_Product')) {
+                                continue;
+                            }
+                            ?>
+                            <div class="wishlist-product" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                <div class="wishlist-product-image">
                                     <a href="<?php echo esc_url(get_permalink($product_id)); ?>">
-                                        <?php echo $product->get_name(); ?>
+                                        <?php echo $product->get_image('medium'); ?>
                                     </a>
-                                </h2>
-                                
-                                <div class="wishlist-product-price">
-                                    <?php echo $product->get_price_html(); ?>
                                 </div>
                                 
-                                <div class="wishlist-product-actions">
-                                    <button class="button add-to-cart" data-product-id="<?php echo esc_attr($product_id); ?>">
-                                        <?php esc_html_e('Add to Cart', 'lambo-merch'); ?>
-                                    </button>
+                                <div class="wishlist-product-details">
+                                    <h2 class="wishlist-product-title">
+                                        <a href="<?php echo esc_url(get_permalink($product_id)); ?>">
+                                            <?php echo $product->get_name(); ?>
+                                        </a>
+                                    </h2>
                                     
-                                    <button class="remove-from-wishlist" data-product-id="<?php echo esc_attr($product_id); ?>">
-                                        <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/trash-can-icon.png" alt="Remove" class="remove-icon">
-                                    </button>
+                                    <div class="wishlist-product-price">
+                                        <?php echo $product->get_price_html(); ?>
+                                    </div>
+                                    
+                                    <div class="wishlist-product-actions">
+                                        <button class="button add-to-cart" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                            <?php esc_html_e('Add to Cart', 'lambo-merch'); ?>
+                                        </button>
+                                        
+                                        <button class="remove-from-wishlist" data-product-id="<?php echo esc_attr($product_id); ?>">
+                                            <img src="<?php echo get_template_directory_uri(); ?>/images/icons/trash can icon.png" alt="Remove" class="remove-icon">
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <?php
-                    }
-                    echo '</div>';
-                } else {
-                    echo '<div class="empty-wishlist">';
-                    echo '<p>' . esc_html__('Your favorites list is empty.', 'lambo-merch') . '</p>';
-                    echo '<a href="' . esc_url(get_permalink(wc_get_page_id('shop'))) . '" class="button continue-shopping">' . esc_html__('Continue Shopping', 'lambo-merch') . '</a>';
-                    echo '</div>';
-                }
-                ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="empty-wishlist">
+                        <p><?php esc_html_e('Your favorites list is empty.', 'lambo-merch'); ?></p>
+                        <a href="<?php echo esc_url(get_permalink(wc_get_page_id('shop'))); ?>" class="button continue-shopping">
+                            <?php esc_html_e('Continue Shopping', 'lambo-merch'); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -249,5 +262,73 @@ get_header();
         }
     }
 </style>
+
+<script>
+jQuery(document).ready(function($) {
+    // Handle Add to Cart button clicks
+    $('.add-to-cart').on('click', function(e) {
+        e.preventDefault();
+        var productId = $(this).data('product-id');
+        
+        $.ajax({
+            type: 'POST',
+            url: typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php',
+            data: {
+                action: 'lambo_add_to_cart',
+                product_id: productId,
+                quantity: 1
+            },
+            beforeSend: function() {
+                $('.wishlist-product[data-product-id="' + productId + '"] .add-to-cart').text('Adding...').prop('disabled', true);
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Show success message
+                    if (typeof LamboFavorites !== 'undefined') {
+                        LamboFavorites.showMessage('Product added to cart!', 'success');
+                    } else {
+                        alert('Product added to cart!');
+                    }
+                    
+                    // Update cart count in header if available
+                    if (response.cart_count && $('.cart-count').length) {
+                        $('.cart-count').text(response.cart_count);
+                    }
+                    
+                    // Re-enable button
+                    $('.wishlist-product[data-product-id="' + productId + '"] .add-to-cart')
+                        .text('Add to Cart')
+                        .prop('disabled', false);
+                } else {
+                    // Show error message
+                    if (typeof LamboFavorites !== 'undefined') {
+                        LamboFavorites.showMessage('Error adding product to cart.', 'error');
+                    } else {
+                        alert('Error adding product to cart.');
+                    }
+                    
+                    // Re-enable button
+                    $('.wishlist-product[data-product-id="' + productId + '"] .add-to-cart')
+                        .text('Add to Cart')
+                        .prop('disabled', false);
+                }
+            },
+            error: function() {
+                // Show error message
+                if (typeof LamboFavorites !== 'undefined') {
+                    LamboFavorites.showMessage('Error adding product to cart. Please try again.', 'error');
+                } else {
+                    alert('Error adding product to cart. Please try again.');
+                }
+                
+                // Re-enable button
+                $('.wishlist-product[data-product-id="' + productId + '"] .add-to-cart')
+                    .text('Add to Cart')
+                    .prop('disabled', false);
+            }
+        });
+    });
+});
+</script>
 
 <?php get_footer(); ?>
