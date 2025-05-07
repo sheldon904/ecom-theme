@@ -47,16 +47,10 @@
     margin-bottom: 50px;
 }
 
-/* Hide wishlist items by default - important for preventing flash of unwanted content */
+/* Wishlist product styling - items are visible by default */
 .wishlist-product, 
 .cart-item.wishlist-product {
-    display: none !important; /* Hidden by default */
-}
-
-/* Class that will be added via JS for items confirmed to be in the wishlist */
-.wishlist-product.wishlist-active,
-.cart-item.wishlist-product.wishlist-active {
-    display: flex !important; /* Override to show */
+    display: flex;
     background-color: #222;
     padding: 20px;
     border-radius: 5px;
@@ -64,15 +58,10 @@
     position: relative;
 }
 
-/* Alternative display properties that might be used by the theme */
-.wishlist-active {
-    display: flex !important;
-}
-
-/* Target the mobile layout specifically */
-.mobile-layout .cart-item.wishlist-product.wishlist-active,
-.mobile-layout .wishlist-product.wishlist-active {
-    display: flex !important;
+/* For when we need to hide items */
+.wishlist-product.hide-item,
+.cart-item.wishlist-product.hide-item {
+    display: none !important;
 }
 
 .wishlist-product:hover {
