@@ -262,6 +262,11 @@ $checkout = WC()->checkout;
     </form>
   </div>
   
+  <!-- SECTION: Express Checkout -->
+  <div class="express-checkout-container">
+    <?php do_action('woocommerce_checkout_before_customer_details'); ?>
+  </div>
+  
   <!-- Billing & Shipping Details -->
   <div class="billing-details">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -450,9 +455,9 @@ $checkout = WC()->checkout;
       <!-- Payment Method Heading -->
       <h2 class="checkout-heading">Payment Method</h2>
       
-      <!-- Payment Method and Place Order -->
-      <div class="payment-methods">
-        <?php woocommerce_checkout_payment( $checkout ); ?>
+      <!-- Order Review - Ensures proper hooks are called for payment section -->
+      <div id="order_review" class="woocommerce-checkout-review-order">
+        <?php do_action('woocommerce_checkout_order_review'); ?>
       </div>
     </form>
   </div>

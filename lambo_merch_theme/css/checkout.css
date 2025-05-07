@@ -295,7 +295,7 @@ select {
 }
 
 /**
- * Payment section styling - minimalist approach
+ * Payment section styling - simple dark theme that ensures express payment visibility
  */
 
 /* Main payment container */
@@ -306,53 +306,6 @@ select {
   margin-top: 30px !important;
   padding: 25px !important;
   color: #ffffff !important;
-}
-
-/* Express Checkout Section */
-.express-checkout-section {
-  margin-bottom: 30px !important;
-  text-align: center !important;
-}
-
-.express-payment-title h3 {
-  color: #ffffff !important;
-  font-size: 18px !important;
-  margin-bottom: 15px !important;
-  text-align: center !important;
-}
-
-.express-payment-buttons {
-  margin: 0 auto !important;
-  max-width: 400px !important;
-}
-
-/* OR separator */
-.express-payment-or {
-  position: relative !important;
-  text-align: center !important;
-  margin: 30px 0 !important;
-}
-
-.express-payment-or span {
-  display: inline-block !important;
-  position: relative !important;
-  padding: 0 15px !important;
-  background: #000000 !important;
-  color: #ffffff !important;
-  z-index: 1 !important;
-  font-size: 14px !important;
-  font-weight: bold !important;
-}
-
-.express-payment-or:before {
-  content: "" !important;
-  position: absolute !important;
-  top: 50% !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 1px !important;
-  background-color: #444444 !important;
-  z-index: 0 !important;
 }
 
 /* Payment methods list */
@@ -406,9 +359,39 @@ select {
   border-radius: 0 !important;
 }
 
-/* Express Checkout Buttons */
+/* Express Checkout Container - IMPORTANT for visibility */
+.express-checkout-container {
+  margin-bottom: 30px !important;
+  background-color: #000000 !important;
+  border: 1px solid #444444 !important;
+  padding: 20px !important;
+  border-radius: 0 !important;
+}
+
+/* Express Checkout Buttons - IMPORTANT */
 .wc-stripe-payment-request-wrapper {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   margin-bottom: 15px !important;
+}
+
+.payment-request-button,
+.wc-stripe-payment-request-button,
+.wc-stripe-payment-request-button-separator,
+.wc-block-components-express-payment,
+[class*="wc-stripe-payment-request-"],
+[class*="apple-pay-"],
+[class*="google-pay-"],
+div[class*="express-payment"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+  width: auto !important;
+  max-width: 750px !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
 }
 
 /* Place order button container */

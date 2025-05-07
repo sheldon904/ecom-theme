@@ -107,6 +107,12 @@ function lambo_merch_setup() {
 	add_theme_support( 'wc-product-gallery-lightbox' );
 	add_theme_support( 'wc-product-gallery-slider' );
 	add_theme_support( 'woocommerce-ajax' ); // Ensure AJAX support is enabled
+    
+    // CRITICAL: Set specific flags for Express Checkout support
+	add_theme_support( 'wc-gateway-stripe' );
+	add_theme_support( 'wc-gateway-stripe-apple-pay' );
+	add_theme_support( 'wc-gateway-stripe-google-pay' );
+	add_theme_support( 'wc-gateway-stripe-payment-request' );
 }
 add_action( 'after_setup_theme', 'lambo_merch_setup' );
 
@@ -315,6 +321,55 @@ require get_template_directory() . '/inc/class-wp-bootstrap-navwalker.php';
  * Add Mobile Detect library
  */
 require get_template_directory() . '/inc/mobile-detect.php';
+
+/**
+ * Initialize Stripe Express Checkout
+ * Ensures Apple Pay and Google Pay buttons appear correctly
+ */
+function lambo_merch_init_express_checkout() {
+    if (is_checkout() || is_page_template('checkoutpage.php')) {
+        // Only run on checkout pages
+        if (class_exists('WC_Stripe_Payment_Request')) {
+            // Add script to footer
+            add_action('wp_footer', function() {
+                echo '<div id="express-payment-output" style="display:none;"></div>';
+                echo '<script type="text/javascript">
+                    jQuery(document).ready(function($) {
+                        // Force show Payment Request Button on checkout
+                        $(document.body).trigger("wc-payment-request-buttons-init");
+                        $(document.body).trigger("wc-payment-request-button-checkout-init");
+                        $(document.body).trigger("update_checkout");
+                        
+                        // Make sure express payment elements are visible
+                        var expressElements = [
+                            ".wc-stripe-payment-request-wrapper",
+                            ".wc-stripe-payment-request-button-separator",
+                            ".payment-request-button",
+                            ".apple-pay-button",
+                            ".google-pay-button",
+                            ".express-checkout-section",
+                            ".express-checkout-container",
+                            ".wp-block-woocommerce-checkout-express-payment-block",
+                            ".wc-block-components-express-payment"
+                        ];
+                        
+                        $.each(expressElements, function(index, selector) {
+                            $(selector).css({
+                                "display": "block",
+                                "visibility": "visible",
+                                "opacity": "1",
+                                "height": "auto",
+                                "width": "auto",
+                                "overflow": "visible"
+                            });
+                        });
+                    });
+                </script>';
+            }, 999);
+        }
+    }
+}
+add_action('template_redirect', 'lambo_merch_init_express_checkout');
 
 /**
  * Implement custom Walker Class for Bootstrap nav menu
