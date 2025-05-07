@@ -197,7 +197,7 @@ function lambo_merch_woocommerce_checkout_fields( $fields ) {
 
 /**
  * Modify checkout elements for custom experience
- * Only removes coupon form and explicitly enables Express Checkout
+ * Only removes coupon form
  */
 function lambo_merch_modify_checkout_elements() {
     // Remove Coupon form from the standard position
@@ -211,27 +211,76 @@ function lambo_merch_modify_checkout_elements() {
 add_action('init', 'lambo_merch_modify_checkout_elements');
 
 /**
- * Explicitly enable Express Checkout payment
+ * IMPORTANT: Enable Stripe Express Checkout (Apple Pay, Google Pay)
+ * This undoes the previous disabling of Express Checkout
  */
-function lambo_merch_enable_express_payment($should_load) {
-    return true;
-}
-add_filter('woocommerce_should_load_express_payment', 'lambo_merch_enable_express_payment');
+add_filter('woocommerce_should_load_express_payment', '__return_true');
 
 /**
- * Ensure Express Checkout scripts are loaded
+ * Force Stripe to show Payment Request Button (Apple Pay, Google Pay) on checkout
  */
-function lambo_merch_add_express_checkout_scripts() {
+add_filter('wc_stripe_show_payment_request_on_checkout', '__return_true');
+
+/**
+ * Allow all Stripe-related payment gateways
+ * This ensures Apple Pay and Google Pay gateways are available
+ */
+add_filter('woocommerce_available_payment_gateways', function($gateways) {
+    // Skip this in admin screens
+    if (is_admin()) {
+        return $gateways;
+    }
+    
+    // Skip updating if no gateways are available
+    if (empty($gateways)) {
+        return $gateways;
+    }
+    
+    $filtered_gateways = [];
+    
+    // Keep only Stripe and Stripe-related gateways
+    foreach ($gateways as $key => $gateway) {
+        // Allow all Stripe-related gateways
+        if ($key === 'stripe' || 
+            $key === 'stripe_apple_pay' || 
+            $key === 'stripe_google_pay' ||
+            strpos($key, 'stripe') !== false ||
+            $key === 'woocommerce_payments' ||
+            $key === 'woocommerce_payments_apple_pay' ||
+            $key === 'woocommerce_payments_google_pay') {
+            $filtered_gateways[$key] = $gateway;
+        }
+    }
+    
+    // If there are no Stripe gateways, return all gateways to prevent checkout from breaking
+    if (empty($filtered_gateways)) {
+        return $gateways;
+    }
+    
+    return $filtered_gateways;
+}, 20);
+
+/**
+ * Ensure Stripe Scripts are properly loaded on checkout page
+ */
+function lambo_merch_enqueue_stripe_scripts() {
     if (is_checkout()) {
+        // Ensure WooCommerce checkout scripts are loaded
         wp_enqueue_script('wc-checkout');
         
-        // Make sure Stripe scripts are loaded
-        if (class_exists('WC_Stripe_Payment_Request')) {
-            WC_Stripe_Payment_Request::instance();
+        // Force Stripe scripts to load
+        if (function_exists('WC') && isset(WC()->payment_gateways)) {
+            $payment_gateways = WC()->payment_gateways->payment_gateways();
+            if (isset($payment_gateways['stripe'])) {
+                $stripe_gateway = $payment_gateways['stripe'];
+                if (method_exists($stripe_gateway, 'payment_scripts')) {
+                    $stripe_gateway->payment_scripts();
+                }
+            }
         }
     }
 }
-add_action('wp_enqueue_scripts', 'lambo_merch_add_express_checkout_scripts', 20);
+add_action('wp_enqueue_scripts', 'lambo_merch_enqueue_stripe_scripts', 20);
 add_filter( 'woocommerce_checkout_fields', 'lambo_merch_woocommerce_checkout_fields' );
 
 /**
