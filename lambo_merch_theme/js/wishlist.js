@@ -23,19 +23,100 @@ jQuery(document).ready(function($) {
                 e.preventDefault();
                 var productId = $(this).data('product-id');
                 console.log('Trash icon clicked for product ID:', productId);
-                console.log('Data attributes on this element:', $(this).data());
                 
-                // Get current wishlist before removal attempt
-                var currentWishlist = LamboWishlist.getWishlist();
+                // Always read the latest wishlist directly from localStorage
+                var currentWishlist = [];
+                
+                try {
+                    var localStorageWishlist = localStorage.getItem('wishlist');
+                    console.log('Removing - Current localStorage wishlist:', localStorageWishlist);
+                    
+                    if (localStorageWishlist) {
+                        currentWishlist = JSON.parse(localStorageWishlist);
+                        
+                        // Ensure we have an array
+                        if (!Array.isArray(currentWishlist)) {
+                            console.warn('localStorage wishlist was not an array, resetting:', currentWishlist);
+                            currentWishlist = [];
+                        }
+                    } else {
+                        console.log('No existing wishlist found in localStorage');
+                    }
+                } catch (e) {
+                    console.error('Error reading wishlist from localStorage:', e);
+                }
+                
                 console.log('Current wishlist before removal:', currentWishlist);
-                console.log('Is product in wishlist?', currentWishlist.indexOf(productId.toString()) !== -1);
                 
-                // Attempt removal
-                LamboWishlist.removeFromWishlist(productId);
+                // Convert productId to string for consistent comparison
+                productId = productId ? productId.toString() : '';
+                
+                // Convert all IDs to strings for consistent comparison
+                currentWishlist = currentWishlist.map(function(id) {
+                    return id ? id.toString() : '';
+                });
+                
+                // Update localStorage directly (this is key for permanent removal)
+                var productIdStr = productId.toString();
+                var matchFound = false;
+                
+                console.log('Looking for product ID:', productIdStr, '(type: ' + typeof productIdStr + ')');
+                console.log('Current wishlist items:', currentWishlist);
+                
+                // Find and remove the item from the wishlist
+                for (var i = 0; i < currentWishlist.length; i++) {
+                    var itemStr = currentWishlist[i].toString();
+                    console.log('Comparing with item', i, ':', itemStr, '(type: ' + typeof itemStr + ')');
+                    
+                    if (itemStr === productIdStr) {
+                        console.log('Found match at index', i, ':', itemStr, '===', productIdStr);
+                        currentWishlist.splice(i, 1); // Remove the item
+                        matchFound = true;
+                        break;
+                    }
+                }
+                
+                if (matchFound) {
+                    console.log('Removed item from wishlist, saving updated list:', currentWishlist);
+                    
+                    // Save back to localStorage
+                    localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
+                    console.log('Updated localStorage wishlist');
+                    
+                    // Also update the cookie for backward compatibility
+                    LamboWishlist.saveWishlist(currentWishlist);
+                } else {
+                    console.log('No matching item found in wishlist for ID:', productIdStr);
+                    console.log('Current wishlist:', currentWishlist);
+                }
+                
+                // Remove the item from the DOM
+                var $cartItem = $(this).closest('.wishlist-product, .cart-item');
+                if ($cartItem.length) {
+                    $cartItem.fadeOut(300, function() {
+                        $cartItem.remove();
+                        var $mobileActions = $cartItem.next('.mobile-actions');
+                        if ($mobileActions.length) {
+                            $mobileActions.remove();
+                        }
+                        
+                        // If list becomes empty, show empty state
+                        if ($('.wishlist-product, .cart-item').length === 0) {
+                            var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
+                                '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
+                                '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
+                                '" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">' +
+                                'Continue Shopping</a></div>';
+                            
+                            $('.desktop-layout, .mobile-layout').html(emptyHtml);
+                        }
+                    });
+                }
                 
                 // Debug after removal
                 setTimeout(function() {
                     console.log('Wishlist after removal (delayed check):', LamboWishlist.getWishlist());
+                    console.log('localStorage after removal:', localStorage.getItem('wishlist'));
                     console.log('Cookie after removal:', document.cookie);
                 }, 100);
             });
