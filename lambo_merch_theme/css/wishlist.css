@@ -31,15 +31,6 @@
     color: #C8B100; /* Gold color */
 }
 
-/* Added to favorites state */
-.add-to-wishlist.added {
-    color: #C8B100; /* Gold color */
-}
-
-.add-to-wishlist.added:before {
-    background-image: url('../images/icons/favs-colored.png');
-}
-
 /* Wishlist Page Styles */
 .wishlist-title {
     margin-bottom: 30px;
