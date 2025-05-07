@@ -237,19 +237,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const allowedSelectors = allowedElements.join(', ');
         const allowedPaymentElements = document.querySelectorAll(allowedSelectors);
         
-        // Make sure these elements are visible
+        // Make sure these elements are visible - always show express payment options
         allowedPaymentElements.forEach(element => {
-            // Only show if it's inside the payment box
-            const isInPaymentBox = element.closest('.payment_box') !== null;
-            if (isInPaymentBox) {
-                element.style.display = 'block';
-                element.style.visibility = 'visible';
-                element.style.height = 'auto';
-                element.style.width = 'auto';
-                element.style.overflow = 'visible';
-                element.style.opacity = '1';
-                element.style.margin = '';
-                element.style.padding = '';
+            element.style.display = 'block';
+            element.style.visibility = 'visible';
+            element.style.height = 'auto';
+            element.style.width = 'auto';
+            element.style.overflow = 'visible';
+            element.style.opacity = '1';
+            element.style.margin = '';
+            element.style.padding = '';
+            
+            // Also show their parent elements if they're within a payment box
+            if (element.closest('.payment_box')) {
+                const paymentBox = element.closest('.payment_box');
+                paymentBox.style.display = 'block';
+                paymentBox.style.visibility = 'visible';
+                paymentBox.style.height = 'auto';
+                paymentBox.style.width = 'auto';
+                paymentBox.style.overflow = 'visible';
+                paymentBox.style.opacity = '1';
             }
         });
         
@@ -304,36 +311,43 @@ document.addEventListener('DOMContentLoaded', function() {
             '.wc-stripe-payment-request-wrapper, ' +
             '.wc-stripe-payment-request-button-separator, ' +
             '.payment_button, ' +
-            '.stripe-card-group'
+            '.stripe-card-group, ' +
+            '.payment_method_stripe_apple_pay, ' +
+            '.payment_method_stripe_google_pay, ' +
+            '[class*="apple-pay"], ' +
+            '[class*="google-pay"]'
         );
         
         paymentElements.forEach(el => {
-            // Remove inline display style
-            if (el.style.display) {
-                el.style.removeProperty('display');
-            }
+            // Force display to block
+            el.style.display = 'block';
+            el.style.visibility = 'visible';
+            el.style.opacity = '1';
             
-            // Remove visibility styles
-            if (el.style.visibility) {
-                el.style.removeProperty('visibility');
-            }
-            
-            // Remove opacity styles
-            if (el.style.opacity) {
-                el.style.removeProperty('opacity');
-            }
+            // Remove height/width constraints
+            el.style.height = 'auto';
+            el.style.width = 'auto';
+            el.style.overflow = 'visible';
+            el.style.margin = '';
+            el.style.padding = '';
         });
         
         // Ensure payment box is visible
         const paymentBoxes = document.querySelectorAll('.payment_box');
         paymentBoxes.forEach(box => {
             box.style.display = 'block';
+            box.style.visibility = 'visible';
+            box.style.opacity = '1';
         });
         
         // Make sure Express Checkout elements are visible
         const expressElements = document.querySelectorAll(
             '.wc-stripe-payment-request-wrapper, ' +
-            '.wc-stripe-payment-request-button-separator'
+            '.wc-stripe-payment-request-button-separator, ' +
+            '.payment_method_stripe_apple_pay, ' +
+            '.payment_method_stripe_google_pay, ' +
+            '[class*="apple-pay"], ' +
+            '[class*="google-pay"]'
         );
         
         expressElements.forEach(el => {
@@ -343,6 +357,14 @@ document.addEventListener('DOMContentLoaded', function() {
             el.style.height = 'auto';
             el.style.width = 'auto';
             el.style.overflow = 'visible';
+            
+            // Make sure parent payment method is visible too
+            const parentMethod = el.closest('.payment_method');
+            if (parentMethod) {
+                parentMethod.style.display = 'block';
+                parentMethod.style.visibility = 'visible';
+                parentMethod.style.opacity = '1';
+            }
         });
         
         // Debug log

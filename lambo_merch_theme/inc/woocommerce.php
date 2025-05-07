@@ -222,15 +222,15 @@ add_action('init', 'lambo_merch_remove_checkout_elements');
 /**
  * Disable Express Payment Methods
  */
-function lambo_merch_disable_express_payment() {
-    return false;
+function lambo_merch_enable_express_payment() {
+    return true;
 }
-add_filter('woocommerce_should_load_express_payment', 'lambo_merch_disable_express_payment');
+add_filter('woocommerce_should_load_express_payment', 'lambo_merch_enable_express_payment');
 add_filter('woocommerce_available_payment_gateways', function($gateways) {
-    // Remove any payment methods except Stripe
+    // Allow Stripe and its Express Checkout methods
     foreach ($gateways as $key => $gateway) {
-        // Keep only the Stripe gateway, remove all others
-        if ($key !== 'stripe') {
+        // Keep Stripe and any Stripe-related gateways (includes Google Pay, Apple Pay)
+        if ($key !== 'stripe' && $key !== 'stripe_apple_pay' && $key !== 'stripe_google_pay' && strpos($key, 'stripe') === false) {
             unset($gateways[$key]);
         }
     }
