@@ -221,6 +221,11 @@ function lambo_merch_scripts() {
 	// Wishlist CSS and JS
 	wp_enqueue_style( 'lambo-merch-wishlist', get_template_directory_uri() . '/css/wishlist.css', array(), LAMBO_MERCH_VERSION );
 	
+	// Add the ajaxurl to the head for all pages
+	echo '<script type="text/javascript">
+		var ajaxurl = "' . admin_url('admin-ajax.php') . '";
+	</script>';
+	
 	// Enqueue the global wishlist script with higher priority to ensure it loads early
 	wp_enqueue_script( 'lambo-merch-global-wishlist', get_template_directory_uri() . '/js/global-wishlist.js', array( 'jquery' ), LAMBO_MERCH_VERSION, false );
 	wp_localize_script( 'lambo-merch-global-wishlist', 'lambo_wishlist_params', array(
@@ -290,6 +295,16 @@ function lambo_merch_scripts() {
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
+	
+	// Make sure ajaxurl is available
+	?>
+	<script type="text/javascript">
+		var ajaxurl = "<?php echo admin_url('admin-ajax.php'); ?>";
+	</script>
+	<?php
+	
+	// Add simple favorites system script (replaces previous implementation)
+	wp_enqueue_script( 'lambo-merch-simple-favorites', get_template_directory_uri() . '/js/simple-favorites.js', array( 'jquery' ), LAMBO_MERCH_VERSION, true );
 }
 add_action( 'wp_enqueue_scripts', 'lambo_merch_scripts' );
 
@@ -324,6 +339,11 @@ require get_template_directory() . '/inc/class-wp-bootstrap-navwalker.php';
  * Add Mobile Detect library
  */
 require get_template_directory() . '/inc/mobile-detect.php';
+
+/**
+ * Load simple favorites functions
+ */
+require get_template_directory() . '/inc/simple-favorites.php';
 
 /**
  * Implement custom Walker Class for Bootstrap nav menu
@@ -932,7 +952,326 @@ add_action('wp_ajax_lambo_add_to_cart', 'lambo_merch_add_to_cart');
 add_action('wp_ajax_nopriv_lambo_add_to_cart', 'lambo_merch_add_to_cart');
 
 /**
- * AJAX handler for updating user wishlist
+ * Product favorites handler - Set favorite status
+ */
+function lambo_set_product_favorite_status($product_id, $user_id, $status) {
+    if (empty($product_id)) {
+        return false;
+    }
+    
+    // Ensure we're working with a valid product
+    $product = wc_get_product($product_id);
+    if (!$product) {
+        return false;
+    }
+    
+    // Convert status to boolean and then to string for more reliable storage
+    $is_favorite = (bool) $status;
+    $value_to_store = $is_favorite ? '1' : '0';
+    
+    // Get user-specific meta key
+    $meta_key = 'lambo_favorite_' . $user_id;
+    
+    // First delete the existing meta to ensure a clean update
+    delete_post_meta($product_id, $meta_key);
+    
+    // Then add the new meta value
+    if ($is_favorite) {
+        add_post_meta($product_id, $meta_key, $value_to_store, true);
+    }
+    
+    // Log the update
+    error_log(sprintf(
+        'Updated product favorite status: Product ID: %d, User ID: %s, Status: %s, Stored Value: %s',
+        $product_id,
+        $user_id,
+        $is_favorite ? 'true' : 'false',
+        $value_to_store
+    ));
+    
+    // Double check it was stored correctly
+    $stored_value = get_post_meta($product_id, $meta_key, true);
+    error_log('Direct check - Stored meta value: ' . var_export($stored_value, true));
+    
+    return true;
+}
+
+/**
+ * Product favorites handler - Get favorite status
+ */
+function lambo_get_product_favorite_status($product_id, $user_id) {
+    if (empty($product_id)) {
+        return false;
+    }
+    
+    // Get user-specific meta key
+    $meta_key = 'lambo_favorite_' . $user_id;
+    
+    // Get the favorite status from product meta
+    $is_favorite = get_post_meta($product_id, $meta_key, true);
+    
+    // Convert to boolean and return
+    return (bool) $is_favorite;
+}
+
+/**
+ * Get all favorite products for a user
+ */
+function lambo_get_favorite_products($user_id) {
+    if (empty($user_id)) {
+        error_log('Empty user ID provided to lambo_get_favorite_products');
+        return array();
+    }
+    
+    // Meta key for this user's favorites
+    $meta_key = 'lambo_favorite_' . $user_id;
+    error_log('Looking for favorites with meta key: ' . $meta_key);
+    
+    // Query products directly through SQL to ensure we get all matching products
+    global $wpdb;
+    
+    $query = $wpdb->prepare("
+        SELECT DISTINCT p.ID 
+        FROM {$wpdb->posts} p
+        JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+        WHERE p.post_type = 'product' 
+        AND p.post_status = 'publish'
+        AND pm.meta_key = %s
+        AND pm.meta_value = '1'
+    ", $meta_key);
+    
+    $product_ids = $wpdb->get_col($query);
+    
+    error_log('Direct SQL query found ' . count($product_ids) . ' favorite products');
+    error_log('SQL Query: ' . $query);
+    
+    // Return the product IDs we found through direct SQL
+    if (!empty($product_ids)) {
+        error_log('Returning favorite products from SQL: ' . print_r($product_ids, true));
+        return $product_ids;
+    }
+    
+    // Fallback to WP_Query in case direct SQL doesn't work
+    error_log('No products found via SQL, trying WP_Query...');
+    
+    // Query for products with this user's favorite meta key set to true
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => -1,
+        'meta_query'     => array(
+            array(
+                'key'     => $meta_key,
+                'value'   => '1',
+                'compare' => '='
+            )
+        )
+    );
+    
+    $query = new WP_Query($args);
+    error_log('WP_Query found ' . $query->post_count . ' posts');
+    error_log('WP_Query args: ' . print_r($args, true));
+    
+    // Return array of product IDs
+    $favorite_products = array();
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            $favorite_products[] = get_the_ID();
+        }
+        wp_reset_postdata();
+    }
+    
+    error_log('Returning favorite products from WP_Query: ' . print_r($favorite_products, true));
+    return $favorite_products;
+}
+
+/**
+ * Get a consistent guest ID for non-logged in users
+ */
+function lambo_get_guest_id() {
+    // Check if we already have a guest ID in the cookie
+    if (isset($_COOKIE['lambo_guest_id'])) {
+        return 'guest_' . $_COOKIE['lambo_guest_id'];
+    }
+    
+    // Generate a new guest ID
+    $guest_id = md5(uniqid('guest_', true));
+    
+    // Set cookie for 30 days
+    setcookie('lambo_guest_id', $guest_id, time() + (30 * DAY_IN_SECONDS), '/');
+    
+    return 'guest_' . $guest_id;
+}
+
+/**
+ * AJAX handler for toggling favorite product status
+ */
+function lambo_toggle_favorite_product() {
+    // Verify required data
+    if (!isset($_POST['product_id'])) {
+        wp_send_json_error(array('message' => 'Product ID not provided'));
+        return;
+    }
+    
+    // Sanitize the product ID
+    $product_id = absint($_POST['product_id']);
+    error_log('Toggle favorite for product ID: ' . $product_id);
+    
+    // Get current user ID (use a consistent guest ID for non-logged-in users)
+    $user_id = is_user_logged_in() ? get_current_user_id() : lambo_get_guest_id();
+    error_log('User ID for favorite toggle: ' . $user_id);
+    
+    // Get current favorite status
+    $current_status = lambo_get_product_favorite_status($product_id, $user_id);
+    error_log('Current favorite status: ' . ($current_status ? 'true' : 'false'));
+    
+    // Toggle status (set to the opposite of current status)
+    $new_status = !$current_status;
+    error_log('New favorite status: ' . ($new_status ? 'true' : 'false'));
+    
+    // Update the favorite status
+    $result = lambo_set_product_favorite_status($product_id, $user_id, $new_status);
+    error_log('Set favorite status result: ' . ($result ? 'success' : 'failure'));
+    
+    // Force to update to refresh cache for this user
+    wp_cache_flush();
+    
+    // Double-check the status was updated
+    $check_status = lambo_get_product_favorite_status($product_id, $user_id);
+    error_log('After update, favorite status is: ' . ($check_status ? 'true' : 'false'));
+    
+    // Verify product meta in database
+    global $wpdb;
+    $meta_key = 'lambo_favorite_' . $user_id;
+    $meta_value = get_post_meta($product_id, $meta_key, true);
+    error_log('Database meta value for ' . $meta_key . ' on product ' . $product_id . ': ' . var_export($meta_value, true));
+    
+    if ($result) {
+        $all_favorites = lambo_get_favorite_products($user_id);
+        error_log('All favorites after update: ' . print_r($all_favorites, true));
+        
+        wp_send_json_success(array(
+            'message'     => $new_status ? 'Product added to favorites' : 'Product removed from favorites',
+            'product_id'  => $product_id,
+            'status'      => $new_status,
+            'product_ids' => $all_favorites,
+            'meta_key'    => $meta_key,
+            'meta_value'  => $meta_value
+        ));
+    } else {
+        wp_send_json_error(array('message' => 'Failed to update favorite status'));
+    }
+    
+    wp_die();
+}
+add_action('wp_ajax_lambo_toggle_favorite', 'lambo_toggle_favorite_product');
+add_action('wp_ajax_nopriv_lambo_toggle_favorite', 'lambo_toggle_favorite_product');
+
+/**
+ * AJAX handler for checking a product's favorite status
+ */
+function lambo_check_favorite_status() {
+    // Verify required data
+    if (!isset($_POST['product_id'])) {
+        wp_send_json_error(array('message' => 'Product ID not provided'));
+        return;
+    }
+    
+    // Sanitize the product ID
+    $product_id = absint($_POST['product_id']);
+    
+    // Get current user ID (use a consistent guest ID for non-logged-in users)
+    $user_id = is_user_logged_in() ? get_current_user_id() : lambo_get_guest_id();
+    
+    // Get current favorite status
+    $is_favorite = lambo_get_product_favorite_status($product_id, $user_id);
+    
+    wp_send_json_success(array(
+        'product_id' => $product_id,
+        'status'     => $is_favorite
+    ));
+    
+    wp_die();
+}
+add_action('wp_ajax_lambo_check_favorite', 'lambo_check_favorite_status');
+add_action('wp_ajax_nopriv_lambo_check_favorite', 'lambo_check_favorite_status');
+
+/**
+ * Clear all favorites for debugging if needed
+ */
+function lambo_clear_all_favorites() {
+    global $wpdb;
+    
+    // Get all product meta keys related to favorites
+    $meta_keys = $wpdb->get_col(
+        $wpdb->prepare(
+            "SELECT DISTINCT meta_key FROM {$wpdb->postmeta} WHERE meta_key LIKE %s",
+            'lambo_favorite_%'
+        )
+    );
+    
+    // Delete all favorite meta data
+    foreach ($meta_keys as $meta_key) {
+        $wpdb->delete(
+            $wpdb->postmeta,
+            array('meta_key' => $meta_key),
+            array('%s')
+        );
+    }
+    
+    return count($meta_keys);
+}
+
+/**
+ * Debug function to check favorites data
+ */
+function lambo_debug_favorites() {
+    global $wpdb;
+    
+    // Get user ID (guest or logged in)
+    $user_id = is_user_logged_in() ? get_current_user_id() : lambo_get_guest_id();
+    
+    // Meta key for this user
+    $meta_key = 'lambo_favorite_' . $user_id;
+    
+    // Get all favorites meta for this user
+    $results = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT post_id, meta_key, meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s",
+            $meta_key
+        )
+    );
+    
+    // Get all meta keys for favorites
+    $all_favorite_keys = $wpdb->get_col(
+        $wpdb->prepare(
+            "SELECT DISTINCT meta_key FROM {$wpdb->postmeta} WHERE meta_key LIKE %s",
+            'lambo_favorite_%'
+        )
+    );
+    
+    return array(
+        'user_id' => $user_id,
+        'meta_key' => $meta_key,
+        'favorites' => $results,
+        'all_favorite_keys' => $all_favorite_keys
+    );
+}
+
+/**
+ * AJAX handler for debug favorites
+ */
+function lambo_ajax_debug_favorites() {
+    $debug_data = lambo_debug_favorites();
+    wp_send_json_success($debug_data);
+    wp_die();
+}
+add_action('wp_ajax_lambo_debug_favorites', 'lambo_ajax_debug_favorites');
+add_action('wp_ajax_nopriv_lambo_debug_favorites', 'lambo_ajax_debug_favorites');
+
+/**
+ * Legacy AJAX handler for updating user wishlist
+ * Kept for backward compatibility
  */
 function lambo_merch_update_user_wishlist() {
     if (!isset($_POST['wishlist'])) {
@@ -955,8 +1294,10 @@ function lambo_merch_update_user_wishlist() {
     // Sanitize the wishlist array - ensure all items are strings for consistency
     $sanitized_wishlist = array();
     foreach ($wishlist as $item) {
-        // Convert to string to maintain consistency with JavaScript
-        $sanitized_wishlist[] = (string) $item;
+        if (!empty($item)) {
+            // Convert to string to maintain consistency with JavaScript
+            $sanitized_wishlist[] = (string) $item;
+        }
     }
     
     // Debug log
@@ -965,8 +1306,11 @@ function lambo_merch_update_user_wishlist() {
     // For logged-in users, update user meta
     if (is_user_logged_in()) {
         $current_user_id = get_current_user_id();
+        // First, completely delete the meta to avoid stale data
+        delete_user_meta($current_user_id, 'lambo_wishlist');
+        // Then add the new wishlist data
         update_user_meta($current_user_id, 'lambo_wishlist', $sanitized_wishlist);
-        error_log("Updated wishlist for user ID $current_user_id");
+        error_log("Updated wishlist for user ID $current_user_id with data: " . print_r($sanitized_wishlist, true));
     }
     
     // The cookie is handled by JavaScript, so we only need to acknowledge the update
