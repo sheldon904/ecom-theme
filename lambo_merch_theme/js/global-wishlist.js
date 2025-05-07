@@ -5,12 +5,48 @@
 
 // Create the global LamboWishlist object
 window.LamboWishlist = {
-    // Get wishlist from cookie
+    // Get wishlist from localStorage or fallback to cookie
     getWishlist: function() {
         var wishlist = [];
         
-        // Check for wishlist cookie
-        if (document.cookie.indexOf('lambo_wishlist=') !== -1) {
+        // First try to get from localStorage
+        try {
+            // Make sure we use the exact same key 'wishlist' across all functions
+            var localStorageWishlist = localStorage.getItem('wishlist');
+            console.log('Raw localStorage wishlist:', localStorageWishlist);
+            
+            if (localStorageWishlist) {
+                try {
+                    wishlist = JSON.parse(localStorageWishlist);
+                    console.log('Parsed wishlist from localStorage:', wishlist);
+                } catch (parseError) {
+                    console.error('Error parsing localStorage wishlist:', parseError);
+                    // Keep wishlist as an empty array if parsing fails
+                }
+                
+                // Ensure we have an array
+                if (!Array.isArray(wishlist)) {
+                    console.error('localStorage wishlist is not an array:', wishlist);
+                    wishlist = [];
+                } else {
+                    // Ensure all product IDs are strings for consistent comparison
+                    wishlist = wishlist.map(function(item) {
+                        var stringVal = item ? item.toString() : '';
+                        console.log('Converting wishlist item to string:', item, '->', stringVal);
+                        return stringVal;
+                    });
+                    console.log('Normalized wishlist (all strings):', wishlist);
+                }
+            } else {
+                console.log('No wishlist found in localStorage');
+            }
+        } catch (e) {
+            console.error('Error accessing localStorage:', e);
+            // Keep wishlist as empty array if access fails
+        }
+        
+        // If no wishlist in localStorage, try cookie as fallback
+        if (wishlist.length === 0 && document.cookie.indexOf('lambo_wishlist=') !== -1) {
             var cookieValue = document.cookie.split('; ').find(function(row) { 
                 return row.startsWith('lambo_wishlist='); 
             });
@@ -32,6 +68,9 @@ window.LamboWishlist = {
                         wishlist = wishlist.map(function(item) {
                             return item.toString();
                         });
+                        
+                        // If we got wishlist from cookie, also save to localStorage for future use
+                        localStorage.setItem('wishlist', JSON.stringify(wishlist));
                     }
                 } catch (e) {
                     console.error('Error parsing wishlist cookie:', e);
@@ -43,33 +82,73 @@ window.LamboWishlist = {
         return wishlist;
     },
     
-    // Save wishlist to cookie
+    // Save wishlist to localStorage and cookie
     saveWishlist: function(wishlist) {
+        // If input is not valid, try to read existing wishlist from localStorage
         if (!Array.isArray(wishlist)) {
-            console.error('Cannot save invalid wishlist (not an array):', wishlist);
-            wishlist = [];
+            console.error('Invalid wishlist provided (not an array):', wishlist);
+            
+            try {
+                var existing = localStorage.getItem('wishlist');
+                if (existing) {
+                    wishlist = JSON.parse(existing);
+                    if (!Array.isArray(wishlist)) {
+                        console.error('Existing wishlist is also invalid, resetting to empty array');
+                        wishlist = [];
+                    }
+                } else {
+                    wishlist = [];
+                }
+            } catch (e) {
+                console.error('Error reading existing wishlist:', e);
+                wishlist = [];
+            }
         }
         
-        // Ensure all product IDs are strings
-        wishlist = wishlist.map(function(item) {
+        // Ensure all product IDs are strings and valid
+        wishlist = wishlist.filter(function(item) {
+            return item !== null && item !== undefined;
+        }).map(function(item) {
             return item.toString();
         });
         
-        // Set cookie expiration for 30 days
-        var date = new Date();
-        date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
+        // Log what we're about to save
+        console.log('About to save wishlist:', wishlist);
         
-        // Serialize wishlist to JSON string and encode for cookie
-        var wishlistJson = JSON.stringify(wishlist);
+        // Save to localStorage (primary storage)
+        try {
+            var wishlistJson = JSON.stringify(wishlist);
+            localStorage.setItem('wishlist', wishlistJson);
+            console.log('Wishlist saved to localStorage:', wishlist);
+            
+            // Verify the save was successful
+            var savedRaw = localStorage.getItem('wishlist');
+            console.log('Verification - raw saved wishlist:', savedRaw);
+            if (savedRaw) {
+                var savedParsed = JSON.parse(savedRaw);
+                console.log('Verification - parsed saved wishlist:', savedParsed);
+            }
+        } catch (e) {
+            console.error('Error saving to localStorage:', e);
+        }
         
-        // Set/update cookie with proper path and expiration
-        var cookieString = 'lambo_wishlist=' + encodeURIComponent(wishlistJson) + 
-                           '; expires=' + date.toUTCString() + 
-                           '; path=/; SameSite=Lax';
-        
-        // Save cookie
-        document.cookie = cookieString;
-        console.log('Wishlist saved to cookie:', wishlist);
+        // Also save to cookie for backward compatibility
+        try {
+            // Set cookie expiration for 30 days
+            var date = new Date();
+            date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
+            
+            // Set/update cookie with proper path and expiration
+            var cookieString = 'lambo_wishlist=' + encodeURIComponent(wishlistJson) + 
+                               '; expires=' + date.toUTCString() + 
+                               '; path=/; SameSite=Lax';
+            
+            // Save cookie
+            document.cookie = cookieString;
+            console.log('Wishlist also saved to cookie for compatibility');
+        } catch (e) {
+            console.error('Error saving to cookie:', e);
+        }
     },
     
     // Add a product to the wishlist
@@ -83,16 +162,56 @@ window.LamboWishlist = {
             return;
         }
         
-        // Get current wishlist
-        var wishlist = this.getWishlist();
+        // Get current wishlist directly from localStorage
+        var wishlist = [];
+        try {
+            var existing = localStorage.getItem('wishlist');
+            console.log('Raw existing wishlist:', existing);
+            
+            if (existing) {
+                try {
+                    wishlist = JSON.parse(existing);
+                } catch (parseError) {
+                    console.error('Parse error:', parseError);
+                    wishlist = [];
+                }
+                
+                if (!Array.isArray(wishlist)) {
+                    console.warn('Parsed wishlist is not an array, resetting:', wishlist);
+                    wishlist = [];
+                }
+            } else {
+                console.log('No existing wishlist, starting with empty array');
+            }
+        } catch (e) {
+            console.error('Error reading from localStorage:', e);
+        }
+        
+        // Convert all IDs to strings for consistent comparison
+        wishlist = wishlist.map(function(id) {
+            return id ? id.toString() : '';
+        });
+        
+        console.log('Current wishlist before adding:', wishlist);
         
         // Check if product is already in wishlist
         if (wishlist.indexOf(productId) === -1) {
             // Add product to wishlist (as string)
             wishlist.push(productId);
+            console.log('Product added, new wishlist:', wishlist);
             
-            // Save updated wishlist
-            this.saveWishlist(wishlist);
+            // Save directly to localStorage
+            try {
+                var wishlistJson = JSON.stringify(wishlist);
+                localStorage.setItem('wishlist', wishlistJson);
+                console.log('Updated wishlist saved to localStorage:', wishlistJson);
+                
+                // Verify save was successful
+                var verification = localStorage.getItem('wishlist');
+                console.log('Verification - localStorage now contains:', verification);
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
             
             // Show success message
             this.showMessage('Product added to your favorites!', 'success');
@@ -102,6 +221,13 @@ window.LamboWishlist = {
             
             // Send AJAX request to update server-side wishlist for logged-in users
             this.updateServerWishlist(wishlist);
+            
+            // Trigger a custom event that the wishlist was updated
+            try {
+                document.dispatchEvent(new Event('wishlist:updated'));
+            } catch (e) {
+                console.error('Error dispatching update event:', e);
+            }
         } else {
             // Product already in wishlist
             this.showMessage('Product is already in your favorites!', 'info');
@@ -119,31 +245,93 @@ window.LamboWishlist = {
             return;
         }
         
-        // Get current wishlist
-        var wishlist = this.getWishlist();
-        
-        // Find product in wishlist
-        var index = wishlist.indexOf(productId);
-        
-        if (index !== -1) {
-            // Remove product from wishlist
-            wishlist.splice(index, 1);
+        // Get current wishlist directly from localStorage
+        var wishlist = [];
+        try {
+            var existing = localStorage.getItem('wishlist');
+            console.log('Raw existing wishlist:', existing);
             
-            // Save updated wishlist
-            this.saveWishlist(wishlist);
+            if (existing) {
+                try {
+                    wishlist = JSON.parse(existing);
+                } catch (parseError) {
+                    console.error('Parse error:', parseError);
+                    wishlist = [];
+                }
+                
+                if (!Array.isArray(wishlist)) {
+                    console.warn('Parsed wishlist is not an array, resetting:', wishlist);
+                    wishlist = [];
+                }
+            } else {
+                console.log('No existing wishlist, nothing to remove');
+            }
+        } catch (e) {
+            console.error('Error reading from localStorage:', e);
+        }
+        
+        // Convert all IDs to strings for consistent comparison
+        wishlist = wishlist.map(function(id) {
+            return id ? id.toString() : '';
+        });
+        
+        console.log('Current wishlist before removal:', wishlist);
+        
+        // Convert productId to string for comparison
+        var productIdStr = productId.toString();
+        
+        // Use filter to create a new array without the item to remove
+        var newWishlist = wishlist.filter(function(item) {
+            return item !== productIdStr;
+        });
+        
+        // Check if an item was actually removed
+        var itemRemoved = newWishlist.length < wishlist.length;
+        console.log('Item removed?', itemRemoved);
+        console.log('New wishlist after filtering:', newWishlist);
+        
+        // Save the updated wishlist to localStorage
+        try {
+            var wishlistJson = JSON.stringify(newWishlist);
+            localStorage.setItem('wishlist', wishlistJson);
+            console.log('Updated wishlist saved to localStorage:', wishlistJson);
             
+            // Verify save was successful
+            var verification = localStorage.getItem('wishlist');
+            console.log('Verification - localStorage now contains:', verification);
+        } catch (e) {
+            console.error('Error saving to localStorage:', e);
+        }
+            
+        // Then save to cookie for backward compatibility
+        this.saveWishlist(newWishlist);
+        
+        if (itemRemoved) {
             // Show success message
             this.showMessage('Product removed from your favorites!', 'success');
-            
-            // Update wishlist count in header
-            this.updateWishlistCount();
-            
-            // Send AJAX request to update server-side wishlist for logged-in users
-            this.updateServerWishlist(wishlist);
-            
-            // If on wishlist/favorites page, remove the item from the DOM
-            var $cartItem = jQuery('.cart-item[data-product-id="' + productId + '"]');
+        } else {
+            // Item wasn't in the wishlist
+            this.showMessage('Product was not in your favorites list', 'info');
+        }
+        
+        // Update wishlist count in header
+        this.updateWishlistCount();
+        
+        // Send AJAX request to update server-side wishlist for logged-in users
+        this.updateServerWishlist(newWishlist);
+        
+        // Trigger a custom event that the wishlist was updated
+        try {
+            document.dispatchEvent(new Event('wishlist:updated'));
+        } catch (e) {
+            console.error('Error dispatching update event:', e);
+        }
+        
+        // If on wishlist/favorites page, remove the item from the DOM
+        if (itemRemoved) {
+            var $cartItem = jQuery('.cart-item[data-product-id="' + productId + '"], .wishlist-product[data-product-id="' + productId + '"]');
             if ($cartItem.length) {
+                console.log('Found DOM element to remove');
                 var $mobileActions = $cartItem.next('.mobile-actions');
                 
                 $cartItem.fadeOut(300, function() {
@@ -153,7 +341,7 @@ window.LamboWishlist = {
                     }
                     
                     // If list becomes empty, show empty state
-                    if (jQuery('.cart-item').length === 0) {
+                    if (jQuery('.cart-item:visible, .wishlist-product:visible').length === 0) {
                         var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
                             '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
                             '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
@@ -163,10 +351,9 @@ window.LamboWishlist = {
                         jQuery('.desktop-layout, .mobile-layout').html(emptyHtml);
                     }
                 });
+            } else {
+                console.log('No matching DOM element found for product ID:', productId);
             }
-        } else {
-            // Product not in wishlist
-            this.showMessage('Product was not in your favorites list', 'error');
         }
     },
     
