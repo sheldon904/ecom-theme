@@ -1,0 +1,615 @@
+/**
+ * Custom styling for WooCommerce My Account pages
+ */
+
+/* Main My Account container */
+.woocommerce-account .woocommerce {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Remove the duplicate My Account title in content */
+.woocommerce-MyAccount-content > h2:first-child {
+    display: none;
+}
+
+/* Page Title */
+.woocommerce-account .entry-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #ff0000;
+    font-style: italic;
+}
+
+/* Navigation column */
+.woocommerce-account .woocommerce-MyAccount-navigation {
+    width: 25%;
+    padding-right: 2rem;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: #000;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation ul li {
+    padding: 0;
+    margin: 0 0 1px 0;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation ul li a {
+    display: block;
+    padding: 15px;
+    background: #222222;
+    color: #ffffff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation ul li a:hover {
+    color: #ff0000;
+    background: #333333;
+}
+
+.woocommerce-account .woocommerce-MyAccount-navigation ul li.is-active a {
+    color: #ff0000;
+    background: #333333;
+    font-weight: bold;
+}
+
+/* Content column */
+.woocommerce-account .woocommerce-MyAccount-content {
+    width: 75%;
+    background: #222222;
+    padding: 2rem;
+    color: #ffffff;
+}
+
+/* Dashboard specific styling */
+.woocommerce-MyAccount-content p strong {
+    color: #ff0000;
+}
+
+.account-info em strong {
+    color: #ff0000;
+    font-style: italic;
+}
+
+/* Button styling */
+.woocommerce-MyAccount-content .woocommerce-Button,
+.woocommerce-MyAccount-content a.button {
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 1rem;
+    display: inline-block;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.woocommerce-MyAccount-content .woocommerce-Button:hover,
+.woocommerce-MyAccount-content a.button:hover {
+    background-color: #cc0000;
+    color: #ffffff;
+}
+
+/* Place account buttons side by side */
+.account-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.account-actions .woocommerce-Button {
+    margin-top: 0;
+}
+
+/* Orders table styling */
+.woocommerce-orders-table,
+.woocommerce-table--order-details {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.woocommerce-orders-table th,
+.woocommerce-table--order-details th {
+    background-color: #333333;
+    color: #ffffff;
+    padding: 10px;
+    text-align: left;
+}
+
+.woocommerce-orders-table td,
+.woocommerce-table--order-details td {
+    padding: 10px;
+    border-bottom: 1px solid #333333;
+}
+
+.woocommerce-orders-table tr:hover,
+.woocommerce-table--order-details tr:hover {
+    background-color: #333333;
+}
+
+.woocommerce-orders-table .woocommerce-orders-table__cell-order-actions a,
+.woocommerce-button--view-order {
+    margin: 0 5px 5px 0;
+    background-color: #333333;
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    display: inline-block;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease;
+}
+
+.woocommerce-orders-table .woocommerce-orders-table__cell-order-actions a:hover,
+.woocommerce-button--view-order:hover {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+/* Order status colors */
+.woocommerce-orders-table .order-status {
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.woocommerce-orders-table .order-status.status-completed {
+    background-color: #333;
+    color: #fff;
+}
+
+.woocommerce-orders-table .order-status.status-processing {
+    background-color: #222;
+    color: #fff;
+}
+
+.woocommerce-orders-table .order-status.status-on-hold {
+    background-color: #444;
+    color: #fff;
+}
+
+/* Order detail page */
+.order-details-wrapper {
+    margin-bottom: 2rem;
+}
+
+.order-details-wrapper h2 {
+    color: #ff0000;
+    margin-bottom: 1rem;
+}
+
+.order-info {
+    background-color: #333333;
+    padding: 15px;
+    margin-bottom: 1.5rem;
+}
+
+.order-info mark {
+    background-color: #ff0000;
+    color: #ffffff;
+    padding: 2px 5px;
+}
+
+/* Edit Address forms */
+.woocommerce-address-fields__field-wrapper,
+.woocommerce-EditAccountForm {
+    margin-bottom: 2rem;
+}
+
+.woocommerce-address-fields__field-wrapper p,
+.woocommerce-EditAccountForm p {
+    margin-bottom: 1rem;
+}
+
+.woocommerce-address-fields__field-wrapper label,
+.woocommerce-EditAccountForm label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.woocommerce-address-fields__field-wrapper input[type="text"],
+.woocommerce-address-fields__field-wrapper input[type="tel"],
+.woocommerce-address-fields__field-wrapper input[type="email"],
+.woocommerce-address-fields__field-wrapper select,
+.woocommerce-EditAccountForm input[type="text"],
+.woocommerce-EditAccountForm input[type="tel"],
+.woocommerce-EditAccountForm input[type="email"],
+.woocommerce-EditAccountForm input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #333333;
+    border: none;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.woocommerce-address-fields__field-wrapper select,
+.select2-container--default .select2-selection--single {
+    height: 45px;
+    background-color: #333333 !important;
+    border: none !important;
+    color: #ffffff !important;
+    border-radius: 0 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #ffffff !important;
+    line-height: 45px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 45px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #ffffff transparent transparent transparent !important;
+}
+
+.select2-dropdown {
+    background-color: #333333 !important;
+    border: none !important;
+}
+
+.select2-container--default .select2-results__option {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #ff0000 !important;
+    color: #ffffff !important;
+}
+
+/* Payment methods styling */
+.woocommerce-MyAccount-content .woocommerce-PaymentMethod {
+    background-color: #333333;
+    padding: 15px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.payment-method-selector {
+    margin-right: 15px;
+}
+
+.payment-method-selector input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: #222222;
+    border: 1px solid #444444;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.payment-method-selector input[type="checkbox"]:checked::before {
+    content: '✓';
+    font-size: 14px;
+    color: #ff0000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.woocommerce-MyAccount-content .payment-method-info {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.payment-method-default {
+    margin-left: 10px;
+    color: #ff0000;
+}
+
+.woocommerce-MyAccount-content .woocommerce-PaymentMethod img {
+    max-height: 30px;
+    margin-right: 10px;
+}
+
+.woocommerce-MyAccount-content .payment-method-actions {
+    display: flex;
+    align-items: center;
+}
+
+.woocommerce-MyAccount-content .payment-method-actions img {
+    width: 20px;
+    height: auto;
+    cursor: pointer;
+}
+
+.make-default-section {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.make-default-btn {
+    background-color: #333333;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.make-default-btn:hover {
+    background-color: #ff0000;
+}
+
+.woocommerce-MyAccount-content .add-payment-method {
+    margin-top: 1rem;
+}
+
+/* Edit account form specific styling */
+.woocommerce-EditAccountForm fieldset {
+    border: none;
+    padding: 0;
+    margin: 2rem 0;
+}
+
+.woocommerce-EditAccountForm legend {
+    color: #ff0000;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.woocommerce-EditAccountForm .centered-legend {
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+.woocommerce-form-row--wide {
+    margin-bottom: 1rem !important;
+}
+
+/* Address book styling */
+.woocommerce-Addresses {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px;
+}
+
+.woocommerce-Addresses .woocommerce-Address {
+    flex: 0 0 50%;
+    padding: 0 15px;
+    margin-bottom: 2rem;
+}
+
+.woocommerce-Addresses .woocommerce-Address header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.woocommerce-Addresses .woocommerce-Address header h3 {
+    margin: 0;
+    color: #ff0000;
+}
+
+.woocommerce-Addresses .woocommerce-Address address {
+    background-color: #333333;
+    padding: 15px;
+    font-style: normal;
+    line-height: 1.6;
+}
+
+/* Password reveal styling */
+.password-input {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.password-toggle {
+    margin-top: 8px;
+}
+
+.password-toggle-label {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.show-password-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: #222222;
+    border: 1px solid #444444;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    margin-right: 8px;
+}
+
+.show-password-checkbox:checked::before {
+    content: '✓';
+    font-size: 12px;
+    color: #ff0000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Hide any remaining old show-password buttons */
+button.show-password-input,
+span.show-password-input {
+    display: none !important;
+}
+
+/* Customer Login Styling */
+.woocommerce-account .woocommerce .u-columns {
+    display: flex;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.woocommerce-account .woocommerce .u-column1,
+.woocommerce-account .woocommerce .u-column2 {
+    flex: 1;
+    background-color: #222222;
+    padding: 2rem;
+    border-radius: 0;
+}
+
+.woocommerce-account .woocommerce h2 {
+    color: #ff0000;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.woocommerce-account .woocommerce-form-login label,
+.woocommerce-account .woocommerce-form-register label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.woocommerce-account .woocommerce-form-login input[type="text"],
+.woocommerce-account .woocommerce-form-login input[type="password"],
+.woocommerce-account .woocommerce-form-login input[type="email"],
+.woocommerce-account .woocommerce-form-register input[type="text"],
+.woocommerce-account .woocommerce-form-register input[type="password"],
+.woocommerce-account .woocommerce-form-register input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: #333333;
+    border: none;
+    color: #ffffff;
+    margin-bottom: 1rem;
+}
+
+.woocommerce-account .woocommerce-form-login .woocommerce-form__label-for-checkbox {
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+.woocommerce-account .woocommerce-form-login .woocommerce-form__input-checkbox {
+    margin-right: 0.5rem;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: #222222;
+    border: 1px solid #444444;
+    position: relative;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.woocommerce-account .woocommerce-form-login .woocommerce-form__input-checkbox:checked::before {
+    content: '✓';
+    font-size: 12px;
+    color: #ff0000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.woocommerce-account .woocommerce-form-login .woocommerce-form-login__submit,
+.woocommerce-account .woocommerce-form-register .woocommerce-form-register__submit {
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.woocommerce-account .woocommerce-form-login .woocommerce-form-login__submit:hover,
+.woocommerce-account .woocommerce-form-register .woocommerce-form-register__submit:hover {
+    background-color: #cc0000;
+}
+
+.woocommerce-account .lost_password a {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.woocommerce-account .lost_password a:hover {
+    color: #ff0000;
+}
+
+/* Responsive styles */
+@media (max-width: 767px) {
+    .woocommerce-account .woocommerce {
+        flex-direction: column;
+    }
+    
+    .woocommerce-account .woocommerce-MyAccount-navigation,
+    .woocommerce-account .woocommerce-MyAccount-content {
+        width: 100%;
+    }
+    
+    .woocommerce-account .woocommerce-MyAccount-navigation {
+        margin-bottom: 2rem;
+        padding-right: 0;
+    }
+    
+    .woocommerce-Addresses .woocommerce-Address {
+        flex: 0 0 100%;
+    }
+    
+    /* Mobile table adjustments */
+    .woocommerce-orders-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .woocommerce-table--order-details {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+    }
+    
+    .woocommerce-account .woocommerce .u-columns {
+        flex-direction: column;
+    }
+    
+    .woocommerce-account .woocommerce .u-column1,
+    .woocommerce-account .woocommerce .u-column2 {
+        margin-bottom: 2rem;
+    }
+    
+    .account-actions {
+        flex-direction: column;
+    }
+    
+    .account-actions .woocommerce-Button {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}

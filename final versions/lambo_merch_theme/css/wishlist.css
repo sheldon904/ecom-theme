@@ -1,0 +1,238 @@
+/**
+ * Wishlist/Favs styles
+ */
+
+/* Wishlist Button Styles */
+.add-to-wishlist {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.add-to-wishlist:before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url('../images/icons/favs.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 8px;
+}
+
+.add-to-wishlist:hover {
+    color: #C8B100; /* Gold color */
+}
+
+/* Wishlist Page Styles */
+.wishlist-title {
+    margin-bottom: 30px;
+    text-align: center;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 32px;
+}
+
+.wishlist-products {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+/* Wishlist product styling - items are visible by default */
+.wishlist-product, 
+.cart-item.wishlist-product {
+    display: flex;
+    background-color: #222;
+    padding: 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* For when we need to hide items */
+.wishlist-product.hide-item,
+.cart-item.wishlist-product.hide-item {
+    display: none !important;
+}
+
+.wishlist-product:hover {
+    background-color: #333;
+}
+
+.wishlist-product-image {
+    flex: 0 0 200px;
+    margin-right: 20px;
+}
+
+.wishlist-product-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+.wishlist-product-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.wishlist-product-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.wishlist-product-title a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.wishlist-product-title a:hover {
+    color: #C8B100; /* Gold color */
+}
+
+.wishlist-product-price {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #C8B100; /* Gold color */
+}
+
+.wishlist-product-actions {
+    display: flex;
+    align-items: center;
+}
+
+.wishlist-product-actions .add-to-cart {
+    margin-right: 15px;
+    background-color: #C8B100; /* Gold color */
+    color: #000;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.wishlist-product-actions .add-to-cart:hover {
+    background-color: #a99600; /* Darker gold */
+}
+
+.remove-from-wishlist {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s ease;
+}
+
+.remove-from-wishlist:hover {
+    transform: scale(1.1);
+}
+
+.remove-icon {
+    width: 25px;
+    height: auto;
+}
+
+.empty-wishlist {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.empty-wishlist p {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.continue-shopping {
+    background-color: #C8B100; /* Gold color */
+    color: #000;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.continue-shopping:hover {
+    background-color: #a99600; /* Darker gold */
+}
+
+/* Message Styles */
+.lambo-wishlist-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    padding: 15px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    display: none;
+    max-width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.lambo-wishlist-message.success {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.lambo-wishlist-message.error {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.lambo-wishlist-message.info {
+    background-color: #2196F3;
+    color: #fff;
+}
+
+/* Wishlist Count in Header */
+.header-icon-link .wishlist-count,
+.mobile-header .wishlist-count {
+    display: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 767px) {
+    .wishlist-product {
+        flex-direction: column;
+    }
+    
+    .wishlist-product-image {
+        flex: 0 0 auto;
+        margin-right: 0;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .wishlist-product-details {
+        text-align: center;
+    }
+    
+    .wishlist-product-actions {
+        justify-content: center;
+    }
+    
+    .lambo-wishlist-message {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+}

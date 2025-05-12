@@ -1,0 +1,36 @@
+# FiboSearch Settings Checklist
+
+After implementing FiboSearch in your theme, please verify these settings in WordPress admin:
+
+## 1. Go to WooCommerce → FiboSearch → Search Settings
+
+- Enable AJAX search: On
+- Enable "Details Panel": On (for better product preview)
+- Enable mobile overlay: On (for better mobile experience)
+- Enable "Submit on Enter" feature: On (this is critical)
+- "Enable results page" setting: On
+- Verify that "Results Page" points to an existing search page
+
+## 2. Styling Settings
+
+- Check "Layout options" to make sure they match your theme
+- Ensure "Breakpoint for the overlay" is set to a mobile size (like 768px)
+
+## 3. Advanced Settings
+
+- Include/Exclude: Make sure you haven't excluded any content you want to search
+- Make sure "Block request when typing" is Off
+- "Analytics" can be On for usage statistics (optional)
+
+## 4. Troubleshooting
+
+If search still gives errors after checking these settings:
+
+1. Go to WordPress Admin → FiboSearch → Settings
+2. Look for "enable submit on Enter" and make sure it's ON
+3. Verify that all submit handlers are functioning
+4. Try disabling "Submit the form only with AJAX" to use standard form submission
+5. Check your WordPress debug.log for specific PHP errors
+6. Ensure your search results page exists and is correctly named
+
+Remember: The most common issue with FiboSearch is a misconfiguration where the Enter key just tries to submit to a URL that doesn't exist. These settings should ensure proper functionality.
