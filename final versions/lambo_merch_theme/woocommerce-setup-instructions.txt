@@ -1,0 +1,86 @@
+### LAMBO MERCH SHOP SETUP INSTRUCTIONS ###
+
+## SETTING UP WOOCOMMERCE PRODUCTS
+
+1. INSTALL WOOCOMMERCE PLUGIN
+   - Go to WordPress Admin > Plugins > Add New
+   - Search for "WooCommerce"
+   - Install and Activate the plugin
+   - Follow the WooCommerce setup wizard
+
+2. CREATE THE T-SHIRT PRODUCTS
+   - Go to WordPress Admin > Products > Add New
+   - Create the following products:
+
+   PRODUCT 1:
+   - Title: Bull T-Shirt 1
+   - Regular Price: 35
+   - Product Category: T-Shirts (create this category if it doesn't exist)
+   - Product Image: Upload the bull_1.png image from the theme's images/products folder
+   - Description: Premium quality t-shirt featuring the iconic bull design. Made with high-quality materials for comfort and durability.
+   - Set as "Simple product" with inventory management if needed
+
+   PRODUCT 2:
+   - Title: Bull T-Shirt 2
+   - Regular Price: 40
+   - Product Category: T-Shirts
+   - Product Image: Upload the bull_2.png image from the theme's images/products folder
+   - Description: Exclusive bull design t-shirt made with luxury fabric. Perfect for Lambo enthusiasts who appreciate quality and style.
+   - Set as "Simple product" with inventory management if needed
+
+   PRODUCT 3:
+   - Title: Bull T-Shirt 3
+   - Regular Price: 50
+   - Product Category: T-Shirts
+   - Product Image: Upload the bull_3.png image from the theme's images/products folder
+   - Description: Limited edition t-shirt featuring our premium bull design. Only available for a short time, made with our highest quality materials.
+   - Set as "Simple product" with inventory management if needed
+
+   PRODUCT 4:
+   - Title: Bull T-Shirt 4
+   - Regular Price: 45
+   - Product Category: T-Shirts
+   - Product Image: Upload the bull_4.png image from the theme's images/products folder
+   - Description: Stylish bull design t-shirt for the true fans. Superior comfort with our signature fabric blend.
+   - Set as "Simple product" with inventory management if needed
+
+3. CREATING THE SHOP PAGE
+   
+   OPTION 1: USE WOOCOMMERCE DEFAULT SHOP PAGE
+   - Go to WordPress Admin > Pages
+   - Find the "Shop" page that WooCommerce created automatically
+   - Edit this page and update its content as needed
+   - The theme's custom archive-product.php template will be used to display products
+
+   OPTION 2: CREATE A CUSTOM SHOP PAGE TEMPLATE
+   - Go to WordPress Admin > Pages > Add New
+   - Title: Shop
+   - From the Page Attributes section, select either:
+     * "WooCommerce Shop Page" template
+     * "Shop Page Template" template
+   - Publish the page
+   - Go to WordPress Admin > WooCommerce > Settings > Products
+   - Set the "Shop page" to your newly created page
+
+4. CUSTOMIZING THE SHOP LAYOUT
+   - The theme includes customized WooCommerce templates including:
+     * archive-product-custom.php - Copy this to archive-product.php to use it
+     * woocommerce.css - Contains custom styling for products
+   - Products will display in a 2x2 grid on desktop and 1 column on mobile
+   - Pricing and styling is already configured in the theme
+
+5. WOOCOMMERCE WIDGETS
+   - Go to WordPress Admin > Appearance > Widgets
+   - You can add WooCommerce widgets to the shop sidebar if needed
+   - Recommended widgets: Product Categories, Filter by Price, Filter by Attribute
+
+6. TESTING THE SHOP
+   - Visit your shop page
+   - Test that filters work (Default, Price, Category)
+   - Test that pagination shows for more than 4 products
+   - Verify mobile responsiveness
+
+Note: If you want to customize the appearance further, you can edit:
+- woocommerce/archive-product.php for shop page layout
+- css/woocommerce.css for styling
+- functions.php woocommerce-related functions for functionality

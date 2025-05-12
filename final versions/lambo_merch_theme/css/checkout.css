@@ -1,0 +1,530 @@
+/**
+ * Custom Checkout Styling for Lambo Merch Theme
+ */
+
+/* Main checkout container */
+.woocommerce-checkout {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Override container backgrounds */
+.wc-block-checkout,
+.wp-block-woocommerce-checkout,
+.wc-block-components-sidebar,
+.wc-block-components-main,
+.woocommerce-checkout form,
+.woocommerce-checkout-payment,
+#payment, 
+.checkout-container {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Form fields - with extremely specific targeting to avoid affecting footer - using lambo-checkout-page class */
+body.lambo-checkout-page .checkout-container input[type="text"],
+body.lambo-checkout-page .checkout-container input[type="tel"],
+body.lambo-checkout-page .checkout-container input[type="email"],
+body.lambo-checkout-page .checkout-container input[type="password"],
+body.lambo-checkout-page .checkout-container textarea,
+body.lambo-checkout-page .checkout-container select,
+body.lambo-checkout-page .checkout-container .select2-container--default .select2-selection--single,
+#customer_details input[type="text"],
+#customer_details input[type="tel"],
+#customer_details input[type="email"],
+#customer_details input[type="password"],
+#customer_details textarea,
+#customer_details select,
+.checkout-container input[type="text"],
+.checkout-container input[type="tel"],
+.checkout-container input[type="email"],
+.checkout-container input[type="password"],
+.checkout-container textarea,
+.checkout-container select,
+.wc-block-checkout__contact-fields input[type="text"],
+.wc-block-checkout__contact-fields input[type="tel"],
+.wc-block-checkout__contact-fields input[type="email"],
+.wc-block-checkout__contact-fields input[type="password"],
+.wc-block-checkout__shipping-address-block input[type="text"],
+.wc-block-checkout__shipping-address-block input[type="tel"],
+.wc-block-checkout__shipping-address-block input[type="email"],
+.wc-block-checkout__shipping-address-block input[type="password"],
+.wc-block-checkout__billing-address-block input[type="text"],
+.wc-block-checkout__billing-address-block input[type="tel"],
+.wc-block-checkout__billing-address-block input[type="email"],
+.wc-block-checkout__billing-address-block input[type="password"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input input[type="text"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input input[type="email"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input input[type="tel"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input input[type="number"],
+.wp-block-woocommerce-checkout .wc-block-components-text-input textarea,
+.wp-block-woocommerce-checkout .wc-block-components-select .components-custom-select-control__button,
+/* Stripe-specific fields */
+body.woocommerce-checkout #stripe-payment-data input.wc-stripe-elements-field,
+body.woocommerce-checkout .wc-stripe-elements-field,
+.stripe-card-group iframe,
+.wc-stripe-elements-field,
+.StripeElement,
+.wc-stripe-iban-element-field,
+#stripe-payment-data iframe,
+div[id^="stripe-"] iframe,
+#wc-stripe-cc-form iframe,
+.payment_box iframe,
+#stripe-payment-data .StripeElement,
+/* Card fields */
+#payment .payment_box input[type="text"],
+#payment .payment_box input[type="password"],
+#payment .payment_box input[type="email"],
+#payment iframe,
+#stripe-payment-data .stripe-card-group {
+  background-color: #333333 !important;
+  border: 1px solid #444444 !important;
+  color: #ffffff !important;
+  padding: 12px !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+  box-shadow: none !important;
+}
+
+/* Focus state */
+.woocommerce-checkout input[type="text"]:focus,
+.woocommerce-checkout input[type="tel"]:focus,
+.woocommerce-checkout input[type="email"]:not(footer input[type="email"]):not(.footer input[type="email"]):not(#colophon input[type="email"]):not(.site-footer input[type="email"]):not(.email-input-wrap input[type="email"]):focus,
+.woocommerce-checkout input[type="password"]:focus,
+.woocommerce-checkout textarea:focus,
+.woocommerce-checkout select:focus {
+  border-color: #ff0000 !important;
+  outline: none !important;
+}
+
+/* Form labels */
+.woocommerce-checkout label {
+  color: #ffffff !important;
+  font-weight: bold !important;
+  margin-bottom: 8px !important;
+}
+
+/* Payment methods */
+#payment {
+  background-color: #000000 !important;
+}
+
+#payment div.payment_box {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+#payment .payment_methods li {
+  background-color: #000000 !important;
+}
+
+#payment .payment_methods li label {
+  color: #ffffff !important;
+}
+
+/* Standard theme checkbox styling for consistency */
+.checkout-container input[type="checkbox"],
+.woocommerce-checkout input[type="checkbox"],
+.wp-block-woocommerce-checkout .wc-block-components-checkbox input[type="checkbox"],
+.wp-block-woocommerce-checkout #ship-to-different-address input[type="checkbox"],
+.wp-block-woocommerce-checkout .woocommerce-form__input-checkbox,
+.wp-block-woocommerce-checkout .wc-block-components-radio-control__input {
+  /* Keep browser default styling but with minor enhancements */
+  width: 1.25em !important;
+  height: 1.25em !important;
+  margin-right: 0.5em !important;
+  border: 1px solid #555 !important;
+  background-color: #333333 !important;
+  vertical-align: middle !important;
+}
+
+/* Don't apply custom "after" styling, let the browser default checkmark show */
+.wp-block-woocommerce-checkout input[type="checkbox"]:checked,
+.woocommerce-checkout input[type="checkbox"]:checked,
+.wp-block-woocommerce-checkout .wc-block-components-checkbox input[type="checkbox"]:checked {
+  accent-color: #ff0000 !important;
+  background-color: #333333 !important;
+}
+
+/* Credit card fields - remove and let Stripe handle */
+.wp-block-woocommerce-checkout .wc-block-components-payment-method-icons {
+  /* Hide default payment method icons */
+  display: none !important;
+}
+
+/* Fix phone field with country flag */
+.wc-block-components-phone-number-input {
+  position: relative !important;
+}
+
+.wc-block-components-phone-number-input .wc-block-components-phone-number-input__flag {
+  left: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 2 !important;
+}
+
+.wc-block-components-phone-number-input .wc-block-components-phone-number-input__input {
+  padding-left: 50px !important; /* Give more space for flag */
+}
+
+/* Fix field labels */
+.wc-block-components-text-input label {
+  position: static !important;
+  display: block !important;
+  margin-bottom: 5px !important;
+  transform: none !important;
+  font-size: 14px !important;
+  color: #ffffff !important;
+}
+
+/* Style select dropdowns */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100% !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+  border-color: #ffffff transparent transparent transparent !important;
+}
+
+/* Custom styling for native select elements */
+select {
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 10px top 50% !important;
+  background-size: 16px 16px !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  padding-right: 30px !important;
+}
+
+/* Properly position the labels relative to inputs */
+.wc-block-components-text-input.is-active label {
+  transform: none !important;
+  font-size: 14px !important;
+  margin-bottom: 5px !important;
+  position: static !important;
+}
+
+/* Make sure phone field label doesn't overlap with flag */
+.wc-block-components-phone-number-input__label,
+.wc-block-components-phone-number-input label {
+  display: block !important;
+  position: static !important;
+  margin-bottom: 5px !important;
+  transform: none !important;
+  font-size: 14px !important;
+  color: #ffffff !important;
+}
+
+/* Place order button */
+.woocommerce-checkout #place_order,
+.woocommerce-checkout button#place_order,
+.woocommerce-checkout input#place_order,
+.woocommerce-checkout #payment #place_order,
+.woocommerce-checkout .woocommerce #payment #place_order,
+.woocommerce-checkout #payment .place-order #place_order,
+.woocommerce-checkout button[type="submit"],
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"] {
+  background-color: #ff0000 !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  font-weight: bold !important;
+  padding: 1rem 2rem !important;
+  border: none !important;
+  width: 100% !important;
+  transition: none !important;
+  -webkit-appearance: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  /* Prevent any default states from showing */
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+}
+
+.woocommerce-checkout #place_order:hover,
+.woocommerce-checkout button#place_order:hover,
+.woocommerce-checkout input#place_order:hover,
+.woocommerce-checkout #payment #place_order:hover,
+.woocommerce-checkout .woocommerce #payment #place_order:hover,
+.woocommerce-checkout #payment .place-order #place_order:hover,
+.woocommerce-checkout button[type="submit"]:hover,
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"]:hover {
+  background-color: #cc0000 !important;
+  color: #ffffff !important;
+}
+
+/* Target active, focus, and focus-visible states to prevent flashing */
+.woocommerce-checkout #place_order:active,
+.woocommerce-checkout #place_order:focus,
+.woocommerce-checkout #place_order:focus-visible,
+.woocommerce-checkout button#place_order:active,
+.woocommerce-checkout button#place_order:focus,
+.woocommerce-checkout button#place_order:focus-visible,
+.woocommerce-checkout input#place_order:active,
+.woocommerce-checkout input#place_order:focus,
+.woocommerce-checkout input#place_order:focus-visible,
+.woocommerce-checkout #payment #place_order:active,
+.woocommerce-checkout #payment #place_order:focus,
+.woocommerce-checkout #payment #place_order:focus-visible,
+.woocommerce-checkout button[type="submit"]:active,
+.woocommerce-checkout button[type="submit"]:focus,
+.woocommerce-checkout button[type="submit"]:focus-visible,
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"]:active,
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"]:focus,
+.woocommerce-checkout button[name="woocommerce_checkout_place_order"]:focus-visible {
+  background-color: #ff0000 !important;
+  color: #ffffff !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Order review */
+.woocommerce-checkout .woocommerce-checkout-review-order-table {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+}
+
+.woocommerce-checkout .woocommerce-checkout-review-order-table th,
+.woocommerce-checkout .woocommerce-checkout-review-order-table td {
+  border-color: #444444 !important;
+  padding: 12px !important;
+}
+
+/* Hide express checkout section - make sure we catch everything */
+.woocommerce-checkout .express-checkout-section,
+.woocommerce-checkout #express-payment-method,
+.wp-block-woocommerce-checkout-express-payment-block,
+.wc-block-components-express-payment,
+.wc-block-components-express-payment--from-saved-payment-methods,
+div[class*="express-payment"],
+.express-payment-section {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+}
+
+/* Hide coupon form in totals */
+.woocommerce-checkout .coupon-form,
+.wp-block-woocommerce-checkout-order-summary-coupon-form-block {
+  display: none !important;
+}
+
+/* Block-based checkout customizations */
+.wc-block-checkout,
+.wp-block-woocommerce-checkout,
+body.woocommerce-checkout .wp-block-woocommerce-checkout {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+.wc-block-components-text-input input[type="text"],
+.wc-block-components-text-input input[type="email"]:not(footer input[type="email"]):not(.footer input[type="email"]):not(#colophon input[type="email"]):not(.site-footer input[type="email"]):not(.email-input-wrap input[type="email"]),
+.wc-block-components-text-input input[type="tel"],
+.wc-block-components-text-input input[type="number"],
+.wc-block-components-text-input textarea,
+.wc-block-components-select .components-custom-select-control__button,
+.country_select,
+.state_select,
+#billing_country_field .select2-selection,
+#shipping_country_field .select2-selection,
+#billing_state_field .select2-selection,
+#shipping_state_field .select2-selection,
+.select2-container--default .select2-selection--single,
+.select2-container .select2-selection--single,
+select.country_to_state,
+select.state_select,
+.woocommerce-Input.select,
+.select2-dropdown {
+  background-color: #333333 !important;
+  border: 1px solid #444444 !important;
+  color: #ffffff !important;
+  padding: 12px !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+}
+
+.wc-block-components-checkout-step__heading {
+  color: #ffffff !important;
+}
+
+.wc-block-components-checkout-step__title {
+  font-weight: bold !important;
+}
+
+.wc-block-components-checkout-form {
+  margin: 0 !important;
+}
+
+.wc-block-components-checkout-step,
+.wc-block-checkout__contact-fields,
+.wp-block-woocommerce-checkout-contact-information-block,
+.wc-block-components-checkout-step {
+  background-color: #000000 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.wc-block-components-totals-item {
+  color: #ffffff !important;
+}
+
+.wc-block-components-order-summary-item__total-price,
+.wc-block-components-totals-footer-item .wc-block-components-totals-item__value,
+.wc-block-components-totals-grand-total .wc-block-components-totals-item__label,
+.wc-block-components-totals-grand-total .wc-block-components-totals-item__value {
+  color: #ffffff !important;
+  font-weight: bold !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .woocommerce-checkout .col2-set .form-row-first,
+  .woocommerce-checkout .col2-set .form-row-last {
+    width: 100% !important;
+    float: none !important;
+  }
+  
+  .wc-block-components-checkout-step {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  .woocommerce-checkout #customer_details,
+  .woocommerce-checkout #order_review {
+    width: 100% !important;
+    float: none !important;
+  }
+}
+
+/* Explicitly exclude footer email input from checkout styling */
+footer input[type="email"],
+.footer input[type="email"],
+#colophon input[type="email"],
+.site-footer input[type="email"],
+.email-input-wrap input[type="email"],
+.footer-email-exempt,
+body:not(.lambo-checkout-page) input[type="email"] {
+  background-color: initial !important;
+  color: initial !important;
+  border: initial !important;
+  padding: initial !important;
+  border-radius: initial !important;
+  box-shadow: initial !important;
+  font-size: initial !important;
+  line-height: initial !important;
+  width: initial !important;
+  height: initial !important;
+  margin: initial !important;
+}
+
+/* Target checkout email fields more specifically to avoid affecting footer */
+body.woocommerce-checkout form.checkout #billing_email,
+body.woocommerce-checkout form.checkout .woocommerce-checkout-payment input[type="email"],
+body.woocommerce-checkout #customer_details input[type="email"],
+#billing_email,
+#shipping_email {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  border: 1px solid #444444 !important;
+  padding: 12px !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+  box-shadow: none !important;
+}
+/* --- Exempt the footer newsletter field from checkout styling --- */
+.footer-email-exempt {
+  all: unset !important;             /* remove all inherited styles */
+  width: auto !important;            /* restore normal width */
+  background: none !important;       /* transparent/black per base theme */
+  border: none !important;
+  color: #ffffff !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+/* put the little arrow button back to its normal style */
+.footer-email-exempt + .arrow-btn {
+  background: #000 !important;       /* or whatever your normal button bg is */
+  color:  #fff !important;
+}
+/* Make Select2 fields match our other inputs */
+.woocommerce-checkout .select2-selection.lambo-styled {
+  height:    50px !important;
+  line-height: 50px !important;
+  color:     #ffffff !important;
+}
+/* Completely hide the “save new payment method” area */
+.woocommerce-checkout .woocommerce-SavedPaymentMethods-saveNew {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+/* --------------------------------------------
+   1) Inner Select2 text → white
+-------------------------------------------- */
+.woocommerce-checkout .select2-selection__rendered {
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------
+   2) Exempt the footer subscribe form
+   from ALL checkout page CSS
+-------------------------------------------- */
+/* Target only on the checkout page */
+.woocommerce-checkout footer input.footer-email-exempt,
+.woocommerce-checkout .footer input[type="email"],
+.woocommerce-checkout #colophon input[type="email"],
+.woocommerce-checkout .site-footer input[type="email"],
+.woocommerce-checkout .email-input-wrap input[type="email"] {
+  all: unset !important;          /* remove any inherited styling */
+  /* now restore only what you need: */
+  background: transparent !important;        /* your normal footer bg */
+  color:      #ffffff !important; /* white placeholder/text */
+  box-shadow: none !important;
+  padding:    0 !important;
+  margin:     0 !important;
+  width:      auto !important;
+  height:     auto !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  text-indent: 0 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+/* If your arrow-button lives immediately after that input: */
+.woocommerce-checkout footer input.footer-email-exempt + button.arrow-btn {
+  all: unset !important;
+  background: transparent !important; /* or the base-theme button bg */
+  color:      #ffffff !important;
+  box-shadow: none !important;
+  padding:    0 1rem !important;     /* adjust to match normal footer look */
+}
+/*────────────────────────────────────────
+  1) Email-input wrap → #0b0c10 instead of #303030
+────────────────────────────────────────*/
+.woocommerce-checkout footer .email-input-wrap {
+  background-color: #0b0c10 !important;
+}
+
+/* Footer styling removed */
+
+/*────────────────────────────────────────
+  3) (Optional) If your arrow-button sits
+     next to the email field, keep it dark
+────────────────────────────────────────*/
+.woocommerce-checkout footer input.footer-email-exempt + button.arrow-btn {
+  background: #0b0c10 !important;
+  color:      #ffffff !important;
+}

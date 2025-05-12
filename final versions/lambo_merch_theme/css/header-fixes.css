@@ -1,0 +1,35 @@
+/**
+ * Fixes for header icons and links
+ */
+
+/* Desktop header link position */
+.header-icon-link {
+    position: relative;
+    display: inline-block;
+}
+
+/* Mobile header link position */
+.mobile-header .icon-set a {
+    position: relative;
+    display: inline-block;
+}
+
+/* Style all icon links to ensure they're clickable */
+.mobile-header .icon-set a,
+.header-icon-link {
+    text-decoration: none;
+    z-index: 5; /* Ensure links have a higher z-index */
+}
+
+/* Make sure icon images stay behind the clickable area */
+.header-icon,
+.mobile-header .icon-set img {
+    position: relative;
+    z-index: 1;
+    pointer-events: none; /* Prevent the image from capturing clicks */
+}
+
+/* Hide wishlist count in a way that preserves layout */
+.wishlist-count {
+    display: none !important;
+}
