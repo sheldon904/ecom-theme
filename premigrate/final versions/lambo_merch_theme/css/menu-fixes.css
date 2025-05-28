@@ -1,0 +1,107 @@
+/* Menu Fixes CSS */
+
+/* Ensure mobile menu content is accessible on all screens */
+@media (max-width: 767px) {
+  /* Increase max-height for mobile menu content */
+  .main-menu-container {
+    max-height: 40vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  /* Make entire menu scrollable */
+  #site-navigation {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Force menu visibility on mobile */
+  .main-navigation ul {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Force menu item visibility */
+  .main-navigation ul li {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* Make menu items more tappable */
+  .main-navigation ul li a {
+    padding: 15px 0 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Fix for menu footer positioning */
+.menu-footer {
+  margin-top: 20px !important;
+  padding-top: 20px !important;
+  border-top: 1px solid #ff0000 !important;
+}
+
+/* Ensure images in menu footer are properly sized */
+.menu-footer img {
+  width: 24px !important;
+  height: auto !important;
+  margin-right: 10px !important;
+}
+
+/* Make sure menu doesn't get too tall */
+#site-navigation {
+  max-height: 100vh !important;
+}
+
+/* Restore the MENU text in the desktop header */
+.menu-text {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  margin-left: 8px;
+}
+
+/* Critical fix for responsive menu display */
+@media (max-width: 767px) {
+  .main-navigation.toggled {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow-y: auto !important;
+    padding-bottom: 50px !important; /* Extra padding to ensure scrollability */
+  }
+  
+  .main-navigation.toggled .main-menu-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Override any responsive hiding */
+  .main-navigation ul {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+
+/* Fix for any hidden classes */
+.toggled .main-menu-container,
+.toggled #main-menu,
+.toggled .menu {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
