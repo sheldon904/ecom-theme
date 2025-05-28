@@ -32,6 +32,9 @@ add_action( 'after_setup_theme', 'lambo_merch_woocommerce_setup' );
 function lambo_merch_woocommerce_scripts() {
     wp_enqueue_style( 'lambo-merch-woocommerce-style', get_template_directory_uri() . '/css/woocommerce.css', array(), LAMBO_MERCH_VERSION );
 
+    // Additional WooCommerce fixes CSS
+    wp_enqueue_style( 'lambo-merch-woocommerce-fixes', get_template_directory_uri() . '/css/woocommerce-fixes.css', array('lambo-merch-woocommerce-style'), LAMBO_MERCH_VERSION );
+
     $font_path   = WC()->plugin_url() . '/assets/fonts/';
     $inline_font = '@font-face {
             font-family: "star";

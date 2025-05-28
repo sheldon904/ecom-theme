@@ -61,34 +61,26 @@ do_action( 'woocommerce_before_main_content' );
 	</div>
 </header>
 
-<div class="container">
+<div class="container shop-container">
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<div class="shop-filters">
 				<h4>Filter by</h4>
 				<ul class="filter-list">
 					<li class="<?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'active' : ''; ?>">
-						<a href="<?php echo esc_url(add_query_arg('orderby', 'menu_order', wc_get_page_permalink('shop'))); ?>" class="text-red">Default</a>
+						<a href="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'menu_order'), remove_query_arg('orderby'))); ?>" class="text-red">Default</a>
 					</li>
 					<li class="<?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'price') ? 'active' : ''; ?>">
-						<a href="<?php echo esc_url(add_query_arg('orderby', 'price', wc_get_page_permalink('shop'))); ?>" class="text-red">Price</a>
+						<a href="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'price'), remove_query_arg('orderby'))); ?>" class="text-red">Price</a>
 					</li>
 					<li class="<?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'popularity') ? 'active' : ''; ?>">
-						<a href="<?php echo esc_url(add_query_arg('orderby', 'popularity', wc_get_page_permalink('shop'))); ?>" class="text-red">Category</a>
+						<a href="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'popularity'), remove_query_arg('orderby'))); ?>" class="text-red">Category</a>
 					</li>
 				</ul>
-				<?php
-				/**
-				 * Use shop sidebar instead of default sidebar
-				 */
-				if ( is_active_sidebar( 'shop-sidebar' ) ) {
-					dynamic_sidebar( 'shop-sidebar' );
-				}
-				?>
 			</div>
 		</div>
-		
-		<div class="col-md-9">
+
+		<div class="col-md-10">
 			<?php
 			if ( woocommerce_product_loop() ) {
 

@@ -214,8 +214,8 @@ function lambo_merch_scripts() {
 	// Bootstrap CSS (if needed)
 	wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css', array(), '4.5.3' );
 	
-	// Font Awesome
-	wp_enqueue_style( 'font-awesome', get_template_directory_uri() . '/css/font-awesome.min.css', array(), '5.15.1' );
+	// Font Awesome (use CDN instead of local file to avoid MIME issues)
+	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css', array(), '5.15.1' );
 	
 	// Custom CSS
 	wp_enqueue_style( 'lambo-merch-custom', get_template_directory_uri() . '/css/custom.css', array(), LAMBO_MERCH_VERSION );
@@ -289,8 +289,8 @@ function lambo_merch_scripts() {
 		}
 	}
 	
-	// Bootstrap JS
-	wp_enqueue_script( 'bootstrap', get_template_directory_uri() . '/js/bootstrap.min.js', array( 'jquery' ), '4.5.3', true );
+	// Bootstrap JS (use CDN instead of local file to avoid 404)
+	wp_enqueue_script( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js', array( 'jquery' ), '4.5.3', true );
 	
 	// Navigation script
 	wp_enqueue_script( 'lambo-merch-navigation', get_template_directory_uri() . '/js/navigation.js', array(), LAMBO_MERCH_VERSION, true );
@@ -512,7 +512,7 @@ add_action( 'wp_head', 'lambo_merch_pingback_header' );
  * Change number of products that are displayed per page (shop page)
  */
 function lambo_merch_shop_per_page( $cols ) {
-	return 16;
+	return 4;
 }
 add_filter( 'loop_shop_per_page', 'lambo_merch_shop_per_page', 20 );
 
