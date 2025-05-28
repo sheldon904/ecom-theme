@@ -47,10 +47,10 @@ do_action( 'woocommerce_before_main_content' );
 				do_action( 'woocommerce_archive_description' );
 				?>
 				
-				<?php if ( is_shop() && !is_search() && !is_filtered() ) : ?>
+				<?php if ( is_shop() && !is_search() && function_exists('is_filtered') && !is_filtered() ) : ?>
 				<div class="shop-description">
 					<p>Welcome to the LAMBO MERCH — your destination for premium gear built for speed, style, and status. Explore our handpicked collection of high-end apparel, accessories, and collectibles crafted for true Lambo enthusiasts.</p>
-					<p>New drops hit fast. The best pieces go faster. <a href="#newsletter" class="text-red">Subscribe now</a> to unlock early access and never miss an exclusive release.</p>
+					<p>New drops hit fast. The best pieces go faster. <a href="#footer-newsletter" class="text-red">Subscribe now</a> to unlock early access and never miss an exclusive release.</p>
 				</div>
 				<?php endif; ?>
 			</div>
@@ -70,11 +70,11 @@ do_action( 'woocommerce_before_main_content' );
 				</ul>
 				<?php
 				/**
-				 * Hook: woocommerce_sidebar.
-				 *
-				 * @hooked woocommerce_get_sidebar - 10
+				 * Use shop sidebar instead of default sidebar
 				 */
-				do_action( 'woocommerce_sidebar' );
+				if ( is_active_sidebar( 'shop-sidebar' ) ) {
+					dynamic_sidebar( 'shop-sidebar' );
+				}
 				?>
 			</div>
 		</div>
@@ -138,29 +138,7 @@ do_action( 'woocommerce_after_main_content' );
 
 ?>
 
-<div id="newsletter" class="newsletter-section">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12 text-center">
-				<h2 class="section-title">Subscribe for Discounts & Drops</h2>
-				<div class="newsletter-form">
-					<form action="#" method="post">
-						<div class="form-row">
-							<div class="col-md-8 offset-md-2">
-								<div class="input-group">
-									<input type="email" class="form-control" placeholder="Enter your email" required>
-									<div class="input-group-append">
-										<button class="btn btn-red" type="submit"><i class="fa fa-arrow-right"></i></button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
+<!-- Newsletter section moved to footer -->
 
 <?php
 get_footer( 'shop' );
