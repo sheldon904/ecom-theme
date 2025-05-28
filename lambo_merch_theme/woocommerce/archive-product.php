@@ -32,7 +32,7 @@ do_action( 'woocommerce_before_main_content' );
 <header class="woocommerce-products-header">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-12 text-center">
+			<div class="col-md-8 text-left">
 				<?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
 					<h1 class="woocommerce-products-header__title page-title">Shop the <span class="text-red">Luxe</span> Lane</h1>
 				<?php endif; ?>
@@ -54,6 +54,9 @@ do_action( 'woocommerce_before_main_content' );
 				</div>
 				<?php endif; ?>
 			</div>
+			<div class="col-md-4 text-right">
+				<img src="http://lambomerch.com/wp-content/uploads/2025/05/Big_LM_logo_header-e1746073431746.png" alt="Lambo Merch Logo" class="img-fluid mt-4">
+			</div>
 		</div>
 	</div>
 </header>
@@ -64,9 +67,15 @@ do_action( 'woocommerce_before_main_content' );
 			<div class="shop-filters">
 				<h4>Filter by</h4>
 				<ul class="filter-list">
-					<li class="active"><a href="#">Default</a></li>
-					<li><a href="#">Price</a></li>
-					<li><a href="#">Category</a></li>
+					<li class="<?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'active' : ''; ?>">
+						<a href="<?php echo esc_url(add_query_arg('orderby', 'menu_order', wc_get_page_permalink('shop'))); ?>" class="text-red">Default</a>
+					</li>
+					<li class="<?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'price') ? 'active' : ''; ?>">
+						<a href="<?php echo esc_url(add_query_arg('orderby', 'price', wc_get_page_permalink('shop'))); ?>" class="text-red">Price</a>
+					</li>
+					<li class="<?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'popularity') ? 'active' : ''; ?>">
+						<a href="<?php echo esc_url(add_query_arg('orderby', 'popularity', wc_get_page_permalink('shop'))); ?>" class="text-red">Category</a>
+					</li>
 				</ul>
 				<?php
 				/**

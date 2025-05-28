@@ -512,7 +512,7 @@ add_action( 'wp_head', 'lambo_merch_pingback_header' );
  * Change number of products that are displayed per page (shop page)
  */
 function lambo_merch_shop_per_page( $cols ) {
-	return 12;
+	return 16;
 }
 add_filter( 'loop_shop_per_page', 'lambo_merch_shop_per_page', 20 );
 
