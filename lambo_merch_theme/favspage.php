@@ -90,45 +90,31 @@ get_header();
     // Get wishlist items from cookies or user meta if logged in
     $wishlist_items = array();
     
-    // Check all possible cookie names to be sure we find the wishlist items
-    $possible_cookie_names = array('lambo_wishlist', 'wishlist');
-    $wishlist_found = false;
-    
-    foreach ($possible_cookie_names as $cookie_name) {
-        if (isset($_COOKIE[$cookie_name])) {
-            error_log('Found cookie with name: ' . $cookie_name);
-            
-            // Try to decode the cookie value
-            $cookie_data = stripslashes($_COOKIE[$cookie_name]);
-            error_log('Raw cookie data: ' . $cookie_data);
-            
-            try {
-                $decoded_items = json_decode($cookie_data, true);
-                
-                // Ensure we have an array
-                if (is_array($decoded_items)) {
-                    error_log('Successfully parsed cookie data into array with ' . count($decoded_items) . ' items');
-                    $wishlist_items = $decoded_items;
-                    $wishlist_found = true;
-                    break; // Use the first valid cookie we find
-                } else {
-                    error_log('Decoded cookie data is not an array: ' . print_r($decoded_items, true));
-                }
-            } catch (Exception $e) {
-                error_log('Error decoding cookie data: ' . $e->getMessage());
-            }
-        }
-    }
-    
-    // If no cookie found, try user meta if logged in
-    if (!$wishlist_found && is_user_logged_in()) {
+    if (is_user_logged_in()) {
+        // Get wishlist from user meta
         $current_user_id = get_current_user_id();
-        $user_meta_wishlist = get_user_meta($current_user_id, 'lambo_wishlist', true);
+        $wishlist_items = get_user_meta($current_user_id, 'lambo_wishlist', true);
         
-        if (is_array($user_meta_wishlist)) {
-            $wishlist_items = $user_meta_wishlist;
-            $wishlist_found = true;
-            error_log('Found wishlist in user meta with ' . count($wishlist_items) . ' items');
+        // Ensure we have an array
+        if (!is_array($wishlist_items)) {
+            $wishlist_items = array();
+        }
+        
+        // Debug
+        error_log('User wishlist from meta: ' . print_r($wishlist_items, true));
+    } else {
+        // Get wishlist from cookies
+        if (isset($_COOKIE['lambo_wishlist'])) {
+            // Try to decode the cookie value
+            $wishlist_items = json_decode(stripslashes($_COOKIE['lambo_wishlist']), true);
+            
+            // Ensure we have an array
+            if (!is_array($wishlist_items)) {
+                $wishlist_items = array();
+            }
+            
+            // Debug
+            error_log('Guest wishlist from cookie: ' . print_r($wishlist_items, true));
         }
     }
     
@@ -138,7 +124,6 @@ get_header();
         $normalized_wishlist[] = (string) $item;
     }
     $wishlist_items = $normalized_wishlist;
-    error_log('Normalized wishlist: ' . print_r($wishlist_items, true));
     
     // Filter out invalid products that no longer exist
     $valid_wishlist_items = array();
@@ -146,26 +131,16 @@ get_header();
         $product = wc_get_product($product_id);
         if ($product && $product->exists()) {
             $valid_wishlist_items[] = $product_id;
-            error_log('Valid product found: ' . $product_id);
-        } else {
-            error_log('Invalid product ID: ' . $product_id);
         }
     }
     $wishlist_items = $valid_wishlist_items;
     
     // If the filtered list differs from the original, update the saved wishlist
     if (count($valid_wishlist_items) !== count($normalized_wishlist)) {
-        error_log('Filtered out ' . (count($normalized_wishlist) - count($valid_wishlist_items)) . ' invalid products');
-        
         if (is_user_logged_in()) {
             update_user_meta($current_user_id, 'lambo_wishlist', $valid_wishlist_items);
-            error_log('Updated user meta with valid wishlist items');
         }
-        
-        // Set the cookie with the valid items
-        $cookie_expiry = time() + (30 * 24 * 60 * 60); // 30 days
-        setcookie('lambo_wishlist', json_encode($valid_wishlist_items), $cookie_expiry, '/');
-        error_log('Updated lambo_wishlist cookie with valid items');
+        // Cookie will be updated by the JavaScript validation
     }
     
     // Output additional debug info to console on page load
@@ -713,625 +688,60 @@ jQuery(document).ready(function($) {
 });
 </script>
 
-<!-- Simple direct wishlist management script -->
+<!-- Wishlist display validation that updates DOM without reloading -->
 <script>
+// Handle potential discrepancies between displayed items and actual wishlist
 jQuery(document).ready(function($) {
-    // WISHLIST MANAGEMENT FUNCTIONALITY
-    const WISHLIST_KEY = 'wishlist';  // Use a consistent key name
-
-    // Get wishlist directly from localStorage
-    function getWishlist() {
+    // Delay check to ensure wishlist.js has loaded and run
+    setTimeout(function() {
+        // Get current wishlist from the cookie/localStorage
+        var currentWishlist = [];
+        
         try {
-            const raw = localStorage.getItem(WISHLIST_KEY);
-            console.log('Raw wishlist from localStorage:', raw);
-            if (raw) {
-                const parsed = JSON.parse(raw);
-                if (Array.isArray(parsed)) {
-                    // Convert all IDs to strings for consistent comparison
-                    return parsed.map(id => id ? id.toString() : '');
+            if (typeof LamboWishlist !== 'undefined' && typeof LamboWishlist.getWishlist === 'function') {
+                currentWishlist = LamboWishlist.getWishlist();
+            } else if (document.cookie.indexOf('lambo_wishlist=') !== -1) {
+                var cookieValue = document.cookie.split('; ').find(function(row) { return row.startsWith('lambo_wishlist='); });
+                if (cookieValue) {
+                    currentWishlist = JSON.parse(decodeURIComponent(cookieValue.split('=')[1]));
                 }
             }
-        } catch (e) {
-            console.error('Error reading wishlist from localStorage:', e);
-        }
-        // Default to empty array if anything goes wrong
-        return [];
-    }
-
-    // Save wishlist to localStorage and cookie
-    function saveWishlist(wishlist) {
-        console.log('Saving wishlist:', wishlist);
-        if (!Array.isArray(wishlist)) {
-            console.error('Invalid wishlist (not an array):', wishlist);
-            wishlist = [];
-        }
-
-        // Convert all IDs to strings
-        wishlist = wishlist.map(id => id ? id.toString() : '');
-
-        // Save to localStorage
-        try {
-            localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
-            console.log('Wishlist saved to localStorage');
-        } catch (e) {
-            console.error('Error saving to localStorage:', e);
-        }
-
-        // Also save to cookie for server-side access
-        try {
-            // Set cookie for 30 days
-            var date = new Date();
-            date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-            var cookieString = 'lambo_wishlist=' + encodeURIComponent(JSON.stringify(wishlist)) +
-                               '; expires=' + date.toUTCString() +
-                               '; path=/; SameSite=Lax';
-            document.cookie = cookieString;
-            console.log('Wishlist saved to cookie');
-        } catch (e) {
-            console.error('Error saving to cookie:', e);
-        }
-    }
-
-    // Handler for "Remove from wishlist" button
-    $(document).on('click', '.remove-from-wishlist', function(e) {
-        e.preventDefault();
-        
-        // Get product ID from button
-        var productId = $(this).data('product-id');
-        if (!productId) {
-            console.error('Invalid product ID');
-            return;
-        }
-        
-        // Convert to string
-        productId = productId.toString();
-        console.log('Removing product from wishlist:', productId);
-        
-        // Get current wishlist
-        var wishlist = getWishlist();
-        console.log('Current wishlist:', wishlist);
-        
-        // Remove the product ID from the wishlist
-        var updatedWishlist = wishlist.filter(function(id) {
-            return id !== productId;
-        });
-        
-        console.log('Updated wishlist after removal:', updatedWishlist);
-        
-        // Save the updated wishlist
-        saveWishlist(updatedWishlist);
-        
-        // Remove the item from the DOM
-        var $item = $(this).closest('.cart-item, .wishlist-product');
-        var $mobileActions = $item.next('.mobile-actions');
-        
-        $item.fadeOut(300, function() {
-            $item.remove();
-            if ($mobileActions.length) {
-                $mobileActions.remove();
-            }
             
-            // If list is now empty, show empty state
-            if ($('.cart-item:visible, .wishlist-product:visible').length === 0) {
-                var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
-                    '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
-                    '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
-                    '" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">' +
-                    'Continue Shopping</a></div>';
-                
-                $('.desktop-layout, .mobile-layout').html(emptyHtml);
-            }
-        });
-        
-        // Show success message
-        if (typeof showMessage === 'function') {
-            showMessage('Product removed from your favorites!', 'success');
-        } else {
-            alert('Product removed from your favorites!');
-        }
-    });
-
-    // Initialize the wishlist by showing only items that are actually in it
-    function initializeWishlist() {
-        console.log('Initializing wishlist display');
-        var wishlist = getWishlist();
-        console.log('Current wishlist items:', wishlist);
-
-        // Don't hide items by default, just verify they're in the wishlist
-        if (wishlist.length === 0) {
-            // If the wishlist is empty, show empty state
-            console.log('Wishlist is empty, showing empty state');
-            var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
-                '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
-                '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
-                '" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">' +
-                'Continue Shopping</a></div>';
+            console.log('Wishlist validation - current wishlist:', currentWishlist);
             
-            $('.desktop-layout, .mobile-layout').html(emptyHtml);
-            return;
-        }
-
-        // Otherwise, check that rendered items are actually in the wishlist
-        // (this removes anything that might have been deleted elsewhere)
-        $('.cart-item, .wishlist-product').each(function() {
-            var $item = $(this);
-            var itemId = $item.data('product-id');
-            if (itemId !== undefined) {
-                itemId = itemId.toString();
-                if (wishlist.indexOf(itemId) === -1) {
-                    // This item is not in the wishlist, remove it
-                    console.log('Removing item not in wishlist:', itemId);
-                    $item.remove();
-                    
-                    // Also remove any associated mobile actions
+            // Instead of reloading, directly update the DOM to match the actual wishlist
+            $('.cart-item').each(function() {
+                var itemId = $(this).data('product-id').toString();
+                // If this item is not in the wishlist, remove it from the DOM
+                if (currentWishlist.indexOf(itemId) === -1) {
+                    console.log('Removing displayed item that is not in wishlist:', itemId);
+                    var $item = $(this);
                     var $mobileActions = $item.next('.mobile-actions');
-                    if ($mobileActions.length) {
-                        $mobileActions.remove();
-                    }
-                } else {
-                    // Item is in the wishlist, ensure it's visible
-                    console.log('Showing item in wishlist:', itemId);
-                    $item.show();
-                }
-            }
-        });
-        
-        // After filtering, check if anything is left
-        if ($('.cart-item:visible, .wishlist-product:visible').length === 0) {
-            console.log('No visible items after filtering, showing empty state');
-            var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
-                '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
-                '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
-                '" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">' +
-                'Continue Shopping</a></div>';
-            
-            $('.desktop-layout, .mobile-layout').html(emptyHtml);
-        }
-    }
-
-    // Show a notification message
-    function showMessage(message, type) {
-        var $messageElement = $('.lambo-wishlist-message');
-        
-        // If the message element doesn't exist, create it
-        if ($messageElement.length === 0) {
-            $('body').append('<div class="lambo-wishlist-message"></div>');
-            $messageElement = $('.lambo-wishlist-message');
-        }
-        
-        // Set the message content and style
-        $messageElement
-            .attr('class', 'lambo-wishlist-message ' + type)
-            .html(message)
-            .fadeIn(300);
-        
-        // Auto-hide the message after 3 seconds
-        setTimeout(function() {
-            $messageElement.fadeOut(300);
-        }, 3000);
-    }
-
-    // Run initialization immediately and after a short delay
-    initializeWishlist();
-    setTimeout(initializeWishlist, 500);
-});
-</script>
-
-<!-- Debug tool for localStorage wishlist -->
-<div id="wishlist-debug" style="display: none; position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 10px; max-width: 400px; z-index: 9999; font-family: monospace; font-size: 12px; border-radius: 5px; max-height: 300px; overflow: auto;">
-    <div style="margin-bottom: 10px; display: flex; justify-content: space-between;">
-        <strong>Wishlist Debug</strong>
-        <span onclick="document.getElementById('wishlist-debug').style.display = 'none'" style="cursor: pointer;">&times;</span>
-    </div>
-    <div id="wishlist-debug-content"></div>
-    <div style="margin-top: 10px;">
-        <button onclick="window.debugWishlist()" style="background: #C8B100; border: none; padding: 5px; cursor: pointer; margin-right: 5px;">Refresh</button>
-        <button onclick="localStorage.removeItem('wishlist'); window.debugWishlist();" style="background: #ff3333; border: none; padding: 5px; cursor: pointer; margin-right: 5px;">Clear Wishlist</button>
-        <button onclick="window.addTestItem()" style="background: #33aa33; border: none; padding: 5px; cursor: pointer; margin-right: 5px;">Add Test Item</button>
-        <button onclick="window.fixWishlist()" style="background: #3377ff; border: none; padding: 5px; cursor: pointer;">Fix Wishlist</button>
-    </div>
-</div>
-
-<!-- Add a simple standalone localStorage helper script -->
-<script>
-// This is a completely standalone function to help troubleshoot localStorage issues
-// It doesn't rely on any other code and uses simple direct localStorage access
-(function() {
-    // Expose a simple helper function to the global scope
-    window.fixWishlist = function() {
-        try {
-            console.log('Running wishlist fix function...');
-            
-            // Check all possible localStorage keys
-            var possibleKeys = ['wishlist', 'wis hlist', 'lambo_wishlist'];
-            var allItems = [];
-            
-            // Collect items from all possible keys
-            possibleKeys.forEach(function(key) {
-                try {
-                    var keyData = localStorage.getItem(key);
-                    if (keyData) {
-                        console.log('Found data in key:', key, keyData);
-                        var parsed = JSON.parse(keyData);
-                        if (Array.isArray(parsed)) {
-                            // Add items to our collection
-                            parsed.forEach(function(item) {
-                                if (item !== null && item !== undefined) {
-                                    // Convert to string and add if not already present
-                                    var strItem = String(item);
-                                    if (allItems.indexOf(strItem) === -1) {
-                                        allItems.push(strItem);
-                                    }
-                                }
-                            });
-                        } else {
-                            console.warn('Data in', key, 'is not an array:', parsed);
+                    
+                    $item.fadeOut(300, function() {
+                        $item.remove();
+                        if ($mobileActions.length) {
+                            $mobileActions.remove();
                         }
-                    }
-                } catch (e) {
-                    console.error('Error processing key', key, e);
-                }
-            });
-            
-            console.log('Combined items from all sources:', allItems);
-            
-            // Clear all keys
-            possibleKeys.forEach(function(key) {
-                localStorage.removeItem(key);
-                console.log('Removed key:', key);
-            });
-            
-            // Save consolidated list to the correct key
-            localStorage.setItem('wishlist', JSON.stringify(allItems));
-            console.log('Saved consolidated wishlist to localStorage:', allItems);
-            
-            // Also save to cookie for server-side access
-            try {
-                // Set cookie for 30 days
-                var date = new Date();
-                date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-                var cookieString = 'lambo_wishlist=' + encodeURIComponent(JSON.stringify(allItems)) +
-                                  '; expires=' + date.toUTCString() +
-                                  '; path=/; SameSite=Lax';
-                document.cookie = cookieString;
-                console.log('Saved consolidated wishlist to cookie');
-            } catch (e) {
-                console.error('Error saving to cookie:', e);
-            }
-            
-            // Verify it worked
-            var verification = localStorage.getItem('wishlist');
-            console.log('Verification - localStorage now contains:', verification);
-            
-            // Show a success message
-            alert('Wishlist fixed! Current items: ' + (allItems.length ? allItems.join(', ') : 'none'));
-            
-            // Force page reload to show the updated wishlist
-            window.location.reload();
-        } catch (e) {
-            console.error('Error fixing wishlist:', e);
-            alert('Error fixing wishlist: ' + e.message);
-        }
-    };
-    
-    // Function to add a test product to the wishlist
-    window.addTestItem = function() {
-        try {
-            // Get current wishlist
-            var wishlist = [];
-            try {
-                var existing = localStorage.getItem('wishlist');
-                wishlist = existing ? JSON.parse(existing) : [];
-                if (!Array.isArray(wishlist)) {
-                    wishlist = [];
-                }
-            } catch (e) {
-                console.error('Error reading wishlist:', e);
-            }
-            
-            // Generate a random ID (timestamp-based)
-            var testId = 'test_' + Date.now();
-            
-            // Add to wishlist
-            wishlist.push(testId);
-            
-            // Save back to localStorage
-            localStorage.setItem('wishlist', JSON.stringify(wishlist));
-            console.log('Added test item to wishlist:', testId, 'New list:', wishlist);
-            
-            // Also save to cookie
-            try {
-                var date = new Date();
-                date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-                var cookieString = 'lambo_wishlist=' + encodeURIComponent(JSON.stringify(wishlist)) +
-                                  '; expires=' + date.toUTCString() +
-                                  '; path=/; SameSite=Lax';
-                document.cookie = cookieString;
-            } catch (e) {
-                console.error('Error saving to cookie:', e);
-            }
-            
-            // Show confirmation
-            alert('Added test item: ' + testId + '\n\nNote: Since this is a test ID and not a real product, it won\'t appear in the wishlist, but it is stored in localStorage. Check the debug panel to verify.');
-            
-            // Refresh debug display
-            if (typeof window.debugWishlist === 'function') {
-                window.debugWishlist();
-            }
-        } catch (e) {
-            console.error('Error adding test item:', e);
-            alert('Error adding test item: ' + e.message);
-        }
-    };
-    
-    // Run the fix function automatically if the URL contains "fix_wishlist=1"
-    if (window.location.search.indexOf('fix_wishlist=1') !== -1) {
-        console.log('Auto-fixing wishlist because fix_wishlist=1 parameter is present');
-        setTimeout(function() {
-            window.fixWishlist();
-        }, 500);
-    }
-})();
-</script>
-
-<script>
-// Debug function to show wishlist state
-window.debugWishlist = function() {
-    var debugDiv = document.getElementById('wishlist-debug');
-    var contentDiv = document.getElementById('wishlist-debug-content');
-    
-    debugDiv.style.display = 'block';
-    
-    var content = '';
-    content += '<h4>localStorage Wishlist</h4>';
-    
-    try {
-        // Check for wishlist in any possible key locations
-        var rawStandard = localStorage.getItem('wishlist');
-        var rawAlt = localStorage.getItem('wis hlist'); // Check for possible misnamed key
-        var allKeys = [];
-        
-        // List all localStorage keys
-        for (var i = 0; i < localStorage.length; i++) {
-            allKeys.push(localStorage.key(i));
-        }
-        
-        content += '<div><strong>All localStorage keys:</strong> ' + allKeys.join(', ') + '</div>';
-        content += '<div><strong>Raw (wishlist):</strong> ' + (rawStandard || 'empty') + '</div>';
-        
-        if (rawAlt) {
-            content += '<div><strong>Raw (wis hlist):</strong> ' + rawAlt + '</div>';
-        }
-        
-        // Process standard wishlist key
-        if (rawStandard) {
-            var parsed = JSON.parse(rawStandard);
-            content += '<div><strong>Parsed:</strong></div>';
-            content += '<ul>';
-            if (Array.isArray(parsed)) {
-                if (parsed.length === 0) {
-                    content += '<li>Empty array</li>';
-                } else {
-                    parsed.forEach(function(item, index) {
-                        content += '<li>' + index + ': ' + item + ' (type: ' + typeof item + ')</li>';
+                        
+                        // If list becomes empty, show empty state
+                        if ($('.cart-item').length === 0) {
+                            var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
+                                '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
+                                '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
+                                '" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">' +
+                                'Continue Shopping</a></div>';
+                            
+                            $('.desktop-layout, .mobile-layout').html(emptyHtml);
+                        }
                     });
                 }
-            } else {
-                content += '<li>Not an array: ' + typeof parsed + '</li>';
-            }
-            content += '</ul>';
-        }
-        
-        // Process alternate wishlist key if it exists
-        if (rawAlt) {
-            try {
-                var parsedAlt = JSON.parse(rawAlt);
-                content += '<div><strong>Parsed (wis hlist):</strong></div>';
-                content += '<ul>';
-                if (Array.isArray(parsedAlt)) {
-                    if (parsedAlt.length === 0) {
-                        content += '<li>Empty array</li>';
-                    } else {
-                        parsedAlt.forEach(function(item, index) {
-                            content += '<li>' + index + ': ' + item + ' (type: ' + typeof item + ')</li>';
-                        });
-                    }
-                } else {
-                    content += '<li>Not an array: ' + typeof parsedAlt + '</li>';
-                }
-                content += '</ul>';
-            } catch (e) {
-                content += '<div style="color: red;">Error parsing alternate key: ' + e.message + '</div>';
-            }
-        }
-    } catch (e) {
-        content += '<div style="color: red;">Error: ' + e.message + '</div>';
-    }
-    
-    content += '<h4>DOM Items</h4>';
-    var items = document.querySelectorAll('.wishlist-product, .cart-item.wishlist-product');
-    content += '<div>' + items.length + ' items found</div>';
-    
-    if (items.length > 0) {
-        content += '<ul>';
-        for (var i = 0; i < items.length; i++) {
-            var item = items[i];
-            var id = item.dataset.productId;
-            var visible = window.getComputedStyle(item).display !== 'none';
-            content += '<li>ID: ' + id + ', Visible: ' + visible + ', Class: ' + item.className + '</li>';
-        }
-        content += '</ul>';
-    }
-    
-    contentDiv.innerHTML = content;
-};
-
-// Function to add a test item to the wishlist
-window.addTestItem = function() {
-    try {
-        var wishlist = localStorage.getItem('wishlist');
-        var list = wishlist ? JSON.parse(wishlist) : [];
-        
-        if (!Array.isArray(list)) {
-            list = [];
-        }
-        
-        // Get timestamp as test ID
-        var testId = Date.now().toString();
-        list.push(testId);
-        
-        localStorage.setItem('wishlist', JSON.stringify(list));
-        alert('Added test item: ' + testId);
-        window.debugWishlist();
-    } catch (e) {
-        alert('Error adding test item: ' + e.message);
-    }
-};
-
-// Add a keyboard shortcut to show/hide debug panel
-document.addEventListener('keydown', function(e) {
-    // Alt+D to toggle debug panel
-    if (e.altKey && e.key === 'd') {
-        var debugDiv = document.getElementById('wishlist-debug');
-        if (debugDiv.style.display === 'none') {
-            window.debugWishlist();
-        } else {
-            debugDiv.style.display = 'none';
-        }
-    }
-});
-
-// Initialize wishlist items visibility on page load
-jQuery(document).ready(function($) {
-    // Define a function to handle wishlist item visibility
-    function updateWishlistItemVisibility() {
-        console.log("Updating wishlist item visibility");
-        
-        // First try to get wishlist items from localStorage
-        var currentWishlist = [];
-        try {
-            var localStorageWishlist = localStorage.getItem('wishlist');
-            if (localStorageWishlist) {
-                currentWishlist = JSON.parse(localStorageWishlist);
-                console.log('Loaded wishlist from localStorage:', currentWishlist);
-            }
-        } catch (e) {
-            console.error('Error accessing localStorage:', e);
-        }
-        
-        // If no localStorage data, try the global LamboWishlist object
-        if (currentWishlist.length === 0 && typeof LamboWishlist !== 'undefined') {
-            currentWishlist = LamboWishlist.getWishlist();
-            console.log('Loaded wishlist from LamboWishlist object:', currentWishlist);
-        }
-        
-        if (currentWishlist.length === 0) {
-            console.log('No wishlist items found, showing empty state');
-            // No wishlist items found, show empty state
-            var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
-                '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
-                '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
-                '" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">' +
-                'Continue Shopping</a></div>';
-            
-            $('.desktop-layout, .mobile-layout').html(emptyHtml);
-            return;
-        }
-        
-        // Ensure all product IDs are strings for consistent comparison
-        currentWishlist = currentWishlist.map(function(item) {
-            return item.toString();
-        });
-        
-        console.log('Filtered wishlist (all strings):', currentWishlist);
-        
-        // Get all wishlist items on the page
-        var $wishlistItems = $('.wishlist-product, .cart-item');
-        console.log('Found', $wishlistItems.length, 'wishlist items in DOM');
-        
-        if ($wishlistItems.length > 0) {
-            var anyItemsVisible = false;
-            
-            // Loop through each item and check if it's in the wishlist
-            $wishlistItems.each(function() {
-                var $item = $(this);
-                var itemId = $item.data('product-id');
-                
-                // Make sure itemId is a string and log it
-                itemId = itemId ? itemId.toString() : '';
-                
-                console.log('Checking item ID:', itemId, ' (type: ' + typeof itemId + ')');
-                console.log('Wishlist:', currentWishlist);
-                
-                // Check if the item ID is in the wishlist using some() for more flexible comparison
-                var inWishlist = currentWishlist.some(function(wishlistId) {
-                    return wishlistId.toString() === itemId;
-                });
-                
-                console.log('Item in wishlist:', inWishlist);
-                
-                if (inWishlist) {
-                    // Item is in wishlist, show it
-                    $item.addClass('wishlist-active');
-                    $item.css('display', 'flex'); // Force display in case CSS isn't loaded yet
-                    anyItemsVisible = true;
-                    console.log('Showing item:', itemId);
-                } else {
-                    // Item not in wishlist, ensure it stays hidden
-                    $item.removeClass('wishlist-active');
-                    $item.css('display', 'none'); // Force hide
-                    console.log('Hiding item:', itemId);
-                }
             });
             
-            // If no items are visible after filtering, show empty state
-            if (!anyItemsVisible) {
-                console.log('No matching items in wishlist, showing empty state');
-                var emptyHtml = '<div style="text-align:center; padding:50px 0;">' +
-                    '<p style="color:#fff; font-size:18px; margin-bottom:20px;">Your favorites list is empty.</p>' +
-                    '<a href="' + (typeof wc_add_to_cart_params !== 'undefined' ? wc_add_to_cart_params.shop_url : '/shop') + 
-                    '" class="button" style="background:#ff0000; color:#fff; padding:12px 24px; text-transform:uppercase; font-weight:bold; text-decoration:none; display:inline-block;">' +
-                    'Continue Shopping</a></div>';
-                
-                $('.desktop-layout, .mobile-layout').html(emptyHtml);
-            }
+        } catch (e) {
+            console.error('Error in wishlist validation:', e);
         }
-    }
-    
-    // Run immediately and after a short delay to ensure everything is loaded
-    updateWishlistItemVisibility();
-    
-    // Also watch for changes to localStorage
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'wishlist') {
-            console.log('localStorage wishlist changed, updating display');
-            updateWishlistItemVisibility();
-        }
-    });
-    
-    // Add a custom event for wishlist updates
-    document.addEventListener('wishlist:updated', function() {
-        console.log('Wishlist update event detected, updating display');
-        updateWishlistItemVisibility();
-    });
-    
-    // Override the standard wishlist functions to trigger our custom event
-    var originalAddToWishlist = LamboWishlist.addToWishlist;
-    LamboWishlist.addToWishlist = function(productId) {
-        originalAddToWishlist.call(LamboWishlist, productId);
-        document.dispatchEvent(new Event('wishlist:updated'));
-    };
-    
-    var originalRemoveFromWishlist = LamboWishlist.removeFromWishlist;
-    LamboWishlist.removeFromWishlist = function(productId) {
-        originalRemoveFromWishlist.call(LamboWishlist, productId);
-        document.dispatchEvent(new Event('wishlist:updated'));
-    };
-    
-    // Also check for updates every second (as a fallback)
-    setInterval(function() {
-        updateWishlistItemVisibility();
-    }, 1000);
+    }, 500); // Wait half a second for everything to initialize
 });
 </script>
 

@@ -12,6 +12,17 @@ if ( ! defined( 'LAMBO_MERCH_VERSION' ) ) {
 	define( 'LAMBO_MERCH_VERSION', '1.0.0' );
 }
 
+
+if (!function_exists('is_filtered')) {
+    function is_filtered() {
+        return isset( $_GET['min_price'] ) || isset( $_GET['max_price'] ) || isset( $_GET['rating_filter'] ) || isset( $_GET['filter_color'] ) || isset( $_GET['filter_size'] );
+    }
+}
+
+
+
+
+
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  */

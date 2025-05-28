@@ -165,9 +165,3 @@ do_action( 'woocommerce_after_main_content' );
 <?php
 get_footer( 'shop' );
 
-/**
- * Helper function to determine if current display has active filters
- */
-function is_filtered() {
-	return isset( $_GET['min_price'] ) || isset( $_GET['max_price'] ) || isset( $_GET['rating_filter'] ) || isset( $_GET['filter_color'] ) || isset( $_GET['filter_size'] );
-}
