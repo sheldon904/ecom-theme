@@ -1,0 +1,46 @@
+/**
+ * Custom styles to ensure header and footer use Source Sans Pro
+ * But keep headings using Impact
+ */
+
+/* Footer font overrides */
+.site-footer,
+.footer-widgets,
+.footer-content-wrapper,
+.footer-nav ul,
+.footer-nav li,
+.footer-nav a,
+.subscribe-section,
+.copyright,
+.copyright p,
+.copyright a,
+.email-placeholder,
+.email-placeholder span,
+.footer-bottom {
+    font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+/* Header font overrides */
+.site-header,
+.header-content,
+.header-left,
+.header-right,
+.menu-toggle,
+.menu-text,
+.nav-links,
+.nav-link,
+.header-icon-link,
+.icon-text {
+    font-family: 'Source Sans Pro', sans-serif !important;
+}
+
+/* Keep heading elements in header/footer with Impact font */
+.site-footer h1, .site-footer h2, .site-footer h3, 
+.site-footer h4, .site-footer h5, .site-footer h6,
+.site-header h1, .site-header h2, .site-header h3, 
+.site-header h4, .site-header h5, .site-header h6,
+.subscribe-title,
+.follow-title {
+    font-family: 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif !important;
+    font-style: normal !important;
+}
