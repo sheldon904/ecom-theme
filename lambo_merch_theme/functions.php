@@ -1316,3 +1316,62 @@ add_filter('woocommerce_checkout_create_order', 'lambo_merch_copy_billing_to_shi
  */
 add_filter('wc_stripe_enable_link', '__return_false');
 
+// Additional filters to ensure Link is completely disabled
+add_filter('wc_stripe_link_enabled', '__return_false');
+add_filter('woocommerce_stripe_link_enabled', '__return_false');
+
+// WooCommerce Payments specific filters
+add_filter('wcpay_is_link_enabled', '__return_false');
+add_filter('wc_payments_enable_link', '__return_false');
+add_filter('wcpay_link_enabled', '__return_false');
+
+// Disable Link through gateway settings
+function lambo_merch_disable_stripe_link_gateway($gateway_settings) {
+    if (isset($gateway_settings['enable_link'])) {
+        $gateway_settings['enable_link'] = 'no';
+    }
+    return $gateway_settings;
+}
+add_filter('woocommerce_gateway_stripe_settings', 'lambo_merch_disable_stripe_link_gateway');
+add_filter('woocommerce_gateway_woocommerce_payments_settings', 'lambo_merch_disable_stripe_link_gateway');
+
+// Remove Link from payment request buttons
+function lambo_merch_remove_link_from_payment_request() {
+    return false;
+}
+add_filter('wc_stripe_payment_request_is_link_enabled', 'lambo_merch_remove_link_from_payment_request');
+
+// Hide Link payment option with CSS as backup
+function lambo_merch_hide_stripe_link_css() {
+    if (is_product() || is_checkout()) {
+        echo '<style>
+        /* Hide Stripe Link payment button */
+        .wc-stripe-link-button,
+        .stripe-link-button,
+        [data-payment-method="stripe_link"],
+        .payment_method_stripe_link,
+        .wc_payment_method.payment_method_stripe_link,
+        #payment .payment_methods .payment_method_stripe_link,
+        .wcpay-link-button,
+        .wc-block-components-express-payment-continue-rule,
+        .wc-block-components-express-payment__event-buttons .is-link {
+            display: none !important;
+        }
+        
+        /* Hide Link from express checkout */
+        .wc-stripe-express-checkout-element .stripe-link,
+        .wcpay-express-checkout-wrapper .stripe-link,
+        .wc-block-components-express-payment .is-link,
+        [data-express-payment-type="stripe_link"] {
+            display: none !important;
+        }
+        
+        /* Ensure express checkout wrapper is still visible without Link */
+        .wcpay-express-checkout-wrapper:not(:has(.stripe-link)) {
+            display: block !important;
+        }
+        </style>';
+    }
+}
+add_action('wp_head', 'lambo_merch_hide_stripe_link_css');
+

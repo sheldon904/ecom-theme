@@ -40,6 +40,7 @@ $products = new WP_Query($args);
 ?>
 
 <main id="primary" class="site-main">
+    <div style="background: red; color: white; text-align: center; padding: 10px; font-size: 24px; font-weight: bold;">VISITED ALT SHOP</div>
     <!-- Desktop layout - hidden on mobile -->
     <div class="desktop-layout">
         <div class="container">
@@ -52,8 +53,8 @@ $products = new WP_Query($args);
                         <p>New drops hit fast. The best pieces go faster. <a href="#subscribe" class="text-red">Subscribe now</a> to unlock early access and never miss an exclusive release.</p>
                     </div>
                 </div>
-                <div class="col-md-4 text-center">
-                    <img src="<?php echo get_template_directory_uri(); ?>/images/logo/LM_logo_footer.png" alt="Lambo Merch Logo" class="img-fluid">
+                <div class="col-md-4 text-center logo-column">
+                    <img src="<?php echo get_template_directory_uri(); ?>/images/logo/LM_logo_footer.png" alt="Lambo Merch Logo" class="img-fluid shop-logo">
                 </div>
             </div>
 
@@ -168,21 +169,17 @@ $products = new WP_Query($args);
 
             <!-- Mobile Filter and Products -->
             <div class="shop-container mt-5">
-                <!-- Mobile Filters (Centered) -->
-                <div class="shop-sidebar-mobile text-center">
-                    <div class="shop-filters" style="background-color: #000000;">
-                        <h3>Filter by</h3>
-                        <ul class="filter-list">
-                            <li class="<?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'active' : ''; ?>">
-                                <a href="<?php echo esc_url(remove_query_arg('orderby')); ?>" class="text-red">Default</a>
-                            </li>
-                            <li class="<?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'price') ? 'active' : ''; ?>">
-                                <a href="<?php echo esc_url(add_query_arg('orderby', 'price')); ?>" class="text-red">Price</a>
-                            </li>
-                            <li class="<?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'category') ? 'active' : ''; ?>">
-                                <a href="<?php echo esc_url(add_query_arg('orderby', 'category')); ?>" class="text-red">Category</a>
-                            </li>
-                        </ul>
+                <!-- Mobile Filter Dropdown -->
+                <div class="mobile-filter-section text-center">
+                    <div class="mobile-filter-container">
+                        <h4>Filter by</h4>
+                        <div class="mobile-filter-dropdown">
+                            <select id="mobile-filter-select" onchange="window.location.href=this.value">
+                                <option value="<?php echo esc_url(remove_query_arg('orderby')); ?>" <?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'selected' : ''; ?>>Default</option>
+                                <option value="<?php echo esc_url(add_query_arg('orderby', 'price')); ?>" <?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'price') ? 'selected' : ''; ?>>Price</option>
+                                <option value="<?php echo esc_url(add_query_arg('orderby', 'category')); ?>" <?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'category') ? 'selected' : ''; ?>>Category</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -264,6 +261,81 @@ $products = new WP_Query($args);
 
 <!-- Add custom CSS for this page -->
 <style>
+/* Mobile Filter Dropdown Styling */
+.mobile-filter-section {
+    width: 100%;
+    padding: 0 15px;
+    margin-bottom: 30px;
+}
+
+.mobile-filter-container {
+    background-color: #1a1a1a;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.mobile-filter-container h4 {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.mobile-filter-dropdown select {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 20px;
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #ff0000;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+    appearance: none;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDEwIDYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik01IDZMMCAwSDEwTDUgNloiIGZpbGw9IiNGRjAwMDAiLz4KPHN2Zz4K');
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    padding-right: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mobile-filter-dropdown select:hover,
+.mobile-filter-dropdown select:focus {
+    border-color: #fff;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+/* Logo fixes for mobile */
+@media (max-width: 1024px) {
+    .logo-column .shop-logo {
+        max-width: 200px !important;
+        max-height: 80px !important;
+        height: auto !important;
+        width: auto !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 0 auto !important;
+    }
+    
+    .logo-column {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 10px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-column .shop-logo {
+        max-height: 60px !important;
+        max-width: 150px !important;
+    }
+}
+
 /* Layout visibility control */
 .mobile-layout {
     display: none; /* Hide on desktop by default */

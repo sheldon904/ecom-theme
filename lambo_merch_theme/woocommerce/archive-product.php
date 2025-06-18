@@ -63,8 +63,22 @@ do_action( 'woocommerce_before_main_content' );
 
 <div class="container shop-container">
 	<div class="row">
+		<!-- Mobile filter dropdown - moved to top level for mobile -->
+		<div class="mobile-filter-section">
+			<div class="mobile-filter-container">
+				<h4>Filter by</h4>
+				<div class="mobile-filter-dropdown">
+					<select id="mobile-filter-select" onchange="window.location.href=this.value">
+						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'menu_order'), remove_query_arg('orderby'))); ?>" <?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'selected' : ''; ?>>Default</option>
+						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'price'), remove_query_arg('orderby'))); ?>" <?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'price') ? 'selected' : ''; ?>>Price</option>
+						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'popularity'), remove_query_arg('orderby'))); ?>" <?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'popularity') ? 'selected' : ''; ?>>Category</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
 		<div class="col-md-2">
-			<div class="shop-filters">
+			<div class="shop-filters desktop-only">
 				<h4>Filter by</h4>
 				<!-- Desktop filter list -->
 				<ul class="filter-list desktop-filters">
@@ -78,14 +92,6 @@ do_action( 'woocommerce_before_main_content' );
 						<a href="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'popularity'), remove_query_arg('orderby'))); ?>" class="text-red">Category</a>
 					</li>
 				</ul>
-				<!-- Mobile filter dropdown -->
-				<div class="mobile-filter-dropdown">
-					<select id="mobile-filter-select" onchange="window.location.href=this.value">
-						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'menu_order'), remove_query_arg('orderby'))); ?>" <?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'selected' : ''; ?>>Default</option>
-						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'price'), remove_query_arg('orderby'))); ?>" <?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'price') ? 'selected' : ''; ?>>Price</option>
-						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'popularity'), remove_query_arg('orderby'))); ?>" <?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'popularity') ? 'selected' : ''; ?>>Category</option>
-					</select>
-				</div>
 			</div>
 		</div>
 
@@ -150,77 +156,136 @@ do_action( 'woocommerce_after_main_content' );
 
 <!-- Mobile Responsive CSS for Shop Filters and Logo Fixes -->
 <style>
-/* Mobile Filter Dropdown - Hidden by default */
-.mobile-filter-dropdown {
+/* Mobile Filter Section - Hidden by default on desktop */
+.mobile-filter-section {
     display: none;
+    width: 100%;
+    padding: 0 15px;
+    margin-bottom: 20px;
+}
+
+.mobile-filter-container {
+    text-align: center;
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #333;
 }
 
 /* Desktop Filters - Shown by default */
-.desktop-filters {
+.desktop-only {
     display: block;
 }
 
 /* Mobile and Tablet Responsive Styles */
 @media (max-width: 1024px) {
     /* Hide desktop filters on mobile/tablet */
-    .desktop-filters {
+    .desktop-only {
         display: none !important;
     }
     
-    /* Show mobile dropdown on mobile/tablet */
-    .mobile-filter-dropdown {
+    /* Show mobile filter section on mobile/tablet */
+    .mobile-filter-section {
         display: block !important;
-        width: 100%;
-        text-align: center;
-        margin-bottom: 20px;
+        order: -1; /* Place at top */
+    }
+    
+    /* Hide the sidebar column completely on mobile */
+    .col-md-2 {
+        display: none !important;
+    }
+    
+    /* Make product column full width on mobile */
+    .col-md-10 {
+        width: 100% !important;
+        flex: none !important;
+        max-width: 100% !important;
+    }
+    
+    /* Style the mobile filter container */
+    .mobile-filter-container h4 {
+        color: #fff;
+        font-size: 18px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        font-weight: 600;
     }
     
     /* Style the dropdown select */
     .mobile-filter-dropdown select {
         width: 100%;
         max-width: 300px;
-        padding: 10px 15px;
+        padding: 12px 20px;
         background-color: #000;
         color: #fff;
         border: 2px solid #ff0000;
-        border-radius: 5px;
+        border-radius: 8px;
         font-size: 16px;
         font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
         appearance: none;
         background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDEwIDYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik01IDZMMCAwSDEwTDUgNloiIGZpbGw9IiNGRjAwMDAiLz4KPHN2Zz4K');
         background-repeat: no-repeat;
-        background-position: right 15px center;
-        padding-right: 45px;
+        background-position: right 20px center;
+        padding-right: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
     
-    /* Center the shop filters container on mobile */
-    .col-md-2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    
-    /* Center the "Filter by" heading */
-    .shop-filters h4 {
-        text-align: center;
-        color: #fff;
-        margin-bottom: 15px;
+    .mobile-filter-dropdown select:hover,
+    .mobile-filter-dropdown select:focus {
+        border-color: #fff;
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
     }
     
     /* Adjust shop container layout for mobile */
     .shop-container .row {
         flex-direction: column;
     }
-    
-    .col-md-2,
-    .col-md-10 {
-        width: 100% !important;
-        flex: none !important;
-    }
 }
 
-/* Logo Mobile Fixes */
+/* Logo Mobile Fixes - Shop Page Header */
 @media (max-width: 1024px) {
-    /* Fix mobile header height and prevent logo clipping */
+    /* Fix the shop page header logo */
+    .woocommerce-products-header .col-md-4 img {
+        max-width: 200px !important;
+        max-height: 80px !important;
+        height: auto !important;
+        width: auto !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Center the logo column */
+    .woocommerce-products-header .col-md-4 {
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 10px !important;
+    }
+    
+    /* Adjust header layout for mobile */
+    .woocommerce-products-header .row {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .woocommerce-products-header .col-md-8,
+    .woocommerce-products-header .col-md-4 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: none !important;
+    }
+    
+    /* Center the title and description on mobile */
+    .woocommerce-products-header .col-md-8 {
+        text-align: center !important;
+        margin-bottom: 20px !important;
+    }
+    
+    /* Mobile header height fixes (global mobile header) */
     .mobile-header {
         height: auto !important;
         min-height: 80px !important;
@@ -228,16 +293,16 @@ do_action( 'woocommerce_after_main_content' );
         overflow: visible !important;
     }
     
-    /* Ensure logo stays within bounds and is centered */
+    /* Ensure mobile header logo stays within bounds and is centered */
     .mobile-header .logo {
         flex: 1 !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        max-width: calc(100% - 160px) !important; /* Account for icon space on both sides */
+        max-width: calc(100% - 160px) !important;
     }
     
-    /* Logo image responsive sizing */
+    /* Mobile header logo image responsive sizing */
     .mobile-header .logo img {
         max-width: 100% !important;
         max-height: 60px !important;
@@ -279,6 +344,11 @@ do_action( 'woocommerce_after_main_content' );
         max-height: 70px !important;
     }
     
+    .woocommerce-products-header .col-md-4 img {
+        max-height: 100px !important;
+        max-width: 250px !important;
+    }
+    
     body, #content {
         padding-top: 110px !important;
     }
@@ -288,6 +358,11 @@ do_action( 'woocommerce_after_main_content' );
 @media (max-width: 480px) {
     .mobile-header .logo img {
         max-height: 50px !important;
+    }
+    
+    .woocommerce-products-header .col-md-4 img {
+        max-height: 60px !important;
+        max-width: 150px !important;
     }
     
     .mobile-header {
