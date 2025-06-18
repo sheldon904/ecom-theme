@@ -254,6 +254,42 @@ add_action('init', 'lambo_merch_stripe_only');
 add_filter( 'woocommerce_checkout_fields', 'lambo_merch_woocommerce_checkout_fields' );
 
 /**
+ * Additional Link payment removal at WooCommerce level
+ */
+function lambo_merch_remove_link_payment_final() {
+    // Remove Link from available payment methods during checkout
+    add_filter('woocommerce_available_payment_gateways', function($gateways) {
+        if (is_array($gateways)) {
+            // Remove any gateway that contains 'link' in its ID
+            foreach ($gateways as $key => $gateway) {
+                if (stripos($key, 'link') !== false) {
+                    unset($gateways[$key]);
+                }
+            }
+        }
+        return $gateways;
+    }, 999);
+    
+    // Ensure Link is disabled in WooCommerce Payments settings
+    add_filter('pre_option_woocommerce_woocommerce_payments_settings', function($value) {
+        if (is_array($value)) {
+            $value['link_enabled'] = 'no';
+            $value['express_checkout_link_enabled'] = 'no';
+        } else {
+            $value = [
+                'enabled' => 'yes',
+                'payment_request_enabled' => 'yes',
+                'link_enabled' => 'no',
+                'express_checkout_enabled' => 'yes',
+                'express_checkout_link_enabled' => 'no'
+            ];
+        }
+        return $value;
+    });
+}
+add_action('wp', 'lambo_merch_remove_link_payment_final', 1);
+
+/**
  * Make sure shipping address is properly handled during checkout
  */
 function lambo_merch_handle_shipping_address( $order_id ) {

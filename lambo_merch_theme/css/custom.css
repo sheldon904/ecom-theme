@@ -2221,7 +2221,25 @@ form.cart .variations_button .single_add_to_cart_button {
 .wc-stripe-express-checkout-element .stripe-link,
 .wcpay-express-checkout-wrapper .stripe-link,
 .wc-block-components-express-payment .is-link,
-[data-express-payment-type="stripe_link"] {
+[data-express-payment-type="stripe_link"],
+/* Additional newer selectors for Link */
+.wcpay-payment-request-button-link,
+.wc-stripe-payment-request-button-link,
+.ExpressCheckout-button--link,
+button[data-payment-method="link"],
+.payment-element [data-testid="link-button"],
+.Elements-button--link,
+[data-element-type="linkButton"],
+.sr-payment-element [data-testid="link-button"],
+button[data-testid="link-button"],
+[class*="link-button"]:not([class*="paypal"]):not([class*="apple"]):not([class*="google"]),
+[class*="LinkButton"],
+[aria-label*="Pay with Link"],
+.wc-stripe-express-checkout [data-payment-method="link"],
+.wcpay-express-checkout-element [data-express-checkout-type="link"],
+.express-checkout-element [data-express-checkout-type="link"],
+.Payment-RequestButton--Link,
+.Payment-RequestButton[data-testid="link-button"] {
     display: none !important;
     visibility: hidden !important;
 }

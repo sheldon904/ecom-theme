@@ -1314,16 +1314,62 @@ add_filter('woocommerce_checkout_create_order', 'lambo_merch_copy_billing_to_shi
 /**
  * Disable Stripe Link wallet to keep Apple Pay/Google Pay only
  */
+// Include diagnostic script
+require_once get_template_directory() . '/link-diagnostic.php';
+
 add_filter('wc_stripe_enable_link', '__return_false');
 
 // Additional filters to ensure Link is completely disabled
 add_filter('wc_stripe_link_enabled', '__return_false');
 add_filter('woocommerce_stripe_link_enabled', '__return_false');
 
-// WooCommerce Payments specific filters
+// WooCommerce Payments specific filters - Enhanced
 add_filter('wcpay_is_link_enabled', '__return_false');
 add_filter('wc_payments_enable_link', '__return_false');
 add_filter('wcpay_link_enabled', '__return_false');
+
+// Additional WooCommerce Payments Link filters
+add_filter('wcpay_link_wallet_enabled', '__return_false');
+add_filter('wcpay_express_checkout_link_enabled', '__return_false');
+add_filter('wcpay_payment_request_link_enabled', '__return_false');
+add_filter('woocommerce_payments_link_enabled', '__return_false');
+add_filter('wc_payments_link_wallet_enabled', '__return_false');
+
+// Disable Link in Express Payment Methods
+add_filter('wcpay_express_checkout_enabled_payment_methods', function($methods) {
+    if (is_array($methods)) {
+        return array_diff($methods, ['link']);
+    }
+    return $methods;
+});
+
+// Disable Link in Payment Request Button
+add_filter('wcpay_payment_request_button_enabled_payment_methods', function($methods) {
+    if (is_array($methods)) {
+        return array_diff($methods, ['link']);
+    }
+    return $methods;
+});
+
+// Override WooCommerce Payments settings
+add_filter('option_woocommerce_woocommerce_payments_settings', function($settings) {
+    if (is_array($settings)) {
+        $settings['payment_request_enabled'] = 'yes'; // Keep Apple/Google Pay
+        $settings['link_enabled'] = 'no'; // Disable Link specifically
+        $settings['express_checkout_enabled'] = 'yes'; // Keep express checkout
+        $settings['express_checkout_link_enabled'] = 'no'; // Disable Link in express
+    }
+    return $settings;
+});
+
+// Hook into WooCommerce Payments initialization
+add_action('plugins_loaded', function() {
+    if (class_exists('WC_Payments')) {
+        // Disable Link via WC_Payments settings
+        add_filter('wcpay_settings_link_enabled', '__return_false');
+        add_filter('wcpay_get_link_enabled', '__return_false');
+    }
+}, 5);
 
 // Disable Link through gateway settings
 function lambo_merch_disable_stripe_link_gateway($gateway_settings) {
@@ -1340,6 +1386,34 @@ function lambo_merch_remove_link_from_payment_request() {
     return false;
 }
 add_filter('wc_stripe_payment_request_is_link_enabled', 'lambo_merch_remove_link_from_payment_request');
+
+// NUCLEAR OPTION: Override all WooCommerce Payments Link-related functions
+add_filter('pre_option_woocommerce_woocommerce-payments_settings', 'lambo_merch_force_disable_link_settings');
+function lambo_merch_force_disable_link_settings($value) {
+    if (is_array($value)) {
+        $value['stripe_link_enabled'] = 'no';
+        $value['enable_link'] = 'no';
+    }
+    return $value;
+}
+
+// Directly remove Link from Stripe payment methods array
+add_filter('wc_stripe_payment_methods', 'lambo_merch_remove_link_from_payment_methods');
+function lambo_merch_remove_link_from_payment_methods($methods) {
+    unset($methods['stripe_link']);
+    unset($methods['link']);
+    return $methods;
+}
+
+// Block Link payment method initialization
+add_action('wp_enqueue_scripts', 'lambo_merch_block_link_scripts', 1);
+function lambo_merch_block_link_scripts() {
+    global $wp_scripts;
+    if (isset($wp_scripts->registered['wc-stripe-link-payment-method'])) {
+        wp_dequeue_script('wc-stripe-link-payment-method');
+        unset($wp_scripts->registered['wc-stripe-link-payment-method']);
+    }
+}
 
 // Hide Link payment option with CSS as backup
 function lambo_merch_hide_stripe_link_css() {
@@ -1374,4 +1448,307 @@ function lambo_merch_hide_stripe_link_css() {
     }
 }
 add_action('wp_head', 'lambo_merch_hide_stripe_link_css');
+
+// Enhanced JavaScript to aggressively remove Link payment elements
+function lambo_merch_remove_stripe_link_js() {
+    if (is_product() || is_checkout()) {
+        echo '<script>
+        (function() {
+            let removalAttempts = 0;
+            const maxRemovalAttempts = 50; // Try for up to 50 seconds
+            
+            function removeLinkPaymentElements() {
+                // Comprehensive list of Link payment selectors
+                const linkSelectors = [
+                    // Direct Link selectors
+                    "[data-payment-method=\"stripe_link\"]",
+                    "[data-payment-method=\"link\"]",
+                    "[data-testid=\"link-button\"]",
+                    ".stripe-link-button",
+                    ".wcpay-link-button",
+                    ".wc-stripe-link-button",
+                    ".woocommerce-payments-link-button",
+                    
+                    // WooCommerce Payments specific
+                    ".wcpay-express-checkout-link",
+                    ".wcpay-payment-request-link",
+                    "[data-wcpay-method=\"link\"]",
+                    
+                    // Generic patterns (excluding Apple/Google Pay)
+                    "[class*=\"link-button\"]:not([class*=\"paypal\"]):not([class*=\"apple\"]):not([class*=\"google\"])",
+                    "[id*=\"link-button\"]:not([id*=\"paypal\"]):not([id*=\"apple\"]):not([id*=\"google\"])",
+                    "[aria-label*=\"Pay with Link\"]",
+                    "[aria-label*=\"Link\"][aria-label*=\"payment\"]",
+                    
+                    // Stripe Elements
+                    ".Payment-RequestButton--Link",
+                    "[data-express-checkout-type=\"link\"]",
+                    "[data-element-type=\"linkButton\"]",
+                    "[data-express-payment-type=\"stripe_link\"]",
+                    
+                    // Text-based removal
+                    "*:not(script):not(style):not(link)"
+                ];
+                
+                let removedCount = 0;
+                
+                // Remove by selectors
+                linkSelectors.slice(0, -1).forEach(selector => {
+                    try {
+                        const elements = document.querySelectorAll(selector);
+                        elements.forEach(el => {
+                            if (el && !el.classList.contains("apple-pay") && !el.classList.contains("google-pay")) {
+                                console.log("Removing Link element:", el);
+                                el.remove();
+                                removedCount++;
+                            }
+                        });
+                    } catch(e) {
+                        // Ignore selector errors
+                    }
+                });
+                
+                // Text-based removal for elements containing "Pay with Link"
+                const allElements = document.querySelectorAll("*:not(script):not(style):not(link)");
+                allElements.forEach(el => {
+                    if (el.textContent && 
+                        (el.textContent.includes("Pay with Link") || 
+                         el.textContent.includes("Link payment") ||
+                         el.textContent.includes("Stripe Link")) &&
+                        !el.textContent.includes("Apple") &&
+                        !el.textContent.includes("Google") &&
+                        !el.textContent.includes("PayPal")) {
+                        
+                        // Check if this is a button or payment element
+                        const isPaymentElement = el.closest("button, [role=\"button\"], .payment-method, .express-payment");
+                        if (isPaymentElement) {
+                            console.log("Removing Link text element:", el);
+                            el.remove();
+                            removedCount++;
+                        }
+                    }
+                });
+                
+                // Disable Link payment method if it exists in WooCommerce checkout
+                const linkPaymentInputs = document.querySelectorAll("input[value*=\"link\"], input[id*=\"link\"]");
+                linkPaymentInputs.forEach(input => {
+                    const parent = input.closest(".payment_method");
+                    if (parent && !parent.classList.contains("payment_method_stripe")) {
+                        console.log("Disabling Link payment method:", parent);
+                        parent.style.display = "none";
+                        input.disabled = true;
+                        removedCount++;
+                    }
+                });
+                
+                return removedCount;
+            }
+            
+            function interceptStripeInitialization() {
+                // Intercept Stripe object if it exists
+                if (window.Stripe && typeof window.Stripe === "function") {
+                    const originalStripe = window.Stripe;
+                    window.Stripe = function(...args) {
+                        const stripe = originalStripe.apply(this, args);
+                        
+                        // Override Link-related methods
+                        if (stripe && stripe.linkAuthentication) {
+                            stripe.linkAuthentication = function() {
+                                console.log("Blocked Stripe Link authentication");
+                                return Promise.reject("Link disabled");
+                            };
+                        }
+                        
+                        return stripe;
+                    };
+                }
+                
+                // Intercept WooCommerce Payments object
+                if (window.wcpayStripe) {
+                    window.wcpayStripe.linkEnabled = false;
+                }
+            }
+            
+            function comprehensiveRemoval() {
+                const removedCount = removeLinkPaymentElements();
+                interceptStripeInitialization();
+                
+                removalAttempts++;
+                
+                if (removedCount > 0) {
+                    console.log(`Removed ${removedCount} Link payment elements (attempt ${removalAttempts})`);
+                }
+                
+                return removedCount;
+            }
+            
+            // Run immediately
+            comprehensiveRemoval();
+            
+            // Run after DOM is ready
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", comprehensiveRemoval);
+            }
+            
+            // Run periodically with increasing intervals to catch dynamically loaded elements
+            const quickInterval = setInterval(() => {
+                comprehensiveRemoval();
+                if (removalAttempts >= 10) { // After 10 seconds, reduce frequency
+                    clearInterval(quickInterval);
+                    
+                    const slowInterval = setInterval(() => {
+                        comprehensiveRemoval();
+                        if (removalAttempts >= maxRemovalAttempts) {
+                            clearInterval(slowInterval);
+                        }
+                    }, 2000); // Check every 2 seconds after first 10 seconds
+                }
+            }, 1000); // Check every second for first 10 seconds
+            
+            // Watch for changes in the DOM
+            if (window.MutationObserver) {
+                const observer = new MutationObserver(function(mutations) {
+                    let shouldCheck = false;
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+                            // Check if any added nodes might be payment-related
+                            mutation.addedNodes.forEach(node => {
+                                if (node.nodeType === 1 && // Element node
+                                    (node.className?.includes("payment") || 
+                                     node.className?.includes("stripe") ||
+                                     node.className?.includes("wcpay") ||
+                                     node.id?.includes("payment"))) {
+                                    shouldCheck = true;
+                                }
+                            });
+                        }
+                    });
+                    if (shouldCheck && removalAttempts < maxRemovalAttempts) {
+                        setTimeout(comprehensiveRemoval, 50);
+                    }
+                });
+                observer.observe(document.body, { 
+                    childList: true, 
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ["class", "id", "style"]
+                });
+            }
+            
+            // Block Link-related AJAX requests
+            if (window.XMLHttpRequest) {
+                const originalXHR = window.XMLHttpRequest.prototype.open;
+                window.XMLHttpRequest.prototype.open = function(method, url) {
+                    if (url && (url.includes("link") || url.includes("express-checkout")) && 
+                        !url.includes("apple") && !url.includes("google")) {
+                        console.log("Blocked potential Link-related request:", url);
+                        // Still allow the request but log it
+                    }
+                    return originalXHR.apply(this, arguments);
+                };
+            }
+        })();
+        </script>';
+    }
+}
+add_action('wp_footer', 'lambo_merch_remove_stripe_link_js');
+
+// Additional server-side prevention methods
+// Prevent Link payment method from being registered
+add_filter('woocommerce_payment_gateways', function($gateways) {
+    if (is_array($gateways)) {
+        // Remove any Link-specific payment gateways
+        $gateways = array_filter($gateways, function($gateway) {
+            $gateway_class = is_string($gateway) ? $gateway : get_class($gateway);
+            return !stripos($gateway_class, 'link');
+        });
+    }
+    return $gateways;
+});
+
+// Override WooCommerce Payments gateway class to disable Link
+add_action('plugins_loaded', function() {
+    if (class_exists('WC_Payments_Express_Checkout_Button_Handler')) {
+        add_filter('wcpay_express_checkout_button_handler_payment_methods', function($methods) {
+            if (is_array($methods)) {
+                unset($methods['link']);
+                $methods = array_filter($methods, function($method) {
+                    return $method !== 'link';
+                });
+            }
+            return $methods;
+        });
+    }
+}, 20);
+
+// Filter out Link from express payment methods in templates
+add_filter('wc_get_template', function($template, $template_name, $args, $template_path, $default_path) {
+    // If this is a payment method template that might contain Link
+    if (strpos($template_name, 'payment') !== false || strpos($template_name, 'express') !== false) {
+        // Start output buffering to modify template output
+        add_filter('woocommerce_located_template', function($template, $template_name, $args) {
+            if (strpos($template_name, 'payment') !== false || strpos($template_name, 'express') !== false) {
+                ob_start();
+                include $template;
+                $output = ob_get_clean();
+                
+                // Remove any Link-related content from the template output
+                $output = preg_replace('/<!--.*?Link.*?-->/s', '', $output);
+                $output = preg_replace('/<[^>]*link[^>]*>/i', '', $output);
+                $output = str_replace(['Pay with Link', 'Stripe Link', 'Link payment'], '', $output);
+                
+                // Create a temporary file with the modified content
+                $temp_file = tempnam(sys_get_temp_dir(), 'wc_template_');
+                file_put_contents($temp_file, $output);
+                
+                // Clean up temp files after request
+                register_shutdown_function(function() use ($temp_file) {
+                    if (file_exists($temp_file)) {
+                        unlink($temp_file);
+                    }
+                });
+                
+                return $temp_file;
+            }
+            return $template;
+        }, 10, 3);
+    }
+    return $template;
+}, 10, 5);
+
+// Block specific WooCommerce Payments hooks that might render Link
+add_action('init', function() {
+    // Remove actions that might add Link payment buttons
+    remove_all_actions('woocommerce_review_order_before_payment');
+    remove_all_actions('woocommerce_checkout_before_customer_details');
+    
+    // Re-add only the actions we want (excluding Link-related ones)
+    add_action('woocommerce_review_order_before_payment', 'woocommerce_checkout_payment', 20);
+}, 999);
+
+// Final failsafe: Modify the entire payment methods output
+add_filter('woocommerce_checkout_payment', function() {
+    ob_start();
+}, 5);
+
+add_filter('woocommerce_checkout_payment', function() {
+    $output = ob_get_clean();
+    
+    // Remove any Link-related payment method HTML
+    $link_patterns = [
+        '/<li[^>]*payment_method_.*?link.*?<\/li>/s',
+        '/<div[^>]*wcpay-link.*?<\/div>/s',
+        '/<button[^>]*link.*?<\/button>/s',
+        '/<!--.*?link.*?-->/s'
+    ];
+    
+    foreach ($link_patterns as $pattern) {
+        $output = preg_replace($pattern, '', $output);
+    }
+    
+    // Remove any remaining "Pay with Link" text
+    $output = str_replace(['Pay with Link', 'Stripe Link', 'Link payment'], '', $output);
+    
+    echo $output;
+}, 25);
 
