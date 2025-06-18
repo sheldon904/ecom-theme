@@ -976,7 +976,7 @@ a:hover {
 }
 
 .single_add_to_cart_button {
-    background-color: #000 !important;
+    background-color: var(--color-primary) !important;
     color: #fff !important;
     padding: 12px 25px !important;
     border: none;
@@ -986,7 +986,7 @@ a:hover {
 }
 
 .single_add_to_cart_button:hover {
-    background-color: #333 !important;
+    background-color: var(--color-primary-dark) !important;
 }
 
 .add-to-wishlist {
@@ -1979,9 +1979,9 @@ body.has-sticky-header {
 
 /* Variable product add to cart button */
 .variable-product-wrapper .single_add_to_cart_button {
-    background-color: #000 \!important;
-    color: #fff \!important;
-    padding: 15px 30px \!important;
+    background-color: var(--color-primary) !important;
+    color: #fff !important;
+    padding: 15px 30px !important;
     border: none;
     border-radius: 4px;
     text-transform: uppercase;
@@ -1993,7 +1993,7 @@ body.has-sticky-header {
 }
 
 .variable-product-wrapper .single_add_to_cart_button:hover {
-    background-color: #222 \!important;
+    background-color: var(--color-primary-dark) !important;
     transform: translateY(-2px);
 }
 
@@ -2028,19 +2028,19 @@ body.has-sticky-header {
     text-decoration: underline;
 }
 .variations_button .single_add_to_cart_button {
-    background-color: #0f0f0f !important;  /* match select bg */
-    border: 1px solid #333 !important;     /* match select border */
-    color: #fff !important;                /* white text */
-    padding: 12px 15px !important;         /* same vertical padding as select */
-    margin-left: 15px;                     /* space from qty */
-    display: inline-block;                 /* sit inline */
+    background-color: var(--color-primary) !important;
+    border: 1px solid var(--color-primary) !important;
+    color: #fff !important;
+    padding: 12px 15px !important;
+    margin-left: 15px;
+    display: inline-block;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
   
   /* ── 3) Hover state (optional) ── */
   .variations_button .single_add_to_cart_button:hover {
-    background-color: #1a1a1a !important;  /* match select hover */
+    background-color: var(--color-primary-dark) !important;
   }
 
 
@@ -2091,8 +2091,8 @@ form.cart .variations_button {
   }
   
   form.cart .variations_button .single_add_to_cart_button {
-    background-color: #0f0f0f !important; /* same as selects */
-    border: 1px solid #333 !important;
+    background-color: var(--color-primary) !important;
+    border: 1px solid var(--color-primary) !important;
     color: #fff !important;
     padding: 12px 15px !important;
     margin-left: 15px;      /* space between qty and button */
@@ -2102,7 +2102,7 @@ form.cart .variations_button {
   }
   
   form.cart .variations_button .single_add_to_cart_button:hover {
-    background-color: #1a1a1a !important; /* same as select hover */
+    background-color: var(--color-primary-dark) !important;
   }
   /* give the Add to Cart button some breathing room below */
 form.cart .variations_button .single_add_to_cart_button {
@@ -2207,4 +2207,26 @@ form.cart .variations_button .single_add_to_cart_button {
       width: 100%;
     }
   }
-EOF < /dev/null
+
+/* Additional hiding for "pay with link" payment options */
+.wc-stripe-link-button,
+.stripe-link-button,
+[data-payment-method="stripe_link"],
+.payment_method_stripe_link,
+.wc_payment_method.payment_method_stripe_link,
+#payment .payment_methods .payment_method_stripe_link,
+.wcpay-link-button,
+.wc-block-components-express-payment-continue-rule,
+.wc-block-components-express-payment__event-buttons .is-link,
+.wc-stripe-express-checkout-element .stripe-link,
+.wcpay-express-checkout-wrapper .stripe-link,
+.wc-block-components-express-payment .is-link,
+[data-express-payment-type="stripe_link"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Ensure express checkout wrapper is still visible without Link */
+.wcpay-express-checkout-wrapper:not(:has(.stripe-link)) {
+    display: block !important;
+}

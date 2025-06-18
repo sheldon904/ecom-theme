@@ -249,7 +249,6 @@ do_action( 'woocommerce_after_main_content' );
     /* Fix the shop page header logo */
     .woocommerce-products-header .col-md-4 img {
         max-width: 200px !important;
-        max-height: 80px !important;
         height: auto !important;
         width: auto !important;
         object-fit: contain !important;
@@ -361,7 +360,6 @@ do_action( 'woocommerce_after_main_content' );
     }
     
     .woocommerce-products-header .col-md-4 img {
-        max-height: 60px !important;
         max-width: 150px !important;
     }
     

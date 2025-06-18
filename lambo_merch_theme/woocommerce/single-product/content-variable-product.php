@@ -313,8 +313,8 @@ if (post_password_required()) {
 
 /* Add to cart button styling */
 .single_add_to_cart_button {
-    background-color: #000;
-    color: #fff;
+    background-color: #ff0000 !important;
+    color: #fff !important;
     padding: 12px 25px;
     border: none;
     border-radius: 4px;
@@ -327,7 +327,7 @@ if (post_password_required()) {
 }
 
 .single_add_to_cart_button:hover {
-    background-color: #333;
+    background-color: #cc0000 !important;
 }
 
 /* Make quantity input nicer */

@@ -11,7 +11,6 @@ get_header();
 ?>
 
 <main id="primary" class="site-main">
-    <div style="background: red; color: white; text-align: center; padding: 10px; font-size: 24px; font-weight: bold;">VISITED</div>
     <div class="container">
         <div class="row">
             <div class="col-md-8">

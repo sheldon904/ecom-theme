@@ -170,8 +170,39 @@ get_header('shop');
 <!-- ==== ONLY THESE SNIPPETS WERE ADDED ==== -->
 
 <style>
-  /* 1) Hide the express‐checkout wrapper */
-  .wcpay-express-checkout-wrapper { display: none !important; }
+  /* 1) Hide only the Link payment button, not the entire express checkout wrapper */
+  .wcpay-express-checkout-wrapper .stripe-link,
+  .wcpay-express-checkout-wrapper [data-payment-method="stripe_link"],
+  .wcpay-link-button,
+  .wc-stripe-link-button,
+  .stripe-link-button { display: none !important; }
+  
+  /* 2) Ensure add to cart buttons are visible and red */
+  .single_add_to_cart_button,
+  .variations_button .single_add_to_cart_button,
+  form.cart .single_add_to_cart_button {
+    display: block !important;
+    visibility: visible !important;
+    background-color: #ff0000 !important;
+    color: #fff !important;
+  }
+  
+  .single_add_to_cart_button:hover,
+  .variations_button .single_add_to_cart_button:hover,
+  form.cart .single_add_to_cart_button:hover {
+    background-color: #cc0000 !important;
+  }
+  
+  /* 3) Ensure add to cart form areas are visible */
+  .product-add-to-cart,
+  .cart-actions,
+  .quantity-and-cart,
+  .single_variation_wrap,
+  .variations_button,
+  .woocommerce-variation-add-to-cart {
+    display: block !important;
+    visibility: visible !important;
+  }
 
   /* Mobile spacing fix for header */
   @media (max-width: 1024px) {
