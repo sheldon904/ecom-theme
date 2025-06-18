@@ -66,7 +66,8 @@ do_action( 'woocommerce_before_main_content' );
 		<div class="col-md-2">
 			<div class="shop-filters">
 				<h4>Filter by</h4>
-				<ul class="filter-list">
+				<!-- Desktop filter list -->
+				<ul class="filter-list desktop-filters">
 					<li class="<?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'active' : ''; ?>">
 						<a href="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'menu_order'), remove_query_arg('orderby'))); ?>" class="text-red">Default</a>
 					</li>
@@ -77,6 +78,14 @@ do_action( 'woocommerce_before_main_content' );
 						<a href="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'popularity'), remove_query_arg('orderby'))); ?>" class="text-red">Category</a>
 					</li>
 				</ul>
+				<!-- Mobile filter dropdown -->
+				<div class="mobile-filter-dropdown">
+					<select id="mobile-filter-select" onchange="window.location.href=this.value">
+						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'menu_order'), remove_query_arg('orderby'))); ?>" <?php echo (!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order') ? 'selected' : ''; ?>>Default</option>
+						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'price'), remove_query_arg('orderby'))); ?>" <?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'price') ? 'selected' : ''; ?>>Price</option>
+						<option value="<?php echo esc_url(add_query_arg(array('product-page' => 1, 'orderby' => 'popularity'), remove_query_arg('orderby'))); ?>" <?php echo (isset($_GET['orderby']) && $_GET['orderby'] == 'popularity') ? 'selected' : ''; ?>>Category</option>
+					</select>
+				</div>
 			</div>
 		</div>
 
@@ -138,6 +147,158 @@ do_action( 'woocommerce_before_main_content' );
 do_action( 'woocommerce_after_main_content' );
 
 ?>
+
+<!-- Mobile Responsive CSS for Shop Filters and Logo Fixes -->
+<style>
+/* Mobile Filter Dropdown - Hidden by default */
+.mobile-filter-dropdown {
+    display: none;
+}
+
+/* Desktop Filters - Shown by default */
+.desktop-filters {
+    display: block;
+}
+
+/* Mobile and Tablet Responsive Styles */
+@media (max-width: 1024px) {
+    /* Hide desktop filters on mobile/tablet */
+    .desktop-filters {
+        display: none !important;
+    }
+    
+    /* Show mobile dropdown on mobile/tablet */
+    .mobile-filter-dropdown {
+        display: block !important;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    /* Style the dropdown select */
+    .mobile-filter-dropdown select {
+        width: 100%;
+        max-width: 300px;
+        padding: 10px 15px;
+        background-color: #000;
+        color: #fff;
+        border: 2px solid #ff0000;
+        border-radius: 5px;
+        font-size: 16px;
+        font-family: 'Source Sans Pro', sans-serif;
+        appearance: none;
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNiIgdmlld0JveD0iMCAwIDEwIDYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik01IDZMMCAwSDEwTDUgNloiIGZpbGw9IiNGRjAwMDAiLz4KPHN2Zz4K');
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        padding-right: 45px;
+    }
+    
+    /* Center the shop filters container on mobile */
+    .col-md-2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    /* Center the "Filter by" heading */
+    .shop-filters h4 {
+        text-align: center;
+        color: #fff;
+        margin-bottom: 15px;
+    }
+    
+    /* Adjust shop container layout for mobile */
+    .shop-container .row {
+        flex-direction: column;
+    }
+    
+    .col-md-2,
+    .col-md-10 {
+        width: 100% !important;
+        flex: none !important;
+    }
+}
+
+/* Logo Mobile Fixes */
+@media (max-width: 1024px) {
+    /* Fix mobile header height and prevent logo clipping */
+    .mobile-header {
+        height: auto !important;
+        min-height: 80px !important;
+        padding: 10px 15px !important;
+        overflow: visible !important;
+    }
+    
+    /* Ensure logo stays within bounds and is centered */
+    .mobile-header .logo {
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        max-width: calc(100% - 160px) !important; /* Account for icon space on both sides */
+    }
+    
+    /* Logo image responsive sizing */
+    .mobile-header .logo img {
+        max-width: 100% !important;
+        max-height: 60px !important;
+        height: auto !important;
+        width: auto !important;
+        object-fit: contain !important;
+    }
+    
+    /* Adjust body padding for the responsive header */
+    body, #content {
+        padding-top: 100px !important;
+    }
+    
+    /* Icon sets sizing to prevent overlap */
+    .mobile-header .icon-set {
+        flex: 0 0 80px !important;
+        display: flex !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+    }
+    
+    .mobile-header .icon-set img {
+        max-width: 24px !important;
+        max-height: 24px !important;
+    }
+    
+    /* Menu toggle positioning */
+    .mobile-menu-toggle {
+        flex: 0 0 30px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+}
+
+/* Tablet specific adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .mobile-header .logo img {
+        max-height: 70px !important;
+    }
+    
+    body, #content {
+        padding-top: 110px !important;
+    }
+}
+
+/* Very small mobile devices */
+@media (max-width: 480px) {
+    .mobile-header .logo img {
+        max-height: 50px !important;
+    }
+    
+    .mobile-header {
+        padding: 8px 10px !important;
+    }
+    
+    body, #content {
+        padding-top: 90px !important;
+    }
+}
+</style>
 
 <!-- Newsletter section moved to footer -->
 

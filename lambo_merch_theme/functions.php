@@ -1311,3 +1311,8 @@ function lambo_merch_copy_billing_to_shipping($order, $data) {
 }
 add_filter('woocommerce_checkout_create_order', 'lambo_merch_copy_billing_to_shipping', 10, 2);
 
+/**
+ * Disable Stripe Link wallet to keep Apple Pay/Google Pay only
+ */
+add_filter('wc_stripe_enable_link', '__return_false');
+

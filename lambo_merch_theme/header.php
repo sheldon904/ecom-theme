@@ -239,9 +239,11 @@
       left: 0;
       width: 100%;
       z-index: 9999;
-      padding: 0.5rem 1rem; /* Increased padding for logo breathing room */
-      height: 100px; /* Increased fixed height for the larger logo */
+      padding: 10px 15px; /* Adjusted padding */
+      height: auto; /* Changed to auto height */
+      min-height: 80px; /* Minimum height to accommodate logo */
       box-sizing: border-box; /* Ensure padding is included in height */
+      overflow: visible; /* Prevent clipping */
     }
     
     /* Critical fix for menu items disappearing below 768px */
@@ -257,7 +259,7 @@
     /* Push page content below sticky header */
     body,
     #content {
-      padding-top: 130px; /* Increased padding to account for taller header (100px + 30px buffer) */
+      padding-top: 100px; /* Adjusted padding for responsive header */
       -webkit-overflow-scrolling: touch; /* Better iOS scrolling */
     }
 
@@ -274,18 +276,21 @@
       height: 28px;
     }
 
-    /* Logo sizing + centering - proportional responsive sizing */
+    /* Logo sizing + centering - improved responsive sizing */
     .mobile-header .logo img {
       width: auto;
-      height: 80px; /* Doubled height from 40px to 80px */
+      max-height: 60px; /* Reduced from 80px to prevent clipping */
       max-width: 100%; /* Prevent overflow */
+      height: auto; /* Allow natural aspect ratio */
+      object-fit: contain; /* Ensure image fits properly */
     }
     .mobile-header .logo {
       margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 33.33%; /* Equal width as the icon groups on either side */
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      flex: 1; /* Take available space between icon groups */
+      max-width: calc(100% - 160px); /* Account for icon space */
     }
     
     /* Mobile menu structure */
@@ -511,7 +516,7 @@ jQuery(document).ready(function($) {
     // Make sure content starts below the header
     function ensureContentVisibility() {
       // Force immediate padding to be applied
-      $('#content').css('padding-top', '130px');
+      $('#content').css('padding-top', '100px');
       
       // Add extra padding to first elements in major containers
       $('.container').first().css('padding-top', '20px');
