@@ -1311,32 +1311,3 @@ function lambo_merch_copy_billing_to_shipping($order, $data) {
 }
 add_filter('woocommerce_checkout_create_order', 'lambo_merch_copy_billing_to_shipping', 10, 2);
 
-/**
- * Simple Stripe Link hiding (non-intrusive approach)
- */
-// Just disable Link with simple filters - no aggressive blocking
-add_filter('wc_stripe_enable_link', '__return_false');
-add_filter('wcpay_is_link_enabled', '__return_false');
-
-// Simple CSS to hide Link buttons without affecting checkout flow
-function lambo_merch_hide_link_simple() {
-    echo '<style>
-    /* Hide only Link payment buttons, not entire checkout components */
-    [data-payment-method="stripe_link"],
-    .wcpay-express-checkout-wrapper [data-payment-method="link"],
-    .stripe-link-button {
-        display: none !important;
-    }
-    </style>';
-}
-add_action('wp_head', 'lambo_merch_hide_link_simple');
-
-// Remove "added to cart" notices from shop page
-function lambo_merch_remove_shop_notices() {
-    if (is_shop() || is_product_category() || is_product_tag()) {
-        remove_action('woocommerce_before_shop_loop', 'woocommerce_output_all_notices', 10);
-        add_filter('wc_add_to_cart_message_html', '__return_false');
-    }
-}
-add_action('wp', 'lambo_merch_remove_shop_notices');
-

@@ -253,41 +253,6 @@ function lambo_merch_stripe_only() {
 add_action('init', 'lambo_merch_stripe_only');
 add_filter( 'woocommerce_checkout_fields', 'lambo_merch_woocommerce_checkout_fields' );
 
-/**
- * Additional Link payment removal at WooCommerce level
- */
-function lambo_merch_remove_link_payment_final() {
-    // Remove Link from available payment methods during checkout
-    add_filter('woocommerce_available_payment_gateways', function($gateways) {
-        if (is_array($gateways)) {
-            // Remove any gateway that contains 'link' in its ID
-            foreach ($gateways as $key => $gateway) {
-                if (stripos($key, 'link') !== false) {
-                    unset($gateways[$key]);
-                }
-            }
-        }
-        return $gateways;
-    }, 999);
-    
-    // Ensure Link is disabled in WooCommerce Payments settings
-    add_filter('pre_option_woocommerce_woocommerce_payments_settings', function($value) {
-        if (is_array($value)) {
-            $value['link_enabled'] = 'no';
-            $value['express_checkout_link_enabled'] = 'no';
-        } else {
-            $value = [
-                'enabled' => 'yes',
-                'payment_request_enabled' => 'yes',
-                'link_enabled' => 'no',
-                'express_checkout_enabled' => 'yes',
-                'express_checkout_link_enabled' => 'no'
-            ];
-        }
-        return $value;
-    });
-}
-add_action('wp', 'lambo_merch_remove_link_payment_final', 1);
 
 /**
  * Make sure shipping address is properly handled during checkout
@@ -516,3 +481,57 @@ add_filter( 'woocommerce_product_tabs', 'lambo_merch_woocommerce_product_tabs' )
 //     }
 // }
 // add_action('template_redirect', 'lambo_merch_ensure_variation_hooks');
+
+/**
+ * AJAX handler for cart flyout
+ */
+function lambo_merch_get_cart_items() {
+    if (!WC()->cart) {
+        wp_die();
+    }
+
+    $cart_items = array();
+    $cart_data = WC()->cart->get_cart();
+
+    foreach ($cart_data as $cart_item_key => $cart_item) {
+        $product = $cart_item['data'];
+        $quantity = $cart_item['quantity'];
+        
+        // Get size variation if present
+        $size_display = '';
+        if ($cart_item['variation_id'] && !empty($cart_item['variation'])) {
+            foreach ($cart_item['variation'] as $attr => $val) {
+                if (stripos($attr, 'size') !== false) {
+                    $size_display = $val;
+                    break;
+                }
+            }
+        }
+
+        // Get product image
+        $image_id = $product->get_image_id();
+        $image_url = wp_get_attachment_image_url($image_id, 'thumbnail');
+        if (!$image_url) {
+            $image_url = wc_placeholder_img_src('thumbnail');
+        }
+
+        $cart_items[] = array(
+            'name' => $product->get_name(),
+            'price' => wc_price($product->get_price()),
+            'quantity' => $quantity,
+            'size' => $size_display,
+            'image' => $image_url,
+            'key' => $cart_item_key
+        );
+    }
+
+    $response = array(
+        'items' => $cart_items,
+        'subtotal' => wc_price(WC()->cart->get_subtotal()),
+        'count' => WC()->cart->get_cart_contents_count()
+    );
+
+    wp_send_json($response);
+}
+add_action('wp_ajax_get_cart_items', 'lambo_merch_get_cart_items');
+add_action('wp_ajax_nopriv_get_cart_items', 'lambo_merch_get_cart_items');
