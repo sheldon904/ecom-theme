@@ -108,7 +108,7 @@
 }
 
 .woocommerce #respond input#submit,
-.woocommerce a.button,
+.woocommerce a.button:not(.view-cart-btn):not(.checkout-btn),
 .woocommerce button.button,
 .woocommerce input.button {
     display: none !important;
