@@ -44,19 +44,12 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                         
                         <!-- Subscribe section -->
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></h3>
-                            <div class="email-signup">
-                                <form action="#" method="post" class="newsletter-form">
-                                    <div class="email-input-wrap">
-                                        <div class="email-placeholder">
-                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
-                                        </div>
-                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required>
-                                        <button type="submit" class="arrow-btn">
-                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
-                                        </button>
-                                    </div>
-                                </form>
+                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS','lambo-merch'); ?></h3>
+                                <div class="email-signup">
+                                    <?php 
+                                        // Embed WPForms form ID 762 without title/description
+                                        echo do_shortcode( '[wpforms id="762" title="false" description="false"]' );
+                                    ?>
                             </div>
                             
                             <!-- Social icons in a row -->
@@ -102,19 +95,12 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                     
                     <div class="col-md-4">
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><center><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></center></h3>
-                            <div class="email-signup">
-                                <form action="#" method="post" class="newsletter-form">
-                                    <div class="email-input-wrap">
-                                        <div class="email-placeholder">
-                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
-                                        </div>
-                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required>
-                                        <button type="submit" class="arrow-btn">
-                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
-                                        </button>
-                                    </div>
-                                </form>
+                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS','lambo-merch'); ?></h3>
+                                <div class="email-signup">
+                                    <?php 
+                                        // Embed WPForms form ID 762 without title/description
+                                        echo do_shortcode( '[wpforms id="762" title="false" description="false"]' );
+                                    ?>
                             </div>
                             
                             <h3 class="follow-title"><center><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></center></h3>
