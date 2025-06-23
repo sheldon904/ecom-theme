@@ -1340,20 +1340,3 @@ function lambo_merch_remove_shop_notices() {
 }
 add_action('wp', 'lambo_merch_remove_shop_notices');
 
-/**
- * Replace WPForms submit button on form ID 762 with our arrow-icon button.
- */
-add_filter( 'wpforms_frontend_submit_button', function( $button, $form_data ) {
-  if ( ! empty( $form_data['id'] ) && absint( $form_data['id'] ) === 762 ) {
-    $icon_url = get_template_directory_uri() . '/images/icons/arrow.png';
-    $button   = sprintf(
-      '<button type="submit" name="wpforms[submit]" id="wpforms-submit-%1$d" value="%1$d" class="wpforms-submit arrow-btn">
-         <img src="%2$s" alt="%3$s">
-       </button>',
-      esc_attr( $form_data['id'] ),
-      esc_url( $icon_url ),
-      esc_attr__( 'Submit', 'lambo-merch' )
-    );
-  }
-  return $button;
-}, 10, 2 );

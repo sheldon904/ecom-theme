@@ -44,12 +44,19 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                         
                         <!-- Subscribe section -->
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS','lambo-merch'); ?></h3>
-                                <div class="email-signup">
-                                    <?php 
-                                        // Embed WPForms form ID 762 without title/description
-                                        echo do_shortcode( '[wpforms id="762" title="false" description="false"]' );
-                                    ?>
+                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></h3>
+                            <div class="email-signup">
+                                <form action="#" method="post" class="newsletter-form">
+                                    <div class="email-input-wrap">
+                                        <div class="email-placeholder">
+                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
+                                        </div>
+                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required>
+                                        <button type="submit" class="arrow-btn">
+                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                             
                             <!-- Social icons in a row -->
@@ -95,12 +102,19 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                     
                     <div class="col-md-4">
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS','lambo-merch'); ?></h3>
-                                <div class="email-signup">
-                                    <?php 
-                                        // Embed WPForms form ID 762 without title/description
-                                        echo do_shortcode( '[wpforms id="762" title="false" description="false"]' );
-                                    ?>
+                            <h3 class="subscribe-title"><center><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></center></h3>
+                            <div class="email-signup">
+                                <form action="#" method="post" class="newsletter-form">
+                                    <div class="email-input-wrap">
+                                        <div class="email-placeholder">
+                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
+                                        </div>
+                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required>
+                                        <button type="submit" class="arrow-btn">
+                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                             
                             <h3 class="follow-title"><center><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></center></h3>
@@ -173,6 +187,87 @@ document.addEventListener('DOMContentLoaded', function() {
 </html>
 
 <style>
+ /* Layout visibility (mobile vs desktop blocks) */
+  .mobile-layout { display: none; }
+  .desktop-layout { display: block; }
+  @media (max-width: 767px) {
+    .mobile-layout { display: block!important; }
+    .desktop-layout { display: none!important; }
+  }
+
+  /* Center and constrain the footer form */
+  #wpforms-762 {
+    max-width: 800px!important;
+    margin: 0 auto!important;
+  }
+
+  /* Full-width fields */
+  #wpforms-762 .wpforms-field input,
+  #wpforms-762 .wpforms-field textarea {
+    width: 100%!important;
+    background: #282828!important;
+    border: none!important;
+    color: #fff!important;
+    padding: 12px 15px!important;
+    border-radius: 4px!important;
+    font-size: 14px!important;
+    display: block!important;
+    margin: 0 0 16px!important;
+  }
+
+  /* Two-column rows (first+last name, if you have them) */
+  #wpforms-762 .wpforms-field-row {
+    display: flex!important;
+    justify-content: space-between!important;
+    flex-wrap: wrap!important;
+    margin-bottom: 16px!important;
+  }
+  #wpforms-762 .wpforms-one-half {
+    width: 48%!important;
+    margin: 0 1%!important;
+  }
+
+  /* Labels */
+  #wpforms-762 .wpforms-field-label {
+    font-size: 16px!important;
+    color: #fff!important;
+    font-weight: 600!important;
+    margin-bottom: 8px!important;
+  }
+
+  /* Placeholder text */
+  #wpforms-762 ::-webkit-input-placeholder { color: #fff!important; }
+  #wpforms-762 :-moz-placeholder           { color: #fff!important; opacity: 1!important; }
+  #wpforms-762 ::-moz-placeholder          { color: #fff!important; opacity: 1!important; }
+  #wpforms-762 :-ms-input-placeholder      { color: #fff!important; }
+  #wpforms-762 ::placeholder               { color: #fff!important; }
+
+  /* Focus outline */
+  #wpforms-762 .wpforms-field input:focus,
+  #wpforms-762 .wpforms-field textarea:focus {
+    outline: 2px solid #ff0000!important;
+  }
+
+  /* Arrow-icon submit button */
+  #wpforms-762 .wpforms-submit {
+    background: #ff0000!important;
+    color: #fff!important;
+    border: none!important;
+    padding: 12px 30px!important;
+    font-weight: 600!important;
+    display: block!important;
+    margin: 20px auto!important;
+    cursor: pointer!important;
+    width: auto!important;
+  }
+
+  /* Override WPForms “medium” cap */
+  #wpforms-762 input.wpforms-field-medium,
+  #wpforms-762 select.wpforms-field-medium,
+  #wpforms-762 .wpforms-field-row.wpforms-field-medium {
+    max-width: none!important;
+    width: 100%!important;
+  }
 /* Specific fix ONLY for checkout page footer email input */
 body.woocommerce-checkout .site-footer input[type="email"],
 body.woocommerce-checkout footer input[type="email"],
