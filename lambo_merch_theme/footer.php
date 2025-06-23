@@ -44,19 +44,12 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                         
                         <!-- Subscribe section -->
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></h3>
-                            <div class="email-signup">
-                                <form action="#" method="post" class="newsletter-form">
-                                    <div class="email-input-wrap">
-                                        <div class="email-placeholder">
-                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
-                                        </div>
-                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required>
-                                        <button type="submit" class="arrow-btn">
-                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
-                                        </button>
-                                    </div>
-                                </form>
+                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS','lambo-merch'); ?></h3>
+                                <div class="email-signup">
+                                    <?php 
+                                        // Embed WPForms form ID 762 without title/description
+                                        echo do_shortcode( '[wpforms id="762" title="false" description="false" captcha="false"]' );
+                                    ?>
                             </div>
                             
                             <!-- Social icons in a row -->
@@ -102,19 +95,12 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                     
                     <div class="col-md-4">
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><center><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></center></h3>
-                            <div class="email-signup">
-                                <form action="#" method="post" class="newsletter-form">
-                                    <div class="email-input-wrap">
-                                        <div class="email-placeholder">
-                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
-                                        </div>
-                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required>
-                                        <button type="submit" class="arrow-btn">
-                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
-                                        </button>
-                                    </div>
-                                </form>
+                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS','lambo-merch'); ?></h3>
+                                <div class="email-signup">
+                                    <?php 
+                                        // Embed WPForms form ID 762 without title/description
+                                        echo do_shortcode( '[wpforms id="762" title="false" description="false" captcha="false"]' );
+                                    ?>
                             </div>
                             
                             <h3 class="follow-title"><center><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></center></h3>
@@ -180,6 +166,23 @@ document.addEventListener('DOMContentLoaded', function() {
         fixFooterEmailInput();
         setInterval(fixFooterEmailInput, 1000);
     }
+    
+    // Handle captcha visibility for WPForms
+    const wpForm = document.getElementById('wpforms-762');
+    if (wpForm) {
+        const emailInput = wpForm.querySelector('.wpforms-field-email input[type="email"]');
+        if (emailInput) {
+            emailInput.addEventListener('focus', function() {
+                wpForm.classList.add('form-activated');
+            });
+            
+            emailInput.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    wpForm.classList.add('form-activated');
+                }
+            });
+        }
+    }
 });
 </script>
 
@@ -187,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </html>
 
 <style>
- /* Layout visibility (mobile vs desktop blocks) */
+      /* Layout visibility (mobile vs desktop blocks) */
   .mobile-layout { display: none; }
   .desktop-layout { display: block; }
   @media (max-width: 767px) {
@@ -248,6 +251,72 @@ document.addEventListener('DOMContentLoaded', function() {
     outline: 2px solid #ff0000!important;
   }
 
+  /* Hide Contact Form 7 invisible captcha initially */
+  .cf7ic_instructions {
+    display: none!important;
+    transition: all 0.3s ease;
+  }
+  
+  /* Show captcha when email field has been interacted with */
+  #wpforms-762.form-activated .cf7ic_instructions,
+  #wpforms-762 .wpforms-field-email input:not(:placeholder-shown) ~ .cf7ic_instructions,
+  #wpforms-762 .wpforms-field-email input:focus ~ .cf7ic_instructions,
+  #wpforms-762 .wpforms-field-email:focus-within .cf7ic_instructions {
+    display: block!important;
+  }
+  
+  /* Hide captcha wrapper span initially */
+  .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
+  .wpcf7-form-control-wrap.cf7ic-wpf,
+  .wpcf7-form-control-wrap.kc_captcha {
+    display: none!important;
+    height: 0!important;
+    margin: 0!important;
+    padding: 0!important;
+    transition: all 0.3s ease;
+  }
+  
+  /* Show captcha wrapper when email field has been interacted with */
+  #wpforms-762.form-activated .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
+  #wpforms-762.form-activated .wpcf7-form-control-wrap.cf7ic-wpf,
+  #wpforms-762.form-activated .wpcf7-form-control-wrap.kc_captcha,
+  #wpforms-762 .wpforms-field-email input:not(:placeholder-shown) ~ .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
+  #wpforms-762 .wpforms-field-email input:not(:placeholder-shown) ~ .wpcf7-form-control-wrap.cf7ic-wpf,
+  #wpforms-762 .wpforms-field-email input:not(:placeholder-shown) ~ .wpcf7-form-control-wrap.kc_captcha,
+  #wpforms-762 .wpforms-field-email input:focus ~ .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
+  #wpforms-762 .wpforms-field-email input:focus ~ .wpcf7-form-control-wrap.cf7ic-wpf,
+  #wpforms-762 .wpforms-field-email input:focus ~ .wpcf7-form-control-wrap.kc_captcha,
+  #wpforms-762 .wpforms-field-email:focus-within .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
+  #wpforms-762 .wpforms-field-email:focus-within .wpcf7-form-control-wrap.cf7ic-wpf,
+  #wpforms-762 .wpforms-field-email:focus-within .wpcf7-form-control-wrap.kc_captcha {
+    display: block!important;
+    height: auto!important;
+    margin: 10px 0!important;
+    padding: 10px!important;
+  }
+  
+  /* Email input and submit button side by side */
+  #wpforms-762 .wpforms-field-container {
+    display: flex!important;
+    align-items: flex-start!important;
+    gap: 10px!important;
+  }
+  
+  #wpforms-762 .wpforms-field-email {
+    flex: 1!important;
+    margin: 0!important;
+  }
+  
+  #wpforms-762 .wpforms-field-email input {
+    width: 100%!important;
+    margin: 0!important;
+  }
+  
+  #wpforms-762 .wpforms-submit-container {
+    flex-shrink: 0!important;
+    margin: 0!important;
+  }
+  
   /* Arrow-icon submit button */
   #wpforms-762 .wpforms-submit {
     background: #ff0000!important;
@@ -259,6 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
     margin: 20px auto!important;
     cursor: pointer!important;
     width: auto!important;
+    height: 46px!important;
   }
 
   /* Override WPForms “medium” cap */
