@@ -5,6 +5,44 @@
  * @package Lambo_Merch
  */
 
+// Handle footer newsletter form submission
+$footer_form_message = '';
+$footer_form_success = false;
+
+if ($_POST && isset($_POST['footer_newsletter_nonce']) && wp_verify_nonce($_POST['footer_newsletter_nonce'], 'footer_newsletter_action')) {
+    $email = sanitize_email($_POST['email']);
+    
+    if (!empty($email) && is_email($email)) {
+        // Get admin email
+        $admin_email = get_option('admin_email');
+        
+        // Email subject and headers
+        $subject = 'New Newsletter Subscription from ' . get_bloginfo('name');
+        $headers = array('Content-Type: text/html; charset=UTF-8');
+        
+        // Email body
+        $message = '<html><body>';
+        $message .= '<h2>New Newsletter Subscription</h2>';
+        $message .= '<p><strong>Email:</strong> ' . esc_html($email) . '</p>';
+        $message .= '<p><strong>Date:</strong> ' . date('Y-m-d H:i:s') . '</p>';
+        $message .= '<p><strong>Source:</strong> Footer Newsletter Form</p>';
+        $message .= '<p><strong>Page:</strong> ' . esc_url($_SERVER['HTTP_REFERER']) . '</p>';
+        $message .= '</body></html>';
+        
+        // Send email
+        if (wp_mail($admin_email, $subject, $message, $headers)) {
+            $footer_form_success = true;
+            $footer_form_message = 'Thanks for subscribing!';
+            // Clear the form by unsetting POST data on success
+            unset($_POST['email']);
+        } else {
+            $footer_form_message = 'Error sending subscription. Please try again.';
+        }
+    } else {
+        $footer_form_message = 'Please enter a valid email address.';
+    }
+}
+
 // Include Mobile_Detect library if not already included
 if (!class_exists('Mobile_Detect')) {
     require_once get_template_directory() . '/inc/mobile-detect.php';
@@ -44,12 +82,27 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                         
                         <!-- Subscribe section -->
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS','lambo-merch'); ?></h3>
-                                <div class="email-signup">
-                                    <?php 
-                                        // Embed WPForms form ID 762 without title/description
-                                        echo do_shortcode( '[wpforms id="762" title="false" description="false" captcha="false"]' );
-                                    ?>
+                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></h3>
+                            
+                            <?php if (!empty($footer_form_message)): ?>
+                                <div style="margin-bottom: 15px; padding: 10px; border-radius: 5px; text-align: center; <?php echo $footer_form_success ? 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : 'background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'; ?>">
+                                    <?php echo esc_html($footer_form_message); ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div class="email-signup">
+                                <form action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>" method="post" class="newsletter-form">
+                                    <?php wp_nonce_field('footer_newsletter_action', 'footer_newsletter_nonce'); ?>
+                                    <div class="email-input-wrap">
+                                        <div class="email-placeholder">
+                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
+                                        </div>
+                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required value="<?php echo isset($_POST['email']) ? esc_attr($_POST['email']) : ''; ?>">
+                                        <button type="submit" class="arrow-btn">
+                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                             
                             <!-- Social icons in a row -->
@@ -95,12 +148,27 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                     
                     <div class="col-md-4">
                         <div class="subscribe-section">
-                            <h3 class="subscribe-title"><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS','lambo-merch'); ?></h3>
-                                <div class="email-signup">
-                                    <?php 
-                                        // Embed WPForms form ID 762 without title/description
-                                        echo do_shortcode( '[wpforms id="762" title="false" description="false" captcha="false"]' );
-                                    ?>
+                            <h3 class="subscribe-title"><center><?php esc_html_e('SUBSCRIBE FOR DISCOUNTS & DROPS', 'lambo-merch'); ?></center></h3>
+                            
+                            <?php if (!empty($footer_form_message)): ?>
+                                <div style="margin-bottom: 15px; padding: 10px; border-radius: 5px; text-align: center; <?php echo $footer_form_success ? 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : 'background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'; ?>">
+                                    <?php echo esc_html($footer_form_message); ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div class="email-signup">
+                                <form action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>" method="post" class="newsletter-form">
+                                    <?php wp_nonce_field('footer_newsletter_action', 'footer_newsletter_nonce'); ?>
+                                    <div class="email-input-wrap">
+                                        <div class="email-placeholder">
+                                            <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
+                                        </div>
+                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required value="<?php echo isset($_POST['email']) ? esc_attr($_POST['email']) : ''; ?>">
+                                        <button type="submit" class="arrow-btn">
+                                            <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                             
                             <h3 class="follow-title"><center><?php esc_html_e('FOLLOW', 'lambo-merch'); ?></center></h3>
@@ -166,23 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fixFooterEmailInput();
         setInterval(fixFooterEmailInput, 1000);
     }
-    
-    // Handle captcha visibility for WPForms
-    const wpForm = document.getElementById('wpforms-762');
-    if (wpForm) {
-        const emailInput = wpForm.querySelector('.wpforms-field-email input[type="email"]');
-        if (emailInput) {
-            emailInput.addEventListener('focus', function() {
-                wpForm.classList.add('form-activated');
-            });
-            
-            emailInput.addEventListener('input', function() {
-                if (this.value.length > 0) {
-                    wpForm.classList.add('form-activated');
-                }
-            });
-        }
-    }
 });
 </script>
 
@@ -190,154 +241,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </html>
 
 <style>
-      /* Layout visibility (mobile vs desktop blocks) */
-  .mobile-layout { display: none; }
-  .desktop-layout { display: block; }
-  @media (max-width: 767px) {
-    .mobile-layout { display: block!important; }
-    .desktop-layout { display: none!important; }
-  }
-
-  /* Center and constrain the footer form */
-  #wpforms-762 {
-    max-width: 800px!important;
-    margin: 0 auto!important;
-  }
-
-  /* Full-width fields */
-  #wpforms-762 .wpforms-field input,
-  #wpforms-762 .wpforms-field textarea {
-    width: 100%!important;
-    background: #282828!important;
-    border: none!important;
-    color: #fff!important;
-    padding: 12px 15px!important;
-    border-radius: 4px!important;
-    font-size: 14px!important;
-    display: block!important;
-    margin: 0 0 16px!important;
-  }
-
-  /* Two-column rows (first+last name, if you have them) */
-  #wpforms-762 .wpforms-field-row {
-    display: flex!important;
-    justify-content: space-between!important;
-    flex-wrap: wrap!important;
-    margin-bottom: 16px!important;
-  }
-  #wpforms-762 .wpforms-one-half {
-    width: 48%!important;
-    margin: 0 1%!important;
-  }
-
-  /* Labels */
-  #wpforms-762 .wpforms-field-label {
-    font-size: 16px!important;
-    color: #fff!important;
-    font-weight: 600!important;
-    margin-bottom: 8px!important;
-  }
-
-  /* Placeholder text */
-  #wpforms-762 ::-webkit-input-placeholder { color: #fff!important; }
-  #wpforms-762 :-moz-placeholder           { color: #fff!important; opacity: 1!important; }
-  #wpforms-762 ::-moz-placeholder          { color: #fff!important; opacity: 1!important; }
-  #wpforms-762 :-ms-input-placeholder      { color: #fff!important; }
-  #wpforms-762 ::placeholder               { color: #fff!important; }
-
-  /* Focus outline */
-  #wpforms-762 .wpforms-field input:focus,
-  #wpforms-762 .wpforms-field textarea:focus {
-    outline: 2px solid #ff0000!important;
-  }
-
-  /* Hide Contact Form 7 invisible captcha initially */
-  .cf7ic_instructions {
-    display: none!important;
-    transition: all 0.3s ease;
-  }
-  
-  /* Show captcha when email field has been interacted with */
-  #wpforms-762.form-activated .cf7ic_instructions,
-  #wpforms-762 .wpforms-field-email input:not(:placeholder-shown) ~ .cf7ic_instructions,
-  #wpforms-762 .wpforms-field-email input:focus ~ .cf7ic_instructions,
-  #wpforms-762 .wpforms-field-email:focus-within .cf7ic_instructions {
-    display: block!important;
-  }
-  
-  /* Hide captcha wrapper span initially */
-  .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
-  .wpcf7-form-control-wrap.cf7ic-wpf,
-  .wpcf7-form-control-wrap.kc_captcha {
-    display: none!important;
-    height: 0!important;
-    margin: 0!important;
-    padding: 0!important;
-    transition: all 0.3s ease;
-  }
-  
-  /* Show captcha wrapper when email field has been interacted with */
-  #wpforms-762.form-activated .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
-  #wpforms-762.form-activated .wpcf7-form-control-wrap.cf7ic-wpf,
-  #wpforms-762.form-activated .wpcf7-form-control-wrap.kc_captcha,
-  #wpforms-762 .wpforms-field-email input:not(:placeholder-shown) ~ .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
-  #wpforms-762 .wpforms-field-email input:not(:placeholder-shown) ~ .wpcf7-form-control-wrap.cf7ic-wpf,
-  #wpforms-762 .wpforms-field-email input:not(:placeholder-shown) ~ .wpcf7-form-control-wrap.kc_captcha,
-  #wpforms-762 .wpforms-field-email input:focus ~ .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
-  #wpforms-762 .wpforms-field-email input:focus ~ .wpcf7-form-control-wrap.cf7ic-wpf,
-  #wpforms-762 .wpforms-field-email input:focus ~ .wpcf7-form-control-wrap.kc_captcha,
-  #wpforms-762 .wpforms-field-email:focus-within .wpcf7-form-control-wrap.cf7ic-wpf.kc_captcha,
-  #wpforms-762 .wpforms-field-email:focus-within .wpcf7-form-control-wrap.cf7ic-wpf,
-  #wpforms-762 .wpforms-field-email:focus-within .wpcf7-form-control-wrap.kc_captcha {
-    display: block!important;
-    height: auto!important;
-    margin: 10px 0!important;
-    padding: 10px!important;
-  }
-  
-  /* Email input and submit button side by side */
-  #wpforms-762 .wpforms-field-container {
-    display: flex!important;
-    align-items: flex-start!important;
-    gap: 10px!important;
-  }
-  
-  #wpforms-762 .wpforms-field-email {
-    flex: 1!important;
-    margin: 0!important;
-  }
-  
-  #wpforms-762 .wpforms-field-email input {
-    width: 100%!important;
-    margin: 0!important;
-  }
-  
-  #wpforms-762 .wpforms-submit-container {
-    flex-shrink: 0!important;
-    margin: 0!important;
-  }
-  
-  /* Arrow-icon submit button */
-  #wpforms-762 .wpforms-submit {
-    background: #ff0000!important;
-    color: #fff!important;
-    border: none!important;
-    padding: 12px 30px!important;
-    font-weight: 600!important;
-    display: block!important;
-    margin: 20px auto!important;
-    cursor: pointer!important;
-    width: auto!important;
-    height: 46px!important;
-  }
-
-  /* Override WPForms “medium” cap */
-  #wpforms-762 input.wpforms-field-medium,
-  #wpforms-762 select.wpforms-field-medium,
-  #wpforms-762 .wpforms-field-row.wpforms-field-medium {
-    max-width: none!important;
-    width: 100%!important;
-  }
 /* Specific fix ONLY for checkout page footer email input */
 body.woocommerce-checkout .site-footer input[type="email"],
 body.woocommerce-checkout footer input[type="email"],
