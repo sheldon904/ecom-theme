@@ -9,18 +9,14 @@
 
 get_header();
 
+// Generate random numbers for CAPTCHA
+$captcha_num1 = rand(0, 20);
+$captcha_num2 = rand(0, 20);
+$captcha_answer = $captcha_num1 + $captcha_num2;
+
 // Handle contact form submission
 $contact_form_message = '';
 $contact_form_success = false;
-
-// Debug: Check if form was submitted
-if ($_POST) {
-    if (!isset($_POST['contact_form_nonce'])) {
-        $contact_form_message = 'Debug: Nonce field missing';
-    } elseif (!wp_verify_nonce($_POST['contact_form_nonce'], 'contact_form_action')) {
-        $contact_form_message = 'Debug: Nonce verification failed';
-    }
-}
 
 if ($_POST && isset($_POST['contact_form_nonce']) && wp_verify_nonce($_POST['contact_form_nonce'], 'contact_form_action')) {
     $first_name = sanitize_text_field($_POST['first_name']);
@@ -28,8 +24,13 @@ if ($_POST && isset($_POST['contact_form_nonce']) && wp_verify_nonce($_POST['con
     $email = sanitize_email($_POST['email']);
     $phone = sanitize_text_field($_POST['phone']);
     $message = sanitize_textarea_field($_POST['message']);
+    $captcha_response = intval($_POST['captcha_answer']);
+    $captcha_expected = intval($_POST['captcha_expected']);
     
-    if (!empty($first_name) && !empty($last_name) && !empty($email) && !empty($message) && is_email($email)) {
+    // Validate CAPTCHA first
+    if ($captcha_response !== $captcha_expected) {
+        $contact_form_message = 'Please solve the math problem correctly.';
+    } elseif (!empty($first_name) && !empty($last_name) && !empty($email) && !empty($message) && is_email($email)) {
         // Get admin email
         $admin_email = get_option('admin_email');
         
@@ -81,6 +82,16 @@ $is_mobile = $detect->isMobile() && ! $detect->isTablet();
 @media (max-width: 767px) {
   .mobile-layout { display: block !important; }
   .desktop-layout { display: none !important; }
+}
+
+/* Remove number input arrows */
+input[name="captcha_answer"]::-webkit-outer-spin-button,
+input[name="captcha_answer"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[name="captcha_answer"] {
+  -moz-appearance: textfield;
 }
 </style>
 
@@ -184,14 +195,23 @@ $is_mobile = $detect->isMobile() && ! $detect->isTablet();
                 </div>
               </div>
               <div class="row mt-4">
-                <div class="col-md-6 mb-3 px-2">
+                <div class="col-md-4 mb-3 px-2">
                   <div style="
                     width:100%; height:50px; background:#444;
                     color:#ccc; display:flex; align-items:center;
                     justify-content:center; font-weight:bold; border-radius:0;
-                  ">CAPTCHA</div>
+                    flex-direction:column; gap:2px; font-size:12px; padding:10px 5px 3px 5px;
+                  ">
+                    <span>What is <?php echo $captcha_num1; ?> + <?php echo $captcha_num2; ?>?</span>
+                    <input type="text" name="captcha_answer" required style="
+                      width:50px; height:18px; background:#666; border:none; 
+                      color:#fff; text-align:center; font-size:11px;
+                    " placeholder="?" 
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="hidden" name="captcha_expected" value="<?php echo $captcha_answer; ?>">
+                  </div>
                 </div>
-                <div class="col-md-6 mb-3 px-2">
+                <div class="col-md-8 mb-3 px-2">
                   <button type="submit" style="
                     width:100%; height:50px; background:#ff0000;
                     color:#fff; border:none; display:flex;
@@ -282,12 +302,21 @@ $is_mobile = $detect->isMobile() && ! $detect->isTablet();
                           style="width:100%; background:#282828; border:none; color:#fff; padding:12px 15px;"><?php echo isset($_POST['message']) ? esc_textarea($_POST['message']) : ''; ?></textarea>
               </div>
               <div style="display:flex; gap:10px;">
-                <div style="flex:1;">
+                <div style="flex:0 0 60%;">
                   <div style="
                     width:100%; height:50px; background:#444;
                     color:#ccc; display:flex; align-items:center;
                     justify-content:center; font-weight:bold; border-radius:0;
-                  ">CAPTCHA</div>
+                    flex-direction:column; gap:1px; font-size:10px; padding:5px 3px 3px 3px;
+                  ">
+                    <span>What is <?php echo $captcha_num1; ?> + <?php echo $captcha_num2; ?>?</span>
+                    <input type="text" name="captcha_answer" required style="
+                      width:35px; height:16px; background:#666; border:none; 
+                      color:#fff; text-align:center; font-size:10px;
+                    " placeholder="?" 
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                    <input type="hidden" name="captcha_expected" value="<?php echo $captcha_answer; ?>">
+                  </div>
                 </div>
                 <div style="flex:1;">
                   <button type="submit" style="
