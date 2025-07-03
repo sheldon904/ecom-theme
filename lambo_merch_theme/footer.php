@@ -72,11 +72,11 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                         <!-- Vertically stacked navigation -->
                         <div class="footer-nav text-center">
                             <ul>
-                            <center><li><a href="<?php echo esc_url(home_url('/shop')); ?>"><?php esc_html_e('Shop', 'lambo-merch'); ?></a></li></center>
-                            <center><li><a href="<?php echo esc_url(home_url('/about')); ?>"><?php esc_html_e('About', 'lambo-merch'); ?></a></li></center>
-                            <center><li><a href="<?php echo esc_url(home_url('/contact')); ?>"><?php esc_html_e('Contact', 'lambo-merch'); ?></a></li></center>
-                            <center><li><a href="<?php echo esc_url(home_url('/my-account')); ?>"><?php esc_html_e('My Account', 'lambo-merch'); ?></a></li></center>
-                            <center><li><a href="/favs-2/"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li></center>
+                            <li><a href="<?php echo esc_url(home_url('/shop')); ?>"><?php esc_html_e('Shop', 'lambo-merch'); ?></a></li>
+                            <li><a href="<?php echo esc_url(home_url('/about')); ?>"><?php esc_html_e('About', 'lambo-merch'); ?></a></li>
+                            <li><a href="<?php echo esc_url(home_url('/contact')); ?>"><?php esc_html_e('Contact', 'lambo-merch'); ?></a></li>
+                            <li><a href="<?php echo esc_url(home_url('/my-account')); ?>"><?php esc_html_e('My Account', 'lambo-merch'); ?></a></li>
+                            <li><a href="/favs-2/"><?php esc_html_e('Favs / Wishlist', 'lambo-merch'); ?></a></li>
                             </ul>
                         </div>
                         
@@ -97,8 +97,8 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                                         <div class="email-placeholder">
                                             <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
                                         </div>
-                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required value="<?php echo isset($_POST['email']) ? esc_attr($_POST['email']) : ''; ?>">
-                                        <button type="submit" class="arrow-btn">
+                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required value="<?php echo isset($_POST['email']) ? esc_attr($_POST['email']) : ''; ?>" aria-label="Email for newsletter" style="min-height: 48px; min-width: 48px;">
+                                        <button type="submit" class="arrow-btn" aria-label="Submit email for newsletter" style="min-height: 48px; min-width: 48px;">
                                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
                                         </button>
                                     </div>
@@ -163,8 +163,8 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                                         <div class="email-placeholder">
                                             <span><?php esc_html_e('Enter your email', 'lambo-merch'); ?></span>
                                         </div>
-                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required value="<?php echo isset($_POST['email']) ? esc_attr($_POST['email']) : ''; ?>">
-                                        <button type="submit" class="arrow-btn">
+                                        <input type="email" name="email" placeholder="" <?php echo is_checkout() ? 'class="footer-email-exempt"' : ''; ?> required value="<?php echo isset($_POST['email']) ? esc_attr($_POST['email']) : ''; ?>" aria-label="Email for newsletter" style="min-height: 48px; min-width: 48px;">
+                                        <button type="submit" class="arrow-btn" aria-label="Submit email for newsletter" style="min-height: 48px; min-width: 48px;">
                                             <img src="<?php echo esc_url(get_template_directory_uri()); ?>/images/icons/arrow.png" alt="Submit">
                                         </button>
                                     </div>

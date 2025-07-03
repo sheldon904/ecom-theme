@@ -113,7 +113,7 @@ get_header();
                     <!-- Bull image with SHOP NOW button below -->
                      <h1><span class="text-red">Bold</span> Gear for <span class="text-red">Bold</span> Enthusiasts</h1>
                     <div class="mobile-shop-now-container">
-                        <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/bull_1.png" alt="Lamborghini Bull" class="img-fluid" />
+                        <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/bull_1.png" alt="Lamborghini Bull" class="img-fluid" fetchpriority="high" loading="eager" data-no-lazy="1" />
                         <a href="/shop" class="mobile-shop-now-button">SHOP NOW</a>
                     </div>
                 </div>

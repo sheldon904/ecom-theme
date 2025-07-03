@@ -11,7 +11,7 @@
 <html <?php language_attributes(); ?>>
 <head>
   <meta charset="<?php bloginfo('charset'); ?>">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
   <?php wp_head(); ?>
   <style>
   /* Desktop vs Mobile */
@@ -419,7 +419,7 @@
               <div class="header-left">
                 <a href="#" class="menu-toggle" id="desktop-menu-toggle">
                   <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/menu_bars.png' ); ?>"
-                       alt="Menu" class="menu-icon">
+                       alt="" class="menu-icon">
                   <span class="menu-text">MENU</span>
                 </a>
                 <div class="nav-links">
@@ -484,7 +484,7 @@
     <a href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>" class="account-icon">
       <span style="position: absolute; width: 100%; height: 100%; z-index: 1;"></span>
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/my_account.png"
-           alt="My Account">
+           alt="">
     </a>
     <a href="#" class="header-icon-link" id="mobile-cart-trigger">
       <img src="http://lambomerch.madefreshdev.cloud/wp-content/uploads/2025/04/cart.png"
@@ -500,9 +500,9 @@
     </a>
   </div>
 
-  <a href="#" class="mobile-menu-toggle">
+  <a href="#" class="mobile-menu-toggle" aria-label="menu">
     <img src="<?php echo esc_url( get_template_directory_uri() . '/images/icons/menu_bars.png' ); ?>" 
-         alt="Menu" class="menu-icon">
+         alt="" class="menu-icon">
   </a>
 </div>
 
