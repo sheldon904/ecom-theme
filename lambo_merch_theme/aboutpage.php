@@ -24,7 +24,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
     <div class="desktop-layout" <?php if($is_mobile) echo 'style="display: none;"'; ?>>
         <div class="container">
             <!-- Shop Header -->
-            <div class="row">
+            <div class="row" style="margin-top: 40px;">
                 <div class="col-md-8">
                     <h1 class="page-title">Where <span class="text-red">Passion</span> Meets <span class="text-red">Prestige</span></h1>
                     <div class="shop-description">
@@ -41,6 +41,9 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                 <div class="col-sm-12 text-center">
                     <h2>Exclusive Drops</h2>
                     <p>Stay ahead of the pack. Our limited edition merchandise and rare releases are designed for true aficionados – and once they're gone, they're gone for good.</p>
+                    <div style="margin: 40px 0;">
+                        <img src="http://lambomerch.com/wp-content/uploads/2025/07/shirt-drop.png" alt="Exclusive Drop Sample" class="img-fluid">
+                    </div>
                 </div>
             </div>
 
@@ -110,6 +113,9 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                 <div class="col-12 text-center">
                     <h2>Exclusive Drops</h2>
                     <p>Stay ahead of the pack. Our limited edition merchandise and rare releases are designed for true aficionados – and once they're gone, they're gone for good.</p>
+                    <div style="margin: 40px 0;">
+                        <img src="http://lambomerch.com/wp-content/uploads/2025/07/shirt-drop.png" alt="Exclusive Drop Sample" class="img-fluid">
+                    </div>
                 </div>
             </div>
 
