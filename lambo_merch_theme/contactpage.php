@@ -7,14 +7,7 @@
  * @package Lambo_Merch
  */
 
-get_header();
-
-// Generate random numbers for CAPTCHA
-$captcha_num1 = rand(0, 20);
-$captcha_num2 = rand(0, 20);
-$captcha_answer = $captcha_num1 + $captcha_num2;
-
-// Handle contact form submission
+// Handle contact form submission FIRST (before any output)
 $contact_form_message = '';
 $contact_form_success = false;
 
@@ -52,10 +45,35 @@ if ($_POST && isset($_POST['contact_form_nonce']) && wp_verify_nonce($_POST['con
         $email_body .= '<p><strong>Page:</strong> ' . get_permalink() . '</p>';
         $email_body .= '</body></html>';
         
-        // Send email
-        if (wp_mail($admin_email, $subject, $email_body, $headers)) {
-            $contact_form_success = true;
-            $contact_form_message = 'Thank you for your message! We\'ll get back to you soon.';
+        // Send email to admin
+        $admin_email_sent = wp_mail($admin_email, $subject, $email_body, $headers);
+        
+        // Send thank you email to user
+        $user_subject = 'Thank you for contacting us - ' . get_bloginfo('name');
+        $user_headers = array('Content-Type: text/html; charset=UTF-8');
+        
+        // User email body with styling
+        $user_email_body = '<html><body style="background-color: #000000; color: #ffffff; font-family: Arial, sans-serif; padding: 20px;">';
+        $user_email_body .= '<div style="max-width: 600px; margin: 0 auto; background-color: #000000; padding: 30px; border-radius: 8px;">';
+        $user_email_body .= '<h2 style="color: #ff0000; text-align: center; margin-bottom: 20px;">Thank You for Contacting Us!</h2>';
+        $user_email_body .= '<p style="color: #ffffff; font-size: 16px; line-height: 1.6;">Dear ' . esc_html($first_name) . ',</p>';
+        $user_email_body .= '<p style="color: #ffffff; font-size: 16px; line-height: 1.6;">Thank you for contacting us. We have received your message and will get back to you soon.</p>';
+        $user_email_body .= '<div style="background-color: #222222; padding: 20px; margin: 20px 0; border-left: 4px solid #ff0000;">';
+        $user_email_body .= '<p style="color: #ffffff; margin: 0;"><strong style="color: #ff0000;">Your Message:</strong></p>';
+        $user_email_body .= '<p style="color: #ffffff; margin: 10px 0 0 0;">' . nl2br(esc_html($message)) . '</p>';
+        $user_email_body .= '</div>';
+        $user_email_body .= '<p style="color: #ffffff; font-size: 16px; line-height: 1.6;">We appreciate your interest and will respond within 24-48 hours.</p>';
+        $user_email_body .= '<p style="color: #ffffff; font-size: 16px; line-height: 1.6;">Best regards,<br><span style="color: #ff0000; font-weight: bold;">The Lambo Merch Team</span></p>';
+        $user_email_body .= '</div>';
+        $user_email_body .= '</body></html>';
+        
+        // Send user email
+        $user_email_sent = wp_mail($email, $user_subject, $user_email_body, $user_headers);
+        
+        if ($admin_email_sent) {
+            // Redirect to thank you page with proper headers
+            wp_redirect('https://lambomerch.com/thank-you/', 302);
+            exit;
         } else {
             $contact_form_message = 'Sorry, there was an error sending your message. Please try again.';
         }
@@ -64,6 +82,14 @@ if ($_POST && isset($_POST['contact_form_nonce']) && wp_verify_nonce($_POST['con
     }
 }
 
+// Now safe to call get_header() after form processing
+get_header();
+
+// Generate random numbers for CAPTCHA (1-5 range)
+$captcha_num1 = rand(1, 5);
+$captcha_num2 = rand(1, 5);
+$captcha_answer = $captcha_num1 + $captcha_num2;
+
 // Include Mobile_Detect library if not already included
 if (!class_exists('Mobile_Detect')) {
     require_once get_template_directory() . '/inc/mobile-detect.php';
@@ -71,6 +97,7 @@ if (!class_exists('Mobile_Detect')) {
 
 $detect   = new Mobile_Detect;
 $is_mobile = $detect->isMobile() && ! $detect->isTablet();
+
 ?>
 
 <style>
@@ -93,6 +120,7 @@ input[name="captcha_answer"]::-webkit-inner-spin-button {
 input[name="captcha_answer"] {
   -moz-appearance: textfield;
 }
+
 </style>
 
 <main id="primary" class="site-main">
@@ -154,7 +182,7 @@ input[name="captcha_answer"] {
       <!-- Contact Form -->
       <div class="row mt-5">
         <div class="col-12">
-          <?php if (!empty($contact_form_message)): ?>
+          <?php if (!empty($contact_form_message) && $contact_form_message !== 'redirect_success'): ?>
             <div style="margin-bottom: 20px; padding: 15px; border-radius: 5px; <?php echo $contact_form_success ? 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : 'background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'; ?>">
               <?php echo esc_html($contact_form_message); ?>
             </div>
@@ -267,7 +295,7 @@ input[name="captcha_answer"] {
       <!-- Form stacked vertically for mobile -->
       <div class="row mt-4">
         <div class="col-12">
-          <?php if (!empty($contact_form_message)): ?>
+          <?php if (!empty($contact_form_message) && $contact_form_message !== 'redirect_success'): ?>
             <div style="margin-bottom: 20px; padding: 15px; border-radius: 5px; <?php echo $contact_form_success ? 'background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : 'background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;'; ?>">
               <?php echo esc_html($contact_form_message); ?>
             </div>
