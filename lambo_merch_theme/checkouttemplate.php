@@ -262,6 +262,72 @@ $checkout = WC()->checkout;
     </form>
   </div>
   
+  <!-- Order Summary -->
+      <h2 class="checkout-heading">Your Order</h2>
+      <div class="order-summary">
+        <?php if ( WC()->cart->get_cart_contents_count() > 0 ) : ?>
+          <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
+            $_product     = $cart_item['data'];
+            $quantity     = $cart_item['quantity'];
+            $size_display = '';
+            if ( $cart_item['variation_id'] && ! empty( $cart_item['variation'] ) ) {
+              foreach ( $cart_item['variation'] as $attr => $val ) {
+                if ( stripos( $attr, 'size' ) !== false ) {
+                  $size_display = $val;
+                  break;
+                }
+              }
+            }
+          ?>
+            <div class="order-item">
+              <div style="display: flex; align-items: center; width: 60%;">
+                <div class="order-item-image" style="flex: 0 0 80px;">
+                  <?php echo $_product->get_image( [80, 80] ); ?>
+                </div>
+                <div class="order-item-details" style="flex: 1; padding-left: 15px;">
+                  <div class="order-item-name">
+                    <?php echo esc_html( $_product->get_name() ); ?>
+                    <?php if ( $size_display ) : ?>
+                      <span style="font-size:0.8em; color:#aaa;"> &ndash; Size: <?php echo esc_html( $size_display ); ?></span>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              </div>
+              <div class="order-item-quantity"><?php echo esc_html( $quantity ); ?></div>
+              <div class="order-item-price"><?php echo wc_price( $_product->get_price() ); ?></div>
+              <div class="order-item-total"><?php echo wc_price( $quantity * $_product->get_price() ); ?></div>
+            </div>
+          <?php endforeach; ?>
+          <div class="order-totals">
+            <div class="order-total-row">
+              <div class="order-total-label">Subtotal</div>
+              <div class="order-total-value"><?php echo wc_price( WC()->cart->get_subtotal() ); ?></div>
+            </div>
+            <div class="order-total-row">
+              <div class="order-total-label">Shipping</div>
+              <div class="order-total-value">
+                <?php 
+                  $packages = WC()->shipping->get_packages();
+                  if ( empty( $packages ) || ! WC()->cart->needs_shipping() ) {
+                    echo 'Enter your address to view shipping options.';
+                  } else {
+                    wc_cart_totals_shipping_html();
+                  }
+                ?>
+              </div>
+            </div>
+            <div class="order-total-row" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #333333;">
+              <div class="order-total-label" style="font-weight: bold;">Total</div>
+              <div class="order-total-value" style="color: #ff0000; font-weight: bold;">
+                <?php echo wc_price( WC()->cart->get_total() ); ?>
+              </div>
+            </div>
+          </div>
+        <?php else : ?>
+          <p>Your cart is empty. Please add some products before proceeding to checkout.</p>
+        <?php endif; ?>
+      </div>
+      
   <!-- Billing & Shipping Details -->
   <div class="billing-details">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -379,72 +445,6 @@ $checkout = WC()->checkout;
           <input type="hidden" name="shipping_state" id="same_as_billing_state">
           <input type="hidden" name="shipping_postcode" id="same_as_billing_postcode">
         </div>
-      </div>
-      
-      <!-- Order Summary -->
-      <h2 class="checkout-heading">Your Order</h2>
-      <div class="order-summary">
-        <?php if ( WC()->cart->get_cart_contents_count() > 0 ) : ?>
-          <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
-            $_product     = $cart_item['data'];
-            $quantity     = $cart_item['quantity'];
-            $size_display = '';
-            if ( $cart_item['variation_id'] && ! empty( $cart_item['variation'] ) ) {
-              foreach ( $cart_item['variation'] as $attr => $val ) {
-                if ( stripos( $attr, 'size' ) !== false ) {
-                  $size_display = $val;
-                  break;
-                }
-              }
-            }
-          ?>
-            <div class="order-item">
-              <div style="display: flex; align-items: center; width: 60%;">
-                <div class="order-item-image" style="flex: 0 0 80px;">
-                  <?php echo $_product->get_image( [80, 80] ); ?>
-                </div>
-                <div class="order-item-details" style="flex: 1; padding-left: 15px;">
-                  <div class="order-item-name">
-                    <?php echo esc_html( $_product->get_name() ); ?>
-                    <?php if ( $size_display ) : ?>
-                      <span style="font-size:0.8em; color:#aaa;"> &ndash; Size: <?php echo esc_html( $size_display ); ?></span>
-                    <?php endif; ?>
-                  </div>
-                </div>
-              </div>
-              <div class="order-item-quantity"><?php echo esc_html( $quantity ); ?></div>
-              <div class="order-item-price"><?php echo wc_price( $_product->get_price() ); ?></div>
-              <div class="order-item-total"><?php echo wc_price( $quantity * $_product->get_price() ); ?></div>
-            </div>
-          <?php endforeach; ?>
-          <div class="order-totals">
-            <div class="order-total-row">
-              <div class="order-total-label">Subtotal</div>
-              <div class="order-total-value"><?php echo wc_price( WC()->cart->get_subtotal() ); ?></div>
-            </div>
-            <div class="order-total-row">
-              <div class="order-total-label">Shipping</div>
-              <div class="order-total-value">
-                <?php 
-                  $packages = WC()->shipping->get_packages();
-                  if ( empty( $packages ) || ! WC()->cart->needs_shipping() ) {
-                    echo 'Enter your address to view shipping options.';
-                  } else {
-                    wc_cart_totals_shipping_html();
-                  }
-                ?>
-              </div>
-            </div>
-            <div class="order-total-row" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #333333;">
-              <div class="order-total-label" style="font-weight: bold;">Total</div>
-              <div class="order-total-value" style="color: #ff0000; font-weight: bold;">
-                <?php echo wc_price( WC()->cart->get_total() ); ?>
-              </div>
-            </div>
-          </div>
-        <?php else : ?>
-          <p>Your cart is empty. Please add some products before proceeding to checkout.</p>
-        <?php endif; ?>
       </div>
       
       <!-- Payment Method Heading -->

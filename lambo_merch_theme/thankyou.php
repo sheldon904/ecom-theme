@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 
-<main id="primary" class="site-main">
+<main id="primary" class="site-main" style="min-height: 70vh; display: flex; flex-direction: column; justify-content: center;">
     <?php
     // Check if the order is valid
     $order_id = isset($_GET['order-received']) ? absint($_GET['order-received']) : 0;
@@ -47,13 +47,8 @@ get_header();
                     <?php endif; ?>
                 </p>
             <?php else : ?>
-                <div class="order-confirmation-header">
-                    <div class="success-icon">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="12" cy="12" r="11" stroke="#4CAF50" stroke-width="2"/>
-                            <path d="M7 12L10 15L17 8" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
+                <div class="order-confirmation-header" style="text-align: center;">
+                    <img src="http://lambomerch.com/wp-content/uploads/2025/05/Big_LM_logo_header.png" alt="Lambo Merch Logo" style="margin-bottom: 20px; max-width: 200px; display: block; margin-left: auto; margin-right: auto;">
                     <h2 class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received">
                         <?php echo apply_filters('woocommerce_thankyou_order_received_text', esc_html__('Thank you. Your order has been received.', 'woocommerce'), $order); ?>
                     </h2>
