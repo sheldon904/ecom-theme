@@ -890,3 +890,7 @@ object {
         grid-template-columns: 1fr;
     }
 }
+
+.cart-is-empty {
+    min-height: calc(100vh - 400px); /* Adjust 400px to match your header and footer height */
+}

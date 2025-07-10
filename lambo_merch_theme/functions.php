@@ -1340,3 +1340,11 @@ function lambo_merch_remove_shop_notices() {
 }
 add_action('wp', 'lambo_merch_remove_shop_notices');
 
+/**
+ * Redirect to the cart page after successful addition to cart.
+ */
+function lambo_merch_redirect_to_cart( $url ) {
+    return wc_get_cart_url();
+}
+add_filter( 'woocommerce_add_to_cart_redirect', 'lambo_merch_redirect_to_cart' );
+

@@ -39,7 +39,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
             <!-- Exclusive Drops Section -->
             <div class="row">
                 <div class="col-sm-12 text-center">
-                    <h2>Exclusive Drops</h2>
+                    
                     <p>Stay ahead of the pack. Our limited edition merchandise and rare releases are designed for true aficionados – and once they're gone, they're gone for good.</p>
                     <div style="margin: 40px 0;">
                         <img src="http://lambomerch.com/wp-content/uploads/2025/07/shirt-drop.png" alt="Exclusive Drop Sample" class="img-fluid">
@@ -51,8 +51,8 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
             <div class="row">
                 <div class="col-sm-12 text-center">
                     <h2>Members Only Access</h2>
-                    <p>Be the first to know. Subscribe now to get early access to exclusive drops, insider updates, and VIP-only offers you won't find anywhere else.</p>
-                    <p>Whether you're a long-time collector or just fueling your obsession, LAMBO MERCH is your ticket to the pinnacle of automotive-inspired luxury.</p>
+                                        <p class="members-only-p">Be the first to know. Subscribe now to get early access to exclusive drops, insider updates, and VIP-only offers you won't find anywhere else.</p>
+                                        <p class="members-only-p">Whether you're a long-time collector or just fueling your obsession, LAMBO MERCH is your ticket to the pinnacle of automotive-inspired luxury.</p>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
             <!-- Exclusive Drops Section -->
             <div class="row">
                 <div class="col-12 text-center">
-                    <h2>Exclusive Drops</h2>
+                    
                     <p>Stay ahead of the pack. Our limited edition merchandise and rare releases are designed for true aficionados – and once they're gone, they're gone for good.</p>
                     <div style="margin: 40px 0;">
                         <img src="http://lambomerch.com/wp-content/uploads/2025/07/shirt-drop.png" alt="Exclusive Drop Sample" class="img-fluid">
@@ -123,8 +123,8 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
             <div class="row">
                 <div class="col-12 text-center">
                     <h2>Members Only Access</h2>
-                    <p>Be the first to know. Subscribe now to get early access to exclusive drops, insider updates, and VIP-only offers you won't find anywhere else.</p>
-                    <p>Whether you're a long-time collector or just fueling your obsession, LAMBO MERCH is your ticket to the pinnacle of automotive-inspired luxury.</p>
+                                        <p class="members-only-p">Be the first to know. Subscribe now to get early access to exclusive drops, insider updates, and VIP-only offers you won't find anywhere else.</p>
+                                        <p class="members-only-p">Whether you're a long-time collector or just fueling your obsession, LAMBO MERCH is your ticket to the pinnacle of automotive-inspired luxury.</p>
                 </div>
             </div>
         </div>
@@ -204,7 +204,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
     }
 }
 
-/* Ensure proper display based on device type regardless of viewport resizing */
+/* Tablet and Desktop styles */
 @media (min-width: 768px) {
     .desktop-layout {
         display: block !important;
@@ -213,6 +213,22 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
     .mobile-layout {
         display: none !important;
     }
+}
+
+/* Image fix for tablet and landscape iPad */
+@media (min-width: 768px) and (max-width: 1366px) {
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+    .container {
+        max-width: 90% !important;
+    }
+}
+
+/* Members only paragraph alignment */
+.members-only-p {
+    text-align: left !important;
 }
 </style>
 

@@ -156,6 +156,10 @@ do_action( 'woocommerce_after_main_content' );
 
 <!-- Mobile Responsive CSS for Shop Filters and Logo Fixes -->
 <style>
+.woocommerce-products-header__title {
+    font-family: "Impact", sans-serif !important;
+}
+
 /* Mobile Filter Section - Hidden by default on desktop */
 .mobile-filter-section {
     display: none;
@@ -369,6 +373,13 @@ do_action( 'woocommerce_after_main_content' );
     
     body, #content {
         padding-top: 90px !important;
+    }
+}
+
+/* Tablet Portrait and Landscape Margins */
+@media (min-width: 768px) and (max-width: 1366px) {
+    .container {
+        max-width: 90% !important;
     }
 }
 </style>

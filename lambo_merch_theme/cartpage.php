@@ -30,13 +30,21 @@ wc_clear_notices();
 
 <main id="primary" class="site-main" style="max-width:1200px; margin:0 auto; padding:2rem;">
 
-  <!-- DESKTOP LAYOUT (unchanged contents of cartpageold.php) -->
+  <!-- DESKTOP LAYOUT -->
   <div class="desktop-layout">
     <h1 class="page-title" style="text-align:center; margin-bottom:2rem; color:#ff0000; font-style:italic;">
       Cart
     </h1>
 
     <?php if ( WC()->cart->get_cart_contents_count() > 0 ) : ?>
+
+      <div style="background:#ff0000; padding:1rem; margin-bottom:2rem; text-align:center;">
+        <a href="<?php echo esc_url( home_url( '/shop' ) ); ?>"
+           class="button"
+           style="color:#fff; text-decoration:none; font-weight:bold; text-transform:uppercase;">
+          Continue Shopping
+        </a>
+      </div>
 
       <form class="woocommerce-cart-form" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
 
@@ -119,16 +127,16 @@ wc_clear_notices();
         <?php endforeach; ?>
 
         <!-- Actions Row -->
-        <div style="display:flex; align-items:center; margin-bottom:2rem;">
+        <div style="display:flex; align-items:center; margin-bottom:2rem; gap: 1rem;">
           <input type="text"
                  name="coupon_code"
                  placeholder="Coupon Code..."
-                 style="flex:1; padding:0.75rem; background:#222222; border:1px solid #333; color:#fff;" />
+                 style="flex:2; padding:0.75rem; background:#222222; border:1px solid #333; color:#fff;" />
 
           <button type="submit"
                   name="apply_coupon"
                   class="button"
-                  style="margin-left:1rem; background:#222222; color:#fff; padding:0.75rem 1.5rem; border:none;">
+                  style="flex:1; background:#222222; color:#fff; padding:0.75rem 1.5rem; border:none;">
             Apply Coupon
           </button>
 
@@ -136,18 +144,12 @@ wc_clear_notices();
                   name="update_cart"
                   value="Update cart"
                   class="button"
-                  style="margin-left:1rem; background:#222222; color:#fff; padding:0.75rem 1.5rem; border:none;">
+                  style="flex:1; background:#222222; color:#fff; padding:0.75rem 1.5rem; border:none;">
             Update Cart
           </button>
 
           <?php do_action( 'woocommerce_cart_actions' ); ?>
           <?php wp_nonce_field( 'woocommerce-cart', 'woocommerce-cart-nonce' ); ?>
-
-          <a href="<?php echo esc_url( home_url( '/shop' ) ); ?>"
-             class="button"
-             style="margin-left:1rem; background:#222222; color:#fff; padding:0.75rem 1.5rem; text-decoration:none;">
-            Continue Shopping
-          </a>
         </div>
       </form>
 
@@ -172,15 +174,25 @@ wc_clear_notices();
       </div>
 
     <?php else : ?>
-      <p style="color:#fff; text-align:center;">Your cart is currently empty.</p>
+      <div class="cart-is-empty">
+        <p style="color:#fff; text-align:center;">Your cart is currently empty.</p>
+      </div>
     <?php endif; ?>
   </div>
   <!-- end .desktop-layout -->
 
 
-  <!-- MOBILE LAYOUT (copied exactly from cartpage.php) -->
+  <!-- MOBILE LAYOUT -->
   <div class="mobile-layout">
     <?php if ( WC()->cart->get_cart_contents_count() > 0 ) : ?>
+
+      <div style="background:#ff0000; padding:1rem; margin-bottom:2rem; text-align:center;">
+        <a href="<?php echo esc_url( home_url( '/shop' ) ); ?>"
+           class="button"
+           style="color:#fff; text-decoration:none; font-weight:bold; text-transform:uppercase;">
+          Continue Shopping
+        </a>
+      </div>
 
       <form class="woocommerce-cart-form" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
         <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) :
@@ -291,12 +303,6 @@ wc_clear_notices();
 
           <?php do_action( 'woocommerce_cart_actions' ); ?>
           <?php wp_nonce_field( 'woocommerce-cart', 'woocommerce-cart-nonce' ); ?>
-
-          <a href="<?php echo esc_url( home_url( '/shop' ) ); ?>"
-             class="button"
-             style="display:block; text-align:center; margin-top:1rem; background:#222222; color:#fff; padding:0.75rem 1rem; text-decoration:none;">
-            Continue Shopping
-          </a>
         </div>
 
         <!-- Cart Totals - Mobile -->
@@ -322,7 +328,9 @@ wc_clear_notices();
       </form>
 
     <?php else : ?>
-      <p style="color:#fff; text-align:center;">Your cart is currently empty.</p>
+      <div class="cart-is-empty">
+        <p style="color:#fff; text-align:center;">Your cart is currently empty.</p>
+      </div>
     <?php endif; ?>
   </div>
   <!-- end .mobile-layout -->
