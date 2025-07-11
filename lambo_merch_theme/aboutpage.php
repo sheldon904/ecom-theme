@@ -41,7 +41,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                 <div class="col-sm-12 text-center">
                     
                     <p>Stay ahead of the pack. Our limited edition merchandise and rare releases are designed for true aficionados – and once they're gone, they're gone for good.</p>
-                    <div style="margin: 40px 0;">
+                    <div class="exclusive-drop-container">
                         <img src="http://lambomerch.com/wp-content/uploads/2025/07/shirt-drop-min.png" alt="Exclusive Drop Sample" class="img-fluid">
                     </div>
                 </div>
@@ -113,7 +113,7 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
                 <div class="col-12 text-center">
                     
                     <p>Stay ahead of the pack. Our limited edition merchandise and rare releases are designed for true aficionados – and once they're gone, they're gone for good.</p>
-                    <div style="margin: 40px 0;">
+                    <div class="exclusive-drop-container mobile-exclusive-drop">
                         <img src="http://lambomerch.com/wp-content/uploads/2025/07/shirt-drop-min.png" alt="Exclusive Drop Sample" class="img-fluid">
                     </div>
                 </div>
@@ -201,6 +201,12 @@ $is_mobile = $detect->isMobile() && !$detect->isTablet();
     /* Make the send button full width */
     .mobile-layout button {
         width: 100%;
+    }
+
+    .mobile-exclusive-drop img {
+        max-width: 90%;
+        height: auto;
+        margin: 0 auto;
     }
 }
 

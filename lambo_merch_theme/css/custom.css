@@ -2248,3 +2248,14 @@ button[data-testid="link-button"],
 .wcpay-express-checkout-wrapper:not(:has(.stripe-link)) {
     display: block !important;
 }
+
+/* Responsive container for the exclusive drop image */
+.exclusive-drop-container {
+    margin: 40px 0;
+}
+
+@media (max-width: 767px) {
+    .exclusive-drop-container {
+        margin: 20px 0;
+    }
+}
